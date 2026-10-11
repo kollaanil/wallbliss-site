@@ -303,6 +303,8 @@
 <script src="assets/published.js"></script>
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/search-lexicon.js"></script>
+<script src="assets/search.js"></script>
 <style>
   .cat-top { padding-block: 28px 8px; display: grid; gap: 10px; }
   .cat-top h1 { font-size: var(--step-3); }
@@ -325,6 +327,9 @@
   .fchip:hover { border-color: var(--accent); }
   .fchip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
   .fchip .sw { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); flex: none; }
+  .search-note { margin: 4px 0 14px; font-size: .92rem; color: var(--muted); }
+  .search-note b { color: var(--ink); }
+  .custom-card.own { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
   /* suggestions */
   .sugg { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 14px 40px rgba(60,40,20,.16); padding: 6px; z-index: 40; display: grid; max-height: 60dvh; overflow-y: auto; }
   .sugg[hidden] { display: none; }
@@ -440,6 +445,7 @@
 
   <div class="wrap">
     <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><button class="linkbtn" id="clear" type="button" hidden>Clear all</button></div>
+    <p class="search-note" id="search-note" hidden></p>
     <div class="grid" id="grid">
       <article class="card" id="WB-0107"><div style="position:relative"><button class="thumb" type="button" data-open="WB-0107"><canvas data-code="WB-0107" aria-hidden="true"></canvas><span class="code">WB-0107</span></button></div><h3>Monstera Shade</h3><div class="meta">Living room · Café &amp; restaurant</div></article>
       <article class="card" id="WB-0116"><div style="position:relative"><button class="thumb" type="button" data-open="WB-0116"><canvas data-code="WB-0116" aria-hidden="true"></canvas><span class="code">WB-0116</span></button></div><h3>Warli Harvest Dance</h3><div class="meta">Living room · Café &amp; restaurant</div></article>
@@ -561,40 +567,10 @@
   var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", pooja: "pooja room puja mandir prayer room", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
   var state = { q: "", sort: "pop", f: { spaces: [], styles: [], colours: [] } };
 
-  /* ---------- search ---------- */
-  DATA.forEach(function (d) {
-    var words = [d.name, d.code, d.tags.join(" "), d.styles.join(" "), d.colours.join(" "), d.orient,
-      d.spaces.map(function (s) { return SPACE_WORDS[s] || s; }).join(" ")].join(" ").toLowerCase();
-    d._hay = words; d._words = words.split(/[^a-z0-9ऀ-෿-]+/).filter(Boolean); d._name = d.name.toLowerCase();
-  });
-  function lev1(a, b) { // true if edit distance <= 1
-    if (Math.abs(a.length - b.length) > 1) return false;
-    var i = 0, j = 0, e = 0;
-    while (i < a.length && j < b.length) {
-      if (a[i] === b[j]) { i++; j++; continue; }
-      if (++e > 1) return false;
-      if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
-    }
-    return e + (a.length - i) + (b.length - j) <= 1;
-  }
-  function termScore(d, t) {
-    if (d._name.indexOf(t) > -1) return 3;
-    if (d._hay.indexOf(t) > -1) return 2;
-    if (t.length >= 5) for (var k = 0; k < d._words.length; k++) if (lev1(t, d._words[k].slice(0, t.length + 1)) || lev1(t, d._words[k])) return 1;
-    return 0;
-  }
-  function score(d, q) {
-    if (!q) return 1;
-    if (/^wb-?\d+$/.test(q)) return d.code.toLowerCase().replace("-", "") === q.replace("-", "") ? 10 : 0;
-    var terms = q.split(/\s+/).filter(Boolean), total = 0;
-    for (var i = 0; i < terms.length; i++) {
-      var t = terms[i], best = termScore(d, t);
-      (SYN[t] || []).forEach(function (s) { best = Math.max(best, termScore(d, s) ? 1.5 : 0); });
-      if (!best) return 0;
-      total += best;
-    }
-    return total;
-  }
+  /* ---------- search: multilingual engine in assets/search.js ---------- */
+  WBSearch.index(DATA, SPACE_WORDS);
+  var lastSearch = null;
+  function score(d, q) { return WBSearch.score(d, q, true); }
 
   /* ---------- header height for the sticky toolbar ---------- */
   var hdr = document.querySelector(".site-header");
@@ -672,9 +648,24 @@
     });
   }
   var lastCount = 0;
+  /* a short line under the search box saying how the search was understood */
+  var noteEl = document.getElementById("search-note");
+  function searchNote(r) {
+    if (!r || r.mode === "empty") { noteEl.hidden = true; return; }
+    var lbl = r.understood.map(function (u) { return esc(u.label); }).join(" · ");
+    var fixed = r.understood.filter(function (u) { return u.fixed; }).map(function (u) { return esc(u.fixed); });
+    var html = "";
+    if (r.mode === "all") html = lbl ? "Showing <b>" + lbl + "</b> designs" + (fixed.length ? ' <span class="muted">(searched for “' + fixed.join(", ") + '”)</span>' : "") : "";
+    else if (r.mode === "related") html = "No <b>" + lbl + "</b> designs yet, so here are other <b>" + esc(r.related) + "</b> designs. We can also create one for you.";
+    else if (r.mode === "partial") html = "Nothing matches all of that, so here are the closest designs" + (lbl ? " for <b>" + lbl + "</b>" : "") + ".";
+    else if (lbl && !WBSearch.wants(r, "custom")) html = "No <b>" + lbl + "</b> designs yet. Tell us on WhatsApp and we can create one for your wall.";
+    noteEl.innerHTML = html; noteEl.hidden = !html;
+  }
   function render() {
     state.q = q.value.trim().toLowerCase();
-    var list = DATA.map(function (d) { return { d: d, s: score(d, state.q) }; }).filter(function (x) { return x.s && matches(x.d, state.f); });
+    var pool = DATA.filter(function (d) { return matches(d, state.f); }), list, r = null;
+    if (state.q) { r = WBSearch.run(state.q, pool, { typing: true }); list = r.results; } else list = pool.map(function (d) { return { d: d, s: 1 }; });
+    lastSearch = r; searchNote(r);
     list.sort(function (a, b) {
       if (state.q && b.s !== a.s) return b.s - a.s;
       if (state.sort === "new") return b.d.added.localeCompare(a.d.added) || b.d.pop - a.d.pop;
@@ -685,11 +676,13 @@
     grid.innerHTML = "";
     list.forEach(function (x) { grid.appendChild(card(x.d)); });
     var custom = document.createElement("div"); custom.className = "custom-card";
-    custom.innerHTML = list.length
+    var wantsOwn = r && WBSearch.wants(r, "custom");
+    if (wantsOwn) custom.classList.add("own");
+    custom.innerHTML = list.length || wantsOwn
       ? '<h3>Have your own photo or logo?</h3><p class="muted" style="font-size:.92rem">Family photos, company logos, artwork: send the file and your wall size. We check the quality and size it for your wall.</p><a class="btn btn-wa btn-sm" data-where="own-image" data-wa="Hi WallBliss, I want to print my own image on a wall. I\'ll send the file here." href="#">Send your image</a>'
       : '<h3>We don\'t have that one yet</h3><p class="muted" style="font-size:.92rem">Tell us what you have in mind. We can find or create it for your wall.</p><a class="btn btn-wa btn-sm" data-where="no-results" data-wa="Hi WallBliss, I\'m looking for a wall design like: ' + esc(q.value) + '" href="#">Describe your idea on WhatsApp</a>';
-    if (!list.length) custom.classList.add("noresult");
-    grid.appendChild(custom);
+    if (!list.length && !wantsOwn) custom.classList.add("noresult");
+    if (wantsOwn) grid.insertBefore(custom, grid.firstChild); else grid.appendChild(custom);
     custom.querySelectorAll("[data-wa]").forEach(function (a) { a.href = WB.waLink(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
     grid.querySelectorAll("canvas[data-code]").forEach(function (c) { io ? io.observe(c) : paint(c); });
     syncControls();
@@ -735,7 +728,8 @@
       if (f.hay.split(/\s+/).some(function (w) { return w.indexOf(t) === 0; }) || f.hay.indexOf(t) === 0 || (SYN[t] || []).some(function (s) { return f.hay.indexOf(s) > -1; })) items.push(f);
     });
     items = items.slice(0, 3);
-    DATA.map(function (d) { return { d: d, s: score(d, t) }; }).filter(function (x) { return x.s; })
+    var sr = WBSearch.run(t, DATA, { typing: true });
+    (sr.mode === "all" || sr.mode === "related" ? sr.results : []).slice()
       .sort(function (a, b) { return b.s - a.s || b.d.pop - a.d.pop; }).slice(0, 5)
       .forEach(function (x) { items.push({ type: "design", d: x.d }); });
     if (!items.length) {
@@ -786,7 +780,7 @@
     clearTimeout(logT);
     var term = q.value.trim().toLowerCase();
     if (!term || term === lastLogged) return;
-    var go = function () { lastLogged = term; WB.track(lastCount ? "search" : "search_no_results", { q: term, results: lastCount }); };
+    var go = function () { lastLogged = term; WB.track(lastSearch && lastSearch.mode === "all" ? "search" : "search_no_results", { q: term, results: lastCount, mode: lastSearch ? lastSearch.mode : "" }); };
     if (now) go(); else logT = setTimeout(go, 1500);
   }
   var tmr; q.addEventListener("input", function () { clearTimeout(tmr); tmr = setTimeout(function () { render(); suggest(); logSearch(false); }, 120); });
