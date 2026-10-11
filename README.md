@@ -23,6 +23,34 @@ repository and the permission *Contents: Read and write*. Create it at
 GitHub → Settings → Developer settings → Fine-grained tokens. The admin keeps it in that
 browser only. Remove it from Settings in the admin if a device is lost, and revoke it on GitHub.
 
+## Uploading designs (admin → Designs → + Add design)
+
+- Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked
+  (template v1 in `assets/watermark.js`: diagonal "WallBliss Studio" + corner badge with logo and code).
+- Code is suggested (next free WB-0000) and can be changed; duplicates are blocked.
+- Tags are mandatory (3+), hidden from customers, used by search. With the AI key, Claude suggests
+  name, tags, rooms, style, colours and multilingual search words; you finalise them.
+- Drafts keep images in the browser's IndexedDB until Publish. The first real upload retires the sample designs.
+
+**AI tagging key (once per device):** console.anthropic.com → API keys → create key; set a monthly
+spend limit under Billing. Paste it in admin → Settings → AI tagging key. Stored on that device only.
+
+## Search
+
+`assets/search.js` + `assets/search-lexicon.js`: runs in the visitor's browser. Understands English,
+Hindi, Kannada and Telugu words (Roman and native script), typos, phrases ("seven horses", "pooja room")
+and broad words ("god" → Krishna, Ganesha, Surya…). To teach it a new word, add it to the right line of
+`search-lexicon.js`. Each design's AI search words are searched too.
+
+## Google sign-in
+
+1. console.cloud.google.com → create project "WallBliss" → APIs & Services → OAuth consent screen
+   (External, app name WallBliss Admin, your email) → add test users anilkolla@gmail.com and manasa.doradla@gmail.com.
+2. Credentials → Create credentials → OAuth client ID → Web application →
+   Authorised JavaScript origins: `https://kollaanil.github.io` (later also `https://www.wallbliss.in`).
+3. Copy the Client ID into `assets/admin-config.js` → `googleClientId`.
+Allowed emails are listed in the same file.
+
 ## Moving to wallbliss.in later
 
 1. Replace `https://kollaanil.github.io/wallbliss-site` with `https://www.wallbliss.in` in all files.

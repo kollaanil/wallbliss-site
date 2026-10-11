@@ -36,7 +36,11 @@
 
   if (window.WB_DESIGNS) {
     window.WB_DESIGNS_BASE = window.WB_DESIGNS_BASE || window.WB_DESIGNS.slice();
-    var base = window.WB_DESIGNS_BASE.map(function (d) { var e = db.edits[d.code]; return e ? Object.assign({}, d, e) : d; });
+    var retired = !!db.settings.samplesRetired;          // set by the first real upload
+    var base = window.WB_DESIGNS_BASE.map(function (d) {
+      var e = db.edits[d.code], x = e ? Object.assign({}, d, e) : d;
+      return retired && !x.img ? Object.assign({}, x, { hidden: true, sample: true }) : x;
+    });
     var added = db.designs.map(function (d) { return Object.assign({ pop: 5 }, d); });
     window.WB_DESIGNS_ALL = base.concat(added);
     window.WB_DESIGNS = window.WB_DESIGNS_ALL.filter(function (d) { return !d.hidden; });

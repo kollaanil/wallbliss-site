@@ -356,10 +356,8 @@
           </div>
           <div class="card">
             <h2>Watermark</h2>
-            <label class="switch"><input type="checkbox" id="s-wm-on" checked> Add the watermark to new designs by default</label>
-            <div class="field"><label for="s-wm-text">Watermark text</label><input type="text" id="s-wm-text" placeholder="WallBliss Studio"></div>
-            <div class="field"><span class="lbl">Default style</span><div class="seg" role="group" id="s-wm-style"><button type="button" data-v="corner" aria-pressed="true">Corner</button><button type="button" data-v="across">Across the image</button></div></div>
-            <small class="muted">You can still switch it off or change the style for any single design while uploading.</small>
+            <p class="sub" style="margin-top:0">Every design gets the same watermark (template v1): “WallBliss Studio” repeated diagonally across the image at low strength, plus a corner badge with the logo and the design code. Images are resized to 1600 px and plain borders are trimmed.</p>
+            <div hidden><input type="checkbox" id="s-wm-on" checked><input type="text" id="s-wm-text"><div class="seg" id="s-wm-style"><button type="button" data-v="corner" aria-pressed="true">Corner</button></div></div>
           </div>
         </div>
         <div class="grid-2">
@@ -395,8 +393,8 @@
         <div id="d-prev" hidden style="display:grid;gap:10px">
           <div class="prev-wrap"><canvas id="d-canvas"></canvas></div>
           <div class="prev-tools">
-            <label class="switch"><input type="checkbox" id="d-wm" checked> Watermark</label>
-            <div class="seg" role="group" id="d-wm-style" aria-label="Watermark style"><button type="button" data-v="corner" aria-pressed="true">Corner</button><button type="button" data-v="across">Across</button></div>
+            <label class="switch" hidden><input type="checkbox" id="d-wm" checked> Watermark</label>
+            <div class="seg" role="group" id="d-wm-style" aria-label="Watermark style" hidden><button type="button" data-v="corner" aria-pressed="true">Corner</button><button type="button" data-v="across">Across</button></div>
             <button class="linkbtn" type="button" id="d-change">Change image</button>
           </div>
           <p class="muted" id="d-imginfo" style="font-size:.8rem"></p>
@@ -409,7 +407,7 @@
       <div class="field"><span class="lbl">Rooms it suits</span><div class="chips" id="d-spaces"></div></div>
       <div class="field"><span class="lbl">Style</span><div class="chips" id="d-styles"></div></div>
       <div class="field"><span class="lbl">Colours <span class="auto-note" id="d-col-note" hidden>Suggested from the image</span></span><div class="chips" id="d-colours"></div></div>
-      <div class="field"><label for="d-tags">Search words</label><input type="text" id="d-tags" placeholder="peacock, mor, navilu, bird, feathers"><small>Separate with commas. Add Hindi, Kannada or Telugu words people might type.</small></div>
+      <div class="field"><label for="d-tags">Tags (at least 3)</label><input type="text" id="d-tags" placeholder="peacock, bird, feathers, blue"><small>Hidden from customers; search uses them. Separate with commas.</small></div>
       <div class="grid-2" style="gap:12px">
         <div class="field"><span class="lbl">Best wall shape</span><div class="seg" role="group" id="d-orient"><button type="button" data-v="wide" aria-pressed="true">Wide</button><button type="button" data-v="tall">Tall</button><button type="button" data-v="square">Square</button></div><small id="d-orient-note"></small></div>
         <div class="field"><span class="lbl">Show</span><label class="switch"><input type="checkbox" id="d-live" checked> Live on the website</label><label class="switch"><input type="checkbox" id="d-feat"> Feature near the top</label></div>
@@ -488,6 +486,7 @@
 <script src="assets/catalogue-data.js"></script>
 <script src="assets/site-data.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/admin-config.js"></script>
 <script src="assets/published.js"></script>
 <script src="assets/live.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -525,7 +524,7 @@
   }
   $$(".acct").forEach(function (b) { b.onclick = function () { enter(b.dataset.user); }; });
   $("#who").onclick = function () {
-    if (this.dataset.confirm) { try { sessionStorage.removeItem("wb_admin_user"); } catch (e) {} location.hash = ""; location.reload(); return; }
+    if (this.dataset.confirm) { try { sessionStorage.removeItem("wb_admin_user"); sessionStorage.removeItem("wb_admin_email"); } catch (e) {} location.hash = ""; location.reload(); return; }
     this.dataset.confirm = "1"; $("#who-nm").textContent = "Sign out?"; var b = this;
     setTimeout(function () { delete b.dataset.confirm; $("#who-nm").textContent = user; }, 2500);
   };
@@ -552,7 +551,7 @@
   }
   function byCode() { var m = {}; designs().forEach(function (d) { m[d.code] = d; }); return m; }
   function thumb(d, w, h) {
-    if (d && d.img) return '<img src="' + d.img + '" alt="" loading="lazy">';
+    if (d && d.img) return /^idb:/.test(d.img) ? '<img data-idb="' + d.img + '" alt="">' : '<img src="' + d.img + '" alt="" loading="lazy">';
     return '<canvas data-code="' + (d ? d.code : "") + '" data-w="' + (w || 0) + '" data-h="' + (h || 0) + '"></canvas>';
   }
   function paintThumbs(root) {
@@ -767,10 +766,8 @@
   function settings() { return Object.assign({ wmOn: true, wmText: "WallBliss Studio", wmStyle: "corner" }, db.settings); }
   function renderImg() {
     var c = $("#d-canvas"); if (!srcImg) return;
-    var max = 1400, s = Math.min(1, max / Math.max(srcImg.naturalWidth, srcImg.naturalHeight));
-    c.width = Math.round(srcImg.naturalWidth * s); c.height = Math.round(srcImg.naturalHeight * s);
-    var x = c.getContext("2d"); x.drawImage(srcImg, 0, 0, c.width, c.height);
-    if ($("#d-wm").checked) watermark(x, c.width, c.height, segVal($("#d-wm-style")), settings().wmText || "WallBliss Studio");
+    var r = WBImage.resize(srcImg, WBImage.LONG); WBImage.watermark(r, { code: $("#d-code").value, logo: logo });
+    c.width = r.width; c.height = r.height; c.getContext("2d").drawImage(r, 0, 0);
   }
   function watermark(x, W, H, style, text) {
     x.save();
@@ -861,13 +858,13 @@
     var spaces = chipVals($("#d-spaces")); if (!spaces.length) { toast("Pick at least one room"); return; }
     var isNew = !cur;
     if (isNew && !srcImg) { toast("Add a photo of the design"); return; }
+    var tagCount = $("#d-tags").value.split(",").filter(function (s) { return s.trim(); }).length;
+    if (tagCount < 3) { toast("Add at least 3 tags (" + tagCount + " so far)"); $("#d-tags").focus(); return; }
     var data = { name: name, spaces: spaces, styles: chipVals($("#d-styles")), colours: chipVals($("#d-colours")), orient: segVal($("#d-orient")),
       tags: $("#d-tags").value.split(",").map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean), hidden: !$("#d-live").checked };
     if ($("#d-feat").checked) data.pop = 9.5; else if (cur && (cur.pop || 0) >= 9 && !cur.builtIn) data.pop = 5;
     if (srcImg) {
-      var out = document.createElement("canvas"), c = $("#d-canvas"), s = Math.min(1, 1100 / Math.max(c.width, c.height));
-      out.width = Math.round(c.width * s); out.height = Math.round(c.height * s); out.getContext("2d").drawImage(c, 0, 0, out.width, out.height);
-      data.img = out.toDataURL("image/jpeg", .8);
+      data.img = $("#d-canvas").toDataURL("image/jpeg", .86);
     }
     if (isNew) { db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
     else setDesign(cur.code, data);
@@ -1060,9 +1057,13 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, COLOURS: COLOURS };
   if (user) enter(user);
 })();
 </script>
+<script src="assets/watermark.js"></script>
+<script src="assets/admin-upload.js"></script>
+<script src="assets/admin-auth.js"></script>
 <script src="assets/publish.js"></script>
 <script>
 (function () {

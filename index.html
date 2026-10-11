@@ -497,7 +497,7 @@
 
 <script>
 (function () {
-  var D = {}; (window.WB_DESIGNS || []).forEach(function (d) { D[d.code] = d; });
+  var D = {}; (window.WB_DESIGNS_ALL || window.WB_DESIGNS || []).forEach(function (d) { D[d.code] = d; });
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var WALL = "#EFE7DA";
 

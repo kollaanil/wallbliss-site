@@ -79,7 +79,16 @@
 
   function publish(k) {
     busy = true; pubBtn.disabled = true; msg.textContent = "Publishing…"; bar.classList.remove("ok");
-    var draft = WB.db.load(), files = [];
+    var draft = WB.db.load(), files = [], usedRefs = [];
+    /* images saved by the uploader live in this browser's image store ("idb:…"); fetch them first */
+    var refs = [];
+    draft.designs.forEach(function (d) { if (/^idb:/.test(d.img || "")) refs.push([d, "img"]); });
+    draft.projects.forEach(function (p) { ["before", "after"].forEach(function (k) { if (/^idb:/.test(p[k] || "")) refs.push([p, k]); }); });
+    var R = window.WBImages;
+    return Promise.all(refs.map(function (r) { usedRefs.push(r[0][r[1]]); return R.resolve(r[0][r[1]]).then(function (u) { if (!u) throw new Error("A photo for " + (r[0].code || r[0].title || "an item") + " is missing on this device. Upload it again."); r[0][r[1]] = u; }); }))
+      .then(function () { return build(); })
+      .catch(function (e) { busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; alertMsg(e.message); });
+    function build() {
     function take(dataUrl, path) {
       var m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(dataUrl || ""); if (!m) return dataUrl;
       var ext = m[1] === "jpeg" ? "jpg" : m[1], p = path + "-" + hash(m[2]) + "." + ext;
@@ -112,6 +121,7 @@
       .then(function (c) { return gh("/repos/" + OWNER + "/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: { sha: c.sha } }, k); })
       .then(function () {
         window.WB_PUBLISHED = data;                       // draft now equals what is live
+        if (R) usedRefs.forEach(function (ref) { R.forget(ref); });
         WB.db.save(Object.assign(WB.db.load(), { designs: out.designs, projects: out.projects }));
         busy = false; lastOk = Date.now(); pubBtn.disabled = false;
         bar.hidden = false; bar.classList.add("ok"); msg.textContent = "Published. The website updates in 1–2 minutes.";
@@ -121,6 +131,7 @@
         busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
         if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message);
       });
+    }
   }
   function alertMsg(t) { var tEl = document.querySelector(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" })); tEl.textContent = t; tEl.hidden = false; setTimeout(function () { tEl.hidden = true; }, 6000); }
 
