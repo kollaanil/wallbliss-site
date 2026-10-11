@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WallBliss Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FBF6EE">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
+<link rel="stylesheet" href="assets/styles-v2.css">
+<style>
+  /* Admin layout: a quiet working tool on the same warm linen as the site.
+     Phone: content + bottom tab bar (Anil and Manasa will mostly use it on site, on a phone).
+     Desktop: left rail + content. */
+  :root { --c1: #008F96; --c2: #E4694A; --tabbar: 64px; }
+  body.admin { background-image: none; }
+  .a-top { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 12px; padding: 10px var(--gutter); background: rgba(251,246,238,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); min-height: 60px; }
+  .a-top .brand img { width: 40px; }
+  .a-top .brand b { font-size: 1.1rem; }
+  .a-top .grow { flex: 1; }
+  .who { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong); background: var(--surface); border-radius: 999px; padding: 4px 12px 4px 4px; font: 600 .86rem var(--font-body); color: var(--ink); cursor: pointer; min-height: 40px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: .85rem; background: var(--coral); flex: none; }
+  .avatar.m { background: var(--indigo); }
+  @media (max-width: 560px) { .who .nm, .a-top .site-link .lbl { display: none; } .who { padding-right: 4px; } }
+  .shell { display: grid; grid-template-columns: 220px minmax(0, 1fr); max-width: 1320px; margin: 0 auto; }
+  .a-nav { position: sticky; top: 60px; align-self: start; display: grid; gap: 2px; padding: 18px 12px; align-content: start; }
+  .a-nav button { display: flex; align-items: center; gap: 12px; border: 0; background: none; text-align: left; padding: 11px 12px; border-radius: 10px; font: 600 .95rem var(--font-body); color: var(--ink-2); cursor: pointer; min-height: 44px; }
+  .a-nav button:hover { background: var(--surface-2); }
+  .a-nav button[aria-current="page"] { background: var(--ink); color: #fff; }
+  .a-nav svg { width: 20px; height: 20px; flex: none; }
+  .a-nav .sep { height: 1px; background: var(--line); margin: 10px 4px; }
+  .a-nav .badge { margin-left: auto; background: var(--coral); color: #fff; border-radius: 10px; font-size: .72rem; padding: 1px 7px; }
+  .a-main { padding: 22px var(--gutter) 60px; min-width: 0; display: grid; gap: 18px; align-content: start; }
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .a-nav { position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; top: auto; height: auto; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); background: rgba(255,253,249,.97); border-top: 1px solid var(--line); backdrop-filter: blur(10px); }
+    .a-nav .sep, .a-nav .desk { display: none; }
+    .a-nav button { flex-direction: column; gap: 3px; font-size: .7rem; padding: 6px 2px; justify-content: center; align-items: center; text-align: center; border-radius: 12px; }
+    .a-nav button[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+    .a-nav .badge { position: absolute; margin: -4px 0 0 18px; }
+    .a-nav button { position: relative; }
+    .a-main { padding-bottom: calc(var(--tabbar) + 40px); }
+  }
+  .a-main > section { padding: 0; display: grid; gap: 16px; align-content: start; }
+  .a-main > section[hidden] { display: none; }
+  @media (max-width: 860px) { .d-add { display: none; } }
+  .preview-note { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 10px; background: #FFF3DC; border: 1px solid #F2D29A; font-size: .86rem; color: #6B4A12; }
+  .preview-note b { color: #4A3208; }
+  .view-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+  .view-head h1 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.2rem); }
+  .view-head p { color: var(--muted); font-size: .95rem; margin-top: 4px; max-width: 60ch; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+  .card h2 { font-size: 1.2rem; }
+  .card .sub { color: var(--muted); font-size: .88rem; margin-top: -6px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 980px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fchip { font: 500 .86rem var(--font-body); min-height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .fchip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .fchip .sw { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); }
+  .fchip.sugg-on { box-shadow: 0 0 0 2px var(--marigold); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn-xs { padding: 8px 12px; font-size: .84rem; min-height: 38px; }
+  .linkbtn { background: none; border: 0; color: var(--link); font: 600 .9rem var(--font-body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 6px 0; }
+  .linkbtn.danger { color: #B42318; }
+  .field { display: grid; gap: 6px; }
+  .field > label, .field > .lbl { font-size: .84rem; font-weight: 700; color: var(--ink); }
+  .field small { color: var(--faint); font-size: .8rem; }
+  textarea { min-height: 84px; resize: vertical; }
+  input[type=url], input[type=tel], input[type=month], input[type=email] { width: 100%; min-width: 0; font: 500 1rem var(--font-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 11px 12px; }
+  /* switch */
+  .switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font: 600 .86rem var(--font-body); color: var(--ink-2); min-height: 36px; }
+  .switch input { appearance: none; -webkit-appearance: none; width: 40px; height: 24px; border-radius: 12px; background: #D9CFC2; position: relative; cursor: pointer; transition: background .15s; flex: none; margin: 0; }
+  .switch input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .15s; }
+  .switch input:checked { background: var(--leaf); }
+  .switch input:checked::after { transform: translateX(16px); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font: 700 .72rem var(--font-body); letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
+  .pill.ok { background: #E3F2E6; color: #1E6B34; }
+  .pill.wait { background: #FFF1D6; color: #8A5A00; }
+  .pill.off { background: #F3E3E0; color: #9A3A26; }
+  .pill.sample { background: rgba(0,0,0,.55); color: #fff; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .toolbar input[type=search] { flex: 1 1 220px; border-radius: 999px; padding-left: 16px; height: 44px; }
+
+  /* ---------- insights ---------- */
+  .range { display: inline-flex; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px; }
+  .range button { border: 0; background: none; font: 600 .84rem var(--font-body); padding: 7px 14px; border-radius: 999px; cursor: pointer; color: var(--ink-2); min-height: 36px; }
+  .range button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpi:last-child { grid-column: 1 / -1; } }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 2px; }
+  .kpi span { font-size: .8rem; color: var(--muted); font-weight: 600; }
+  .kpi b { font-family: var(--font-display); font-size: 1.9rem; color: var(--ink); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .kpi small { font-size: .78rem; color: var(--faint); }
+  .kpi.hl { border-color: rgba(228,105,74,.4); background: #FFF6F2; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .84rem; color: var(--ink-2); }
+  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .chart-box { position: relative; }
+  .chart-box svg { width: 100%; height: 240px; display: block; overflow: visible; }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: #fff; font-size: .8rem; padding: 8px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+  .tip b { display: block; font-size: .76rem; opacity: .8; font-weight: 600; margin-bottom: 2px; }
+  .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .bars { display: grid; gap: 8px; }
+  .bar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; font-size: .9rem; color: var(--ink); }
+  .bar-row .track { grid-column: 1 / -1; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .bar-row .fill { height: 100%; border-radius: 4px; background: var(--c1); }
+  .bar-row b { font-variant-numeric: tabular-nums; font-size: .86rem; color: var(--ink-2); }
+  .want { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); font-size: .92rem; }
+  .want:first-of-type { border-top: 0; }
+  .want q { font-weight: 600; color: var(--ink); quotes: "“" "”"; }
+  .want small { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .top-d { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .top-d:first-of-type { border-top: 0; }
+  .top-d canvas, .top-d img { width: 56px; height: 42px; border-radius: 6px; object-fit: cover; display: block; background: var(--wall); }
+  .top-d b { color: var(--ink); font-size: .92rem; display: block; }
+  .top-d small { color: var(--faint); font-size: .78rem; }
+  .top-d .nums { font-size: .8rem; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; line-height: 1.5; }
+  .feed { display: grid; gap: 0; max-height: 420px; overflow-y: auto; }
+  .feed div { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: .88rem; align-items: start; }
+  .feed div:first-child { border-top: 0; }
+  .feed .ic { width: 26px; height: 26px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: .8rem; }
+  .feed small { color: var(--faint); white-space: nowrap; font-size: .76rem; }
+  .table-toggle { justify-self: start; }
+  table.mini { min-width: 0; font-size: .85rem; }
+  table.mini th, table.mini td { padding: 6px 8px; }
+
+  /* ---------- designs ---------- */
+  .d-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+  @media (max-width: 480px) { .d-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+  .d-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; min-width: 0; }
+  .d-card.off { opacity: .55; }
+  .d-card .pic { position: relative; aspect-ratio: 4 / 3; background: var(--wall); border: 0; padding: 0; cursor: pointer; display: block; width: 100%; }
+  .d-card .pic canvas, .d-card .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .d-card .pic .pill { position: absolute; left: 6px; bottom: 6px; }
+  .d-card .code { position: absolute; left: 6px; top: 6px; background: rgba(255,255,255,.92); font: 700 .7rem var(--font-body); padding: 3px 6px; border-radius: 4px; color: #1A1714; }
+  .d-card .body { padding: 10px 12px 12px; display: grid; gap: 6px; }
+  .d-card .body b { color: var(--ink); font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .d-card .stats { font-size: .76rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .d-card .row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .d-add { border: 2px dashed var(--line-strong); border-radius: var(--radius); display: grid; place-items: center; gap: 6px; text-align: center; padding: 18px; color: var(--muted); cursor: pointer; background: transparent; font: 600 .95rem var(--font-body); min-height: 200px; }
+  .d-add:hover { border-color: var(--accent); color: var(--accent); }
+  .d-add span { font-size: 2rem; line-height: 1; }
+
+  /* ---------- sheets / dialogs ---------- */
+  dialog.sheet { border: 0; padding: 0; background: var(--surface); color: var(--ink-2); width: min(760px, 100vw); max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0 0 0 auto; border-radius: 16px 0 0 16px; box-shadow: -10px 0 40px rgba(0,0,0,.18); }
+  dialog.sheet::backdrop { background: rgba(30, 20, 10, .45); }
+  @media (max-width: 760px) { dialog.sheet { margin: auto 0 0; height: 94dvh; max-height: 94dvh; border-radius: 18px 18px 0 0; width: 100vw; } }
+  .sheet-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+  .sheet header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .sheet header h2 { font-size: 1.3rem; }
+  .sheet .body { overflow-y: auto; padding: 16px 18px 24px; display: grid; gap: 18px; align-content: start; overscroll-behavior: contain; }
+  .sheet footer { display: flex; gap: 8px; justify-content: flex-end; align-items: center; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--surface); flex-wrap: wrap; }
+  .sheet footer .grow { flex: 1; }
+  .x { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--surface-2); font-size: 1.3rem; cursor: pointer; color: var(--ink); flex: none; }
+  .drop { position: relative; border: 2px dashed var(--line-strong); border-radius: 12px; background: var(--surface-2); min-height: 170px; display: grid; place-items: center; text-align: center; padding: 18px; color: var(--muted); cursor: pointer; }
+  .drop.over { border-color: var(--accent); background: var(--accent-soft); }
+  .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop b { color: var(--ink); display: block; font-size: 1rem; }
+  .prev-wrap { position: relative; border-radius: 12px; overflow: hidden; background: var(--wall); }
+  .prev-wrap canvas { display: block; width: 100%; height: auto; }
+  .prev-tools { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+  .seg { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; }
+  .seg button { border: 0; background: none; font: 600 .82rem var(--font-body); padding: 7px 12px; border-radius: 999px; cursor: pointer; color: var(--ink-2); min-height: 34px; }
+  .seg button[aria-pressed="true"] { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.12); color: var(--ink); }
+  .auto-note { font-size: .8rem; color: #8A5A00; background: #FFF6E2; border-radius: 8px; padding: 6px 10px; justify-self: start; }
+  /* stepper */
+  .steps-nav { display: flex; gap: 6px; }
+  .steps-nav span { flex: 1; height: 4px; border-radius: 2px; background: var(--line-strong); }
+  .steps-nav span.on { background: var(--accent); }
+  .ba-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .ba-pair { grid-template-columns: 1fr; } }
+  .ghost { position: relative; touch-action: none; cursor: grab; border-radius: 12px; overflow: hidden; background: #000; }
+  .ghost canvas { display: block; width: 100%; height: auto; }
+  .ghost .hint { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,.6); color: #fff; font-size: .76rem; padding: 4px 8px; border-radius: 6px; pointer-events: none; }
+  .range-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: center; font-size: .86rem; color: var(--ink-2); }
+  .range-row input { width: 100%; accent-color: var(--accent); }
+  .proj-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .proj-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; }
+  .proj-card .ba { border-radius: 0; box-shadow: none; aspect-ratio: 4 / 3; }
+  .proj-card .ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .proj-card .body { padding: 12px 14px 14px; display: grid; gap: 6px; }
+  .proj-card .body b { color: var(--ink); }
+  .proj-card .body small { color: var(--faint); }
+  .empty-state { border: 2px dashed var(--line-strong); border-radius: var(--radius); padding: 28px; display: grid; gap: 10px; justify-items: start; color: var(--muted); }
+  .empty-state h3 { color: var(--ink); font-family: var(--font-display); font-size: 1.3rem; }
+  /* reviews */
+  .checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .checklist li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; font-size: .92rem; }
+  .checklist .st { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: .75rem; font-weight: 700; color: #fff; background: #C9BFB2; }
+  .checklist .st.ok { background: var(--leaf); }
+  .checklist .st.wait { background: var(--marigold); }
+  .meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .meter i { display: block; height: 100%; background: var(--marigold); border-radius: 4px; }
+  .rv { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .rv:first-of-type { border-top: 0; }
+  .rv .stars { color: #E8A317; letter-spacing: 1px; }
+  .rv q { color: var(--ink); quotes: "“" "”"; }
+  .rv small { color: var(--faint); }
+  .qr-box { display: grid; place-items: center; gap: 10px; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid var(--line); }
+  .qr-box img, .qr-box canvas { width: 220px !important; height: 220px !important; }
+  .star-pick { display: inline-flex; gap: 2px; }
+  .star-pick button { border: 0; background: none; font-size: 1.6rem; color: #D9CFC2; cursor: pointer; padding: 0 2px; min-width: 36px; min-height: 40px; }
+  .star-pick button.on { color: #E8A317; }
+  /* login */
+  .login { min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.3px); background-size: 22px 22px; }
+  .login-card { width: min(420px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 28px 24px; display: grid; gap: 16px; text-align: center; justify-items: center; }
+  .login-card img { width: 120px; }
+  .g-btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 50px; border-radius: 999px; border: 1px solid var(--line-strong); background: #fff; font: 600 1rem var(--font-body); color: #1F1F1F; cursor: pointer; }
+  .g-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+  .accts { display: grid; gap: 8px; width: 100%; }
+  .acct { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; text-align: left; font: 500 .95rem var(--font-body); color: var(--ink); min-height: 56px; }
+  .acct:hover { border-color: var(--accent); }
+  .acct small { display: block; color: var(--faint); font-size: .8rem; }
+  .toast { position: fixed; left: 50%; bottom: calc(var(--tabbar) + 24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: #1A1714; color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: .9rem; z-index: 90; max-width: calc(100vw - 32px); }
+  @media (min-width: 861px) { .toast { bottom: 28px; } }
+</style>
+</head>
+<body class="admin">
+
+<!-- ================= SIGN IN ================= -->
+<div class="login" id="login">
+  <div class="login-card">
+    <img src="assets/img/logo.png" width="560" height="487" alt="WallBliss Studio">
+    <div style="display:grid;gap:6px"><h1 style="font-size:1.7rem">Team sign-in</h1><p class="muted" style="font-size:.95rem">For the WallBliss team. Pick your name. Changes reach the website only from a phone or laptop that has the publishing key.</p></div>
+    <div class="accts" id="accts">
+      <button class="acct" type="button" data-user="Anil"><span class="avatar">A</span><span>Anil<small>Editor</small></span></button>
+      <button class="acct" type="button" data-user="Manasa"><span class="avatar m">M</span><span>Manasa<small>Owner · Editor</small></span></button>
+    </div>
+    <a href="index.html" style="font-size:.9rem">← Back to the website</a>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <header class="a-top">
+    <a class="brand" href="index.html" aria-label="WallBliss website"><img src="assets/img/mark.png" width="240" height="161" alt=""><span><b>WallBliss</b><small>Team admin</small></span></a>
+    <span class="grow"></span>
+    <a class="btn btn-ghost btn-xs site-link" href="index.html" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span class="lbl">View website</span></a>
+    <button class="who" id="who" type="button" aria-label="Signed in. Tap to sign out"><span class="avatar" id="who-av">A</span><span class="nm" id="who-nm">Anil</span></button>
+  </header>
+
+  <div class="shell">
+    <nav class="a-nav" aria-label="Admin">
+      <button type="button" data-view="insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Insights</button>
+      <button type="button" data-view="designs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Designs</button>
+      <button type="button" data-view="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>Projects</button>
+      <button type="button" data-view="reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg>Reviews</button>
+      <div class="sep"></div>
+      <button type="button" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
+    </nav>
+
+    <main class="a-main" id="main">
+      <div class="preview-note" id="preview-note"><span aria-hidden="true">✍️</span><span><b>How saving works.</b> Changes are drafts on this device. Press <b>Publish</b> (bottom of the screen) to put them on the website for everyone. Insights here show this device only; website-wide numbers come from Google Analytics.</span><button class="linkbtn" type="button" id="pn-x" style="margin-left:auto;padding:0;color:#6B4A12" aria-label="Hide this note">Hide</button></div>
+
+      <!-- ===== INSIGHTS ===== -->
+      <section data-pane="insights" hidden>
+        <div class="view-head">
+          <div><h1>Insights</h1><p>What visitors look for, which designs they love, and how many reach out on WhatsApp.</p></div>
+          <div class="btn-row" style="align-items:center">
+            <label class="switch"><input type="checkbox" id="sample-on"> Include sample data</label>
+            <div class="range" role="group" aria-label="Date range"><button type="button" data-days="7">7 days</button><button type="button" data-days="30" aria-pressed="true">30 days</button><button type="button" data-days="0">All</button></div>
+          </div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <div class="card">
+          <div class="view-head" style="align-items:center"><h2>Visitors and WhatsApp chats, by day</h2><div class="legend"><span><i style="background:var(--c1)"></i>Visitors</span><span><i style="background:var(--c2)"></i>WhatsApp taps</span></div></div>
+          <div class="chart-box" id="chart"></div>
+          <button class="linkbtn table-toggle" type="button" id="chart-table-btn">Show as table</button>
+          <div id="chart-table" hidden></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h2>Searched but not found</h2><p class="sub">Designs people want that the catalogue doesn't have yet. Add one and it starts showing up for that search.</p><div id="wants"></div></div>
+          <div class="card"><h2>What people search for</h2><p class="sub">Top searches in the catalogue</p><div class="bars" id="searches"></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h2>Designs people open most</h2><p class="sub">Opens · hearts · tried on their own wall</p><div id="top-designs"></div></div>
+          <div class="card"><h2>Where visitors come from</h2><p class="sub">From the <code>?src=</code> tag on links you share, or how they arrived</p><div class="bars" id="sources"></div>
+            <h2 style="margin-top:12px">Where they tap WhatsApp</h2><div class="bars" id="taps-where"></div></div>
+        </div>
+        <div class="card"><h2>Latest activity</h2><p class="sub">Anonymous: no names or phone numbers are recorded</p><div class="feed" id="feed"></div></div>
+      </section>
+
+      <!-- ===== DESIGNS ===== -->
+      <section data-pane="designs" hidden>
+        <div class="view-head">
+          <div><h1>Designs</h1><p>Everything in the website catalogue. Save your changes, then press <b>Publish</b> at the bottom to put them on the website.</p></div>
+          <button class="btn btn-wa" type="button" id="d-new" style="background:var(--ink);box-shadow:none">+ Add design</button>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs">
+          <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button><button class="fchip" type="button" data-df="sample">Samples to replace</button></div>
+        </div>
+        <p class="muted" id="d-count" style="font-size:.88rem"></p>
+        <div class="d-grid" id="d-grid"></div>
+      </section>
+
+      <!-- ===== PROJECTS ===== -->
+      <section data-pane="projects" hidden>
+        <div class="view-head">
+          <div><h1>Projects</h1><p>Finished walls with before and after photos. Each one becomes a card with a slider on the Projects page.</p></div>
+          <button class="btn btn-wa" type="button" id="p-new" style="background:var(--ink);box-shadow:none">+ New project</button>
+        </div>
+        <div class="proj-list" id="p-list"></div>
+      </section>
+
+      <!-- ===== REVIEWS ===== -->
+      <section data-pane="reviews" hidden>
+        <div class="view-head"><div><h1>Reviews</h1><p>Your Google reviews are the proof that wins the next customer. Ask for one on the day every wall is finished.</p></div></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Google Business Profile</h2><span class="pill ok">● Live</span></div>
+            <div class="field"><label for="s-greview">Your reviews link</label><input type="url" id="s-greview" placeholder="https://g.page/r/…"><small>Google Business Profile → Share profile → copy link. Shows the “Read our reviews on Google” buttons on the website.</small></div>
+            <div class="field"><label for="s-gwrite">“Write a review” link</label><input type="url" id="s-gwrite" placeholder="https://g.page/r/…/review"><small>Google Business Profile → Ask for reviews → copy link.</small></div>
+            <div class="btn-row"><button class="btn btn-ghost btn-xs" type="button" id="rv-save">Save links</button><button class="btn btn-ghost btn-xs" type="button" id="rv-qr">Show QR for the customer</button></div>
+            <div class="qr-box" id="qr-box" hidden><div id="qr"></div><p class="muted" style="font-size:.85rem;text-align:center">Let the customer scan this on printing day. It opens your Google review form.</p></div>
+          </div>
+          <div class="card">
+            <h2>Ask for a review on WhatsApp</h2>
+            <p class="sub" style="margin-top:0">Send right after the wall is done, while the customer is still smiling.</p>
+            <div class="field"><label for="rq-name">Customer's first name</label><input type="text" id="rq-name" placeholder="e.g. Priya"></div>
+            <div class="field"><label for="rq-phone">Their WhatsApp number <span class="muted" style="font-weight:400">(optional)</span></label><input type="tel" id="rq-phone" placeholder="98450 12345" inputmode="tel"></div>
+            <div class="field"><span class="lbl">Message</span><textarea id="rq-msg" rows="5"></textarea></div>
+            <a class="btn btn-wa" id="rq-send" href="#" target="_blank" rel="noopener">Open in WhatsApp</a>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Automatic import from Google</h2><span class="pill wait">Not yet available</span></div>
+            <p class="sub" style="margin-top:0">Once Google approves access, new reviews will appear here by themselves and you'll just pick which ones to show. Until then, copy your favourites in by hand (right).</p>
+            <ul class="checklist" id="gbp-check"></ul>
+            <div><div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted)"><span>Profile active</span><span id="gbp-days"></span></div><div class="meter"><i id="gbp-meter"></i></div></div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Reviews on the website</h2><button class="btn btn-ghost btn-xs" type="button" id="rv-add">+ Add a review</button></div>
+            <p class="sub" style="margin-top:0">Copy a review from Google exactly as written. Turned-on reviews show on the home page.</p>
+            <div id="rv-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section data-pane="settings" hidden>
+        <div class="view-head"><div><h1>Settings</h1><p>Contact details used across the website, the watermark, and who can sign in.</p></div></div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>WhatsApp and phone</h2>
+            <div class="field"><label for="s-wa">WhatsApp number (with country code)</label><input type="tel" id="s-wa" inputmode="tel" placeholder="917676701113"><small>Every button on the website opens a chat with this number.</small></div>
+            <div class="field"><label for="s-phone">Phone number as shown</label><input type="text" id="s-phone" placeholder="+91 76767 01113"></div>
+            <button class="btn btn-ghost btn-xs" type="button" id="s-save" style="justify-self:start">Save</button>
+          </div>
+          <div class="card">
+            <h2>Watermark</h2>
+            <label class="switch"><input type="checkbox" id="s-wm-on" checked> Add the watermark to new designs by default</label>
+            <div class="field"><label for="s-wm-text">Watermark text</label><input type="text" id="s-wm-text" placeholder="WallBliss Studio"></div>
+            <div class="field"><span class="lbl">Default style</span><div class="seg" role="group" id="s-wm-style"><button type="button" data-v="corner" aria-pressed="true">Corner</button><button type="button" data-v="across">Across the image</button></div></div>
+            <small class="muted">You can still switch it off or change the style for any single design while uploading.</small>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h2>Team</h2>
+            <p class="sub" style="margin-top:0">Both can do everything. A device can publish only once the publishing key is added.</p>
+            <div class="top-d" style="grid-template-columns:36px minmax(0,1fr) auto"><span class="avatar">A</span><span><b>Anil</b><small>Editor</small></span><span class="pill">Editor</span></div>
+            <div class="top-d" style="grid-template-columns:36px minmax(0,1fr) auto"><span class="avatar m">M</span><span><b>Manasa</b><small>Owner</small></span><span class="pill">Editor</span></div>
+          </div>
+          <div class="card">
+            <h2>Things changed in code</h2>
+            <p class="sub" style="margin-top:0">FAQs, page text and the guide page are edited in the website code, not here, so they stay consistent for Google.</p>
+            <h2 style="margin-top:6px">Publishing key on this device</h2>
+            <p class="sub" style="margin-top:0" id="s-key-state">Checking…</p>
+            <div class="btn-row"><button class="btn btn-ghost btn-xs" type="button" id="s-key-add">Add or change key</button><button class="btn btn-ghost btn-xs" type="button" id="s-key-forget">Remove key from this device</button></div>
+            <h2 style="margin-top:6px">Drafts</h2>
+            <div class="btn-row"><button class="btn btn-ghost btn-xs" type="button" id="s-export">Download a backup (JSON)</button><button class="btn btn-ghost btn-xs" type="button" id="s-reset" style="color:#B42318">Throw away unpublished changes</button></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ================= DESIGN SHEET ================= -->
+<dialog class="sheet" id="d-dlg" aria-labelledby="d-title">
+  <div class="sheet-in">
+    <header><h2 id="d-title">Add a design</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="field">
+        <span class="lbl">Image</span>
+        <div class="drop" id="d-drop"><input type="file" id="d-file" accept="image/*" aria-label="Choose image"><div><b>Tap to choose a photo</b>or drag it here · JPG, PNG or WebP</div></div>
+        <div id="d-prev" hidden style="display:grid;gap:10px">
+          <div class="prev-wrap"><canvas id="d-canvas"></canvas></div>
+          <div class="prev-tools">
+            <label class="switch"><input type="checkbox" id="d-wm" checked> Watermark</label>
+            <div class="seg" role="group" id="d-wm-style" aria-label="Watermark style"><button type="button" data-v="corner" aria-pressed="true">Corner</button><button type="button" data-v="across">Across</button></div>
+            <button class="linkbtn" type="button" id="d-change">Change image</button>
+          </div>
+          <p class="muted" id="d-imginfo" style="font-size:.8rem"></p>
+        </div>
+      </div>
+      <div class="grid-2" style="gap:12px">
+        <div class="field"><label for="d-name">Name</label><input type="text" id="d-name" placeholder="e.g. Peacock Garden" maxlength="40"></div>
+        <div class="field"><label for="d-code">Design code</label><input type="text" id="d-code" readonly><small>Customers send this code on WhatsApp</small></div>
+      </div>
+      <div class="field"><span class="lbl">Rooms it suits</span><div class="chips" id="d-spaces"></div></div>
+      <div class="field"><span class="lbl">Style</span><div class="chips" id="d-styles"></div></div>
+      <div class="field"><span class="lbl">Colours <span class="auto-note" id="d-col-note" hidden>Suggested from the image</span></span><div class="chips" id="d-colours"></div></div>
+      <div class="field"><label for="d-tags">Search words</label><input type="text" id="d-tags" placeholder="peacock, mor, navilu, bird, feathers"><small>Separate with commas. Add Hindi, Kannada or Telugu words people might type.</small></div>
+      <div class="grid-2" style="gap:12px">
+        <div class="field"><span class="lbl">Best wall shape</span><div class="seg" role="group" id="d-orient"><button type="button" data-v="wide" aria-pressed="true">Wide</button><button type="button" data-v="tall">Tall</button><button type="button" data-v="square">Square</button></div><small id="d-orient-note"></small></div>
+        <div class="field"><span class="lbl">Show</span><label class="switch"><input type="checkbox" id="d-live" checked> Live on the website</label><label class="switch"><input type="checkbox" id="d-feat"> Feature near the top</label></div>
+      </div>
+    </div>
+    <footer><button class="linkbtn danger" type="button" id="d-delete" hidden>Delete design</button><span class="grow"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="d-save" style="background:var(--ink);box-shadow:none">Save design</button></footer>
+  </div>
+</dialog>
+
+<!-- ================= PROJECT SHEET ================= -->
+<dialog class="sheet" id="p-dlg" aria-labelledby="p-title">
+  <div class="sheet-in">
+    <header><div style="display:grid;gap:8px;flex:1"><h2 id="p-title">New project</h2><div class="steps-nav" id="p-steps"><span></span><span></span><span></span><span></span></div></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <!-- step 1 -->
+      <div data-step="1" style="display:grid;gap:14px">
+        <p class="muted">Add the photo from before printing and the finished wall. Take both from the same spot if you can.</p>
+        <div class="ba-pair">
+          <div class="field"><span class="lbl">Before</span><div class="drop" id="p-drop-b"><input type="file" id="p-file-b" accept="image/*" capture="environment" aria-label="Before photo"><div><b>Before photo</b>Tap to take or choose</div></div></div>
+          <div class="field"><span class="lbl">After</span><div class="drop" id="p-drop-a"><input type="file" id="p-file-a" accept="image/*" capture="environment" aria-label="After photo"><div><b>After photo</b>Tap to take or choose</div></div></div>
+        </div>
+      </div>
+      <!-- step 2 -->
+      <div data-step="2" hidden style="display:grid;gap:12px">
+        <p class="muted">Both photos are cropped to the same size automatically. Drag the faded “before” photo until the wall lines up with the “after”.</p>
+        <div class="ghost" id="p-ghost"><canvas id="p-gcanvas" width="1200" height="900"></canvas><span class="hint">Drag to line up</span></div>
+        <div class="range-row"><label for="p-op">See-through</label><input type="range" id="p-op" min="0" max="100" value="50"></div>
+        <div class="range-row"><label for="p-zoom">Zoom before</label><input type="range" id="p-zoom" min="100" max="160" value="100"></div>
+        <div class="range-row"><label for="p-bright">Brighten before</label><input type="range" id="p-bright" min="80" max="140" value="100"></div>
+        <button class="linkbtn" type="button" id="p-reset" style="justify-self:start">Reset</button>
+      </div>
+      <!-- step 3 -->
+      <div data-step="3" hidden style="display:grid;gap:14px">
+        <div class="field"><label for="p-ttl">Title</label><input type="text" id="p-ttl" placeholder="e.g. A jungle wall for Aarav's room" maxlength="70"><small>Write it like a story. It shows on the card and in Google.</small></div>
+        <div class="grid-2" style="gap:12px">
+          <div class="field"><label for="p-loc">Locality</label><input type="text" id="p-loc" list="areas" placeholder="e.g. HSR Layout"><datalist id="areas"></datalist></div>
+          <div class="field"><label for="p-space">Space</label><select id="p-space"></select></div>
+          <div class="field"><label for="p-size">Wall size</label><input type="text" id="p-size" placeholder="e.g. 10 ft × 8 ft"></div>
+          <div class="field"><label for="p-time">Time on site</label><input type="text" id="p-time" placeholder="e.g. 3 hours"></div>
+          <div class="field"><label for="p-design">Design</label><select id="p-design"></select></div>
+          <div class="field"><label for="p-month">Month</label><input type="month" id="p-month"></div>
+        </div>
+        <div class="field"><label for="p-sum">What we did</label><textarea id="p-sum" rows="3" placeholder="Two lines on the family, the room and why they chose this design."></textarea></div>
+        <div class="field"><label for="p-quote">What the customer said <span class="muted" style="font-weight:400">(optional)</span></label><textarea id="p-quote" rows="2" placeholder="Their words, exactly"></textarea></div>
+        <label class="switch"><input type="checkbox" id="p-consent"> The customer agreed to us showing these photos</label>
+      </div>
+      <!-- step 4 -->
+      <div data-step="4" hidden style="display:grid;gap:12px">
+        <p class="muted">This is how it will look on the Projects page. Drag the slider to check.</p>
+        <div class="proj-card" id="p-preview"></div>
+        <label class="switch"><input type="checkbox" id="p-live" checked> Show on the website</label>
+      </div>
+    </div>
+    <footer><button class="linkbtn danger" type="button" id="p-delete" hidden>Delete project</button><span class="grow"></span><button class="btn btn-ghost" type="button" id="p-back">Back</button><button class="btn btn-wa" type="button" id="p-next" style="background:var(--ink);box-shadow:none">Next</button></footer>
+  </div>
+</dialog>
+
+<!-- ================= REVIEW SHEET ================= -->
+<dialog class="sheet" id="r-dlg" aria-labelledby="r-title">
+  <div class="sheet-in">
+    <header><h2 id="r-title">Add a review</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="grid-2" style="gap:12px">
+        <div class="field"><label for="r-name">Name as on Google</label><input type="text" id="r-name" placeholder="e.g. Priya S."></div>
+        <div class="field"><label for="r-place">Locality</label><input type="text" id="r-place" list="areas" placeholder="e.g. Whitefield"></div>
+      </div>
+      <div class="field"><span class="lbl">Stars</span><div class="star-pick" id="r-stars"></div></div>
+      <div class="field"><label for="r-text">Review</label><textarea id="r-text" rows="5" placeholder="Paste the review exactly as written on Google"></textarea></div>
+      <div class="field"><label for="r-type">About</label><input type="text" id="r-type" placeholder="e.g. Kids' room"></div>
+      <label class="switch"><input type="checkbox" id="r-show" checked> Show on the website</label>
+    </div>
+    <footer><button class="linkbtn danger" type="button" id="r-delete" hidden>Delete</button><span class="grow"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="r-save" style="background:var(--ink);box-shadow:none">Save review</button></footer>
+  </div>
+</dialog>
+
+<script src="assets/catalogue-data.js"></script>
+<script src="assets/site-data.js"></script>
+<script src="assets/art.js"></script>
+<script src="assets/published.js"></script>
+<script src="assets/live.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  var db = WB.db.load();
+  function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data."); return false; } return true; }
+
+  var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
+  var STYLES = [["nature", "Nature"], ["folk", "Indian folk"], ["devotional", "Devotional"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"], ["texture3d", "3D texture"]];
+  var COLOURS = [["green", "Green", "#2E6B45"], ["blue", "Blue", "#1A6BAF"], ["earth", "Earthy", "#9C6B43"], ["warm", "Warm", "#E8962E"], ["pastel", "Pastel", "#F2C9C1"], ["mono", "Black & white", "#555"], ["dark", "Dark & moody", "#1D2B4A"]];
+  var AREAS = ["Whitefield", "Indiranagar", "Koramangala", "HSR Layout", "Sarjapur Road", "Electronic City", "JP Nagar", "Jayanagar", "Bannerghatta Road", "Marathahalli", "Hebbal", "Yelahanka", "Malleshwaram", "Rajajinagar", "Bellandur", "BTM Layout", "Banashankari", "Hennur", "Kanakapura Road"];
+  var GBP_LIVE = "2026-10-08"; // date the Google Business Profile went live
+  function lbl(list, v) { var o = list.filter(function (x) { return x[0] === v; })[0]; return o ? o[1] : v; }
+  $("#areas").innerHTML = AREAS.map(function (a) { return '<option value="' + a + '">'; }).join("");
+
+  /* ---------- toast ---------- */
+  var tt; function toast(msg) {
+    var t = $(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" }));
+    t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+
+  /* ---------- sign in: pick a name; publishing is protected by the key in publish.js ---------- */
+  var user = null;
+  try { user = sessionStorage.getItem("wb_admin_user"); } catch (e) {}
+  function enter(u) {
+    user = u; try { sessionStorage.setItem("wb_admin_user", u); } catch (e) {}
+    $("#login").hidden = true; $("#app").hidden = false;
+    $("#who-nm").textContent = u; $("#who-av").textContent = u[0]; $("#who-av").classList.toggle("m", u === "Manasa");
+    route();
+  }
+  $$(".acct").forEach(function (b) { b.onclick = function () { enter(b.dataset.user); }; });
+  $("#who").onclick = function () {
+    if (this.dataset.confirm) { try { sessionStorage.removeItem("wb_admin_user"); } catch (e) {} location.hash = ""; location.reload(); return; }
+    this.dataset.confirm = "1"; $("#who-nm").textContent = "Sign out?"; var b = this;
+    setTimeout(function () { delete b.dataset.confirm; $("#who-nm").textContent = user; }, 2500);
+  };
+
+  /* ---------- routing ---------- */
+  var VIEWS = ["insights", "designs", "projects", "reviews", "settings"];
+  function route() {
+    var v = (location.hash || "").slice(1).split("?")[0]; if (VIEWS.indexOf(v) < 0) v = "insights";
+    $$("[data-pane]").forEach(function (p) { p.hidden = p.dataset.pane !== v; });
+    $$(".a-nav [data-view]").forEach(function (b) { b.toggleAttribute("aria-current", b.dataset.view === v); if (b.dataset.view === v) b.setAttribute("aria-current", "page"); });
+    ({ insights: renderInsights, designs: renderDesigns, projects: renderProjects, reviews: renderReviews, settings: renderSettings })[v]();
+    window.scrollTo(0, 0);
+  }
+  $$(".a-nav [data-view]").forEach(function (b) { b.onclick = function () { location.hash = b.dataset.view; }; });
+  addEventListener("hashchange", function () { if (user) route(); });
+  $$("dialog [data-close]").forEach(function (b) { b.onclick = function () { b.closest("dialog").close(); }; });
+  $$("dialog").forEach(function (d) { d.addEventListener("click", function (e) { if (e.target === d) d.close(); }); });
+  function openDlg(d) { if (d.showModal) d.showModal(); else d.setAttribute("open", ""); d.querySelector(".body").scrollTop = 0; }
+
+  /* ---------- designs data ---------- */
+  function designs() {
+    var base = (window.WB_DESIGNS_BASE || []).map(function (d) { var e = db.edits[d.code]; return Object.assign({ builtIn: true }, d, e || {}); });
+    return base.concat(db.designs);
+  }
+  function byCode() { var m = {}; designs().forEach(function (d) { m[d.code] = d; }); return m; }
+  function thumb(d, w, h) {
+    if (d && d.img) return '<img src="' + d.img + '" alt="" loading="lazy">';
+    return '<canvas data-code="' + (d ? d.code : "") + '" data-w="' + (w || 0) + '" data-h="' + (h || 0) + '"></canvas>';
+  }
+  function paintThumbs(root) {
+    var m = byCode();
+    $$("canvas[data-code]", root).forEach(function (c) { var d = m[c.dataset.code]; if (d) WBArt.draw(c, d, +c.dataset.w ? { w: +c.dataset.w, h: +c.dataset.h } : undefined); });
+  }
+
+  /* =====================================================================
+     INSIGHTS
+     ===================================================================== */
+  var range = 30;
+  function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function sampleEvents() {
+    var r = rng(42), out = [], now = Date.now(), DAY = 864e5;
+    var ds = (window.WB_DESIGNS_BASE || []).slice();
+    var found = [["lotus", 4], ["kids room", 9], ["warli", 3], ["ganesha", 5], ["mandala", 6], ["family photo", 2], ["tree", 3], ["krishna", 3], ["office logo", 2], ["green", 7], ["buddha", 2], ["space", 3], ["mountains", 4], ["pooja", 8]];
+    var missing = ["peacock", "tiger", "world map", "tirupati balaji", "car", "cricket", "elephant", "anime", "radha krishna", "kerala boat", "bengaluru skyline", "butterfly"];
+    var srcs = [["insta", .38], ["google", .27], ["wa-status", .12], ["", .23]];
+    var wheres = ["design", "header", "shortlist", "own-image", "WhatsApp", "no-results"];
+    function pick(arr) { return arr[Math.floor(r() * arr.length)]; }
+    function pickSrc() { var x = r(), a = 0; for (var i = 0; i < srcs.length; i++) { a += srcs[i][1]; if (x < a) return srcs[i][0]; } return ""; }
+    function pickDesign() { var tot = 0; ds.forEach(function (d) { tot += d.pop * d.pop; }); var x = r() * tot; for (var i = 0; i < ds.length; i++) { x -= ds[i].pop * ds[i].pop; if (x <= 0) return ds[i]; } return ds[0]; }
+    for (var day = 29; day >= 0; day--) {
+      var n = Math.round(14 + (29 - day) * 1.3 + r() * 14 + (new Date(now - day * DAY).getDay() % 6 === 0 ? 10 : 0));
+      for (var s = 0; s < n; s++) {
+        var sid = "s" + day + "-" + s, src = pickSrc(), t = now - day * DAY - Math.floor(r() * DAY * .9);
+        var push = function (type, data, page) { t += 20000 + r() * 60000; out.push({ type: type, data: data, page: page || "catalogue.html", src: src, sid: sid, t: new Date(Math.min(t, now)).toISOString(), sample: true }); };
+        push("page_view", {}, r() < .55 ? "index.html" : "catalogue.html");
+        if (r() < .5) { var f = r() < .78 ? pick(found) : null; if (f) push("search", { q: f[0], results: f[1] }); else push("search_no_results", { q: pick(missing), results: 0 }); }
+        if (r() < .3) push("filter", { key: "spaces", val: pick(["kids", "pooja", "living", "bedroom", "office"]), via: "chip" });
+        var opens = Math.floor(r() * 3.2);
+        for (var o = 0; o < opens; o++) { var d = pickDesign(); push("design_open", { code: d.code }); if (r() < .3) push("shortlist_add", { code: d.code }); if (r() < .12) push("view_on_my_wall", { code: d.code }); }
+        if (r() < .17 + opens * .04) push("whatsapp_tap", { where: pick(wheres) });
+      }
+    }
+    return out;
+  }
+  var SAMPLE = null;
+  function allEvents() {
+    var real = WB.db.events();
+    var useSample = $("#sample-on").checked;
+    if (useSample) { SAMPLE = SAMPLE || sampleEvents(); return SAMPLE.concat(real); }
+    return real;
+  }
+  $("#sample-on").checked = WB.db.events().length < 40;
+  $("#sample-on").onchange = renderInsights;
+  $$(".range button").forEach(function (b) { b.onclick = function () { range = +b.dataset.days; $$(".range button").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); renderInsights(); }; });
+
+  function count(arr, fn) { var m = {}; arr.forEach(function (e) { var k = fn(e); if (k == null || k === "") return; m[k] = (m[k] || 0) + 1; }); return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1]; }); }
+  function dayKey(iso) { var d = new Date(iso); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function fmtDay(k) { var p = k.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("en-IN", { day: "numeric", month: "short" }); }
+  function ago(iso) { var s = (Date.now() - new Date(iso)) / 1000; if (s < 60) return "just now"; if (s < 3600) return Math.floor(s / 60) + " min ago"; if (s < 86400) return Math.floor(s / 3600) + " h ago"; return Math.floor(s / 86400) + " d ago"; }
+  var SRC_NAMES = { insta: "Instagram", google: "Google", "wa-status": "WhatsApp status", "": "Direct / typed the address", fb: "Facebook", gbp: "Google Business Profile" };
+  var WHERE_NAMES = { design: "Inside a design", header: "Top of page", shortlist: "Sending shortlist", "own-image": "“Send your own image”", WhatsApp: "Bottom bar on phone", "no-results": "After a search with no results", guide: "Wallpaper guide", "projects-empty": "Projects page" };
+
+  function renderInsights() {
+    var ev = allEvents(), now = Date.now();
+    if (range) ev = ev.filter(function (e) { return now - new Date(e.t) < range * 864e5; });
+    var sessions = {}; ev.forEach(function (e) { sessions[e.sid] = sessions[e.sid] || { taps: 0 }; if (e.type === "whatsapp_tap") sessions[e.sid].taps++; });
+    var visitors = Object.keys(sessions).length;
+    var taps = ev.filter(function (e) { return e.type === "whatsapp_tap"; }).length;
+    var tapVisitors = Object.keys(sessions).filter(function (k) { return sessions[k].taps; }).length;
+    var searches = ev.filter(function (e) { return e.type === "search" || e.type === "search_no_results"; });
+    var misses = searches.filter(function (e) { return e.type === "search_no_results"; });
+    var real = WB.db.events().length;
+    $("#kpis").innerHTML = [
+      ["Visitors", visitors, "people who opened the site"],
+      ["WhatsApp chats started", taps, "taps on a WhatsApp button"],
+      ["Reach-out rate", visitors ? Math.round(tapVisitors / visitors * 100) + "%" : "–", "visitors who tapped WhatsApp"],
+      ["Searches", searches.length, count(searches, function (e) { return e.data.q; }).length + " different words"],
+      ["Not found", misses.length, "searches with no design", true]
+    ].map(function (k) { return '<div class="kpi' + (k[3] ? " hl" : "") + '"><span>' + k[0] + '</span><b>' + k[1] + '</b><small>' + k[2] + '</small></div>'; }).join("");
+
+    /* daily chart */
+    var days = range || Math.max(7, Math.ceil((now - Math.min.apply(null, ev.map(function (e) { return +new Date(e.t); }).concat([now]))) / 864e5) + 1);
+    var keys = []; for (var i = days - 1; i >= 0; i--) keys.push(dayKey(new Date(now - i * 864e5).toISOString()));
+    var vis = {}, tap = {};
+    ev.forEach(function (e) { var k = dayKey(e.t); if (e.type === "page_view") { vis[k] = vis[k] || {}; vis[k][e.sid] = 1; } if (e.type === "whatsapp_tap") tap[k] = (tap[k] || 0) + 1; });
+    var rows = keys.map(function (k) { return { k: k, v: vis[k] ? Object.keys(vis[k]).length : 0, t: tap[k] || 0 }; });
+    drawChart(rows);
+    $("#chart-table").innerHTML = '<div class="table-wrap"><table class="mini"><thead><tr><th>Day</th><th>Visitors</th><th>WhatsApp taps</th></tr></thead><tbody>' +
+      rows.slice().reverse().map(function (r) { return "<tr><td>" + fmtDay(r.k) + "</td><td class='tnum'>" + r.v + "</td><td class='tnum'>" + r.t + "</td></tr>"; }).join("") + "</tbody></table></div>";
+
+    /* wants */
+    var w = count(misses, function (e) { return (e.data.q || "").toLowerCase(); }).slice(0, 8);
+    $("#wants").innerHTML = w.length ? w.map(function (x) {
+      return '<div class="want"><q>' + esc(x[0]) + '</q><small>' + x[1] + (x[1] === 1 ? " search" : " searches") + '</small><button class="btn btn-ghost btn-xs" type="button" data-want="' + esc(x[0]) + '">Add design</button></div>';
+    }).join("") : '<p class="muted">Nothing yet. Every search that finds no design will show up here.</p>';
+    $$("[data-want]").forEach(function (b) { b.onclick = function () { location.hash = "designs"; setTimeout(function () { openDesign(null, b.dataset.want); }, 50); }; });
+
+    bars("#searches", count(searches, function (e) { return (e.data.q || "").toLowerCase(); }).slice(0, 8), "No searches yet.");
+    bars("#sources", count(ev.filter(function (e) { return e.type === "page_view"; }), function (e) { return SRC_NAMES[e.src] != null ? SRC_NAMES[e.src] : e.src; }).slice(0, 6), "No visits yet.", true);
+    bars("#taps-where", count(ev.filter(function (e) { return e.type === "whatsapp_tap"; }), function (e) { return WHERE_NAMES[e.data.where] || e.data.where || "Other"; }).slice(0, 6), "No WhatsApp taps yet.", true);
+
+    /* top designs */
+    var m = byCode(), stats = {};
+    ev.forEach(function (e) { var c = e.data && e.data.code; if (!c) return; stats[c] = stats[c] || { o: 0, h: 0, w: 0 }; if (e.type === "design_open") stats[c].o++; if (e.type === "shortlist_add") stats[c].h++; if (e.type === "view_on_my_wall") stats[c].w++; });
+    var top = Object.keys(stats).filter(function (c) { return m[c]; }).sort(function (a, b) { return stats[b].o - stats[a].o; }).slice(0, 6);
+    $("#top-designs").innerHTML = top.length ? top.map(function (c) {
+      var s = stats[c]; return '<div class="top-d">' + thumb(m[c], 56, 42) + '<span><b>' + esc(m[c].name) + '</b><small>' + c + '</small></span><span class="nums">' + s.o + ' opens<br>♥ ' + s.h + ' · on wall ' + s.w + '</span></div>';
+    }).join("") : '<p class="muted">No designs opened yet.</p>';
+    paintThumbs($("#top-designs"));
+
+    /* feed */
+    var ICON = { page_view: "👀", search: "🔎", search_no_results: "❓", filter: "⚙︎", design_open: "🖼", shortlist_add: "♥", shortlist_remove: "♡", whatsapp_tap: "💬", view_on_my_wall: "📷", view_in_room: "🛋", sort: "↕︎", filter_open: "⚙︎", suggestion_open: "🖼", before_after_slide: "↔︎" };
+    function sentence(e) {
+      var d = e.data || {}, nm = d.code && m[d.code] ? d.code + " " + m[d.code].name : d.code;
+      switch (e.type) {
+        case "page_view": return "Opened " + (e.page === "index.html" ? "the home page" : e.page.replace(".html", "").replace(/-/g, " ")) + (e.src ? " · from " + (SRC_NAMES[e.src] || e.src) : "");
+        case "search": return "Searched “" + esc(d.q) + "” · " + d.results + " found";
+        case "search_no_results": return "<b>Searched “" + esc(d.q) + "” · nothing found</b>";
+        case "filter": return "Filtered by " + esc(d.val);
+        case "design_open": case "suggestion_open": return "Opened " + esc(nm);
+        case "shortlist_add": return "Hearted " + esc(nm);
+        case "view_on_my_wall": return "Tried " + esc(nm) + " on a photo of their own wall";
+        case "view_in_room": return "Saw " + esc(nm) + " in a room";
+        case "whatsapp_tap": return "<b>Tapped WhatsApp</b> · " + esc(WHERE_NAMES[d.where] || d.where || "");
+        default: return esc(e.type.replace(/_/g, " "));
+      }
+    }
+    var feed = ev.filter(function (e) { return e.type !== "filter_open" && e.type !== "sort"; }).sort(function (a, b) { return new Date(b.t) - new Date(a.t); }).slice(0, 40);
+    $("#feed").innerHTML = feed.length ? feed.map(function (e) { return '<div><span class="ic" aria-hidden="true">' + (ICON[e.type] || "•") + '</span><span>' + sentence(e) + (e.sample ? ' <span class="pill" style="font-size:.62rem">sample</span>' : "") + '</span><small>' + ago(e.t) + '</small></div>'; }).join("")
+      : '<p class="muted">No activity yet. Open the website in another tab, search and tap around, then come back.</p>';
+    var nav = $('.a-nav [data-view="insights"]'); var bd = nav.querySelector(".badge");
+    if (real && !bd) nav.insertAdjacentHTML("beforeend", '<span class="badge desk">' + real + "</span>");
+  }
+  function bars(sel, list, empty, alt) {
+    var max = list.length ? list[0][1] : 1;
+    $(sel).innerHTML = list.length ? list.map(function (x) {
+      return '<div class="bar-row"><span>' + esc(x[0]) + '</span><b>' + x[1] + '</b><div class="track"><div class="fill" style="width:' + Math.max(3, x[1] / max * 100) + '%' + (alt ? ";background:var(--c2)" : "") + '"></div></div></div>';
+    }).join("") : '<p class="muted">' + empty + "</p>";
+  }
+  function drawChart(rows) {
+    var box = $("#chart"), W = Math.max(300, box.clientWidth || 600), H = 240, pl = 34, pr = 56, pt = 12, pb = 26;
+    var max = Math.max(4, Math.max.apply(null, rows.map(function (r) { return Math.max(r.v, r.t); })));
+    var step = Math.pow(10, Math.floor(Math.log10(max))); var nice = Math.ceil(max / step) * step; if (nice / step > 6) step *= 2; max = Math.ceil(max / step) * step;
+    var x = function (i) { return pl + (rows.length > 1 ? i * (W - pl - pr) / (rows.length - 1) : (W - pl - pr) / 2); };
+    var y = function (v) { return pt + (H - pt - pb) * (1 - v / max); };
+    var grid = ""; for (var g = 0; g <= max; g += step) grid += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y(g) + '" y2="' + y(g) + '" stroke="rgba(70,45,20,.1)"/><text x="' + (pl - 8) + '" y="' + (y(g) + 4) + '" text-anchor="end" font-size="11" fill="#978878">' + g + "</text>";
+    var every = Math.ceil(rows.length / (W < 500 ? 4 : 7)), xl = "";
+    rows.forEach(function (r, i) { if ((rows.length - 1 - i) % every === 0) xl += '<text x="' + x(i) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" fill="#978878">' + fmtDay(r.k) + "</text>"; });
+    function path(key) { return rows.map(function (r, i) { return (i ? "L" : "M") + x(i).toFixed(1) + " " + y(r[key]).toFixed(1); }).join(""); }
+    var last = rows[rows.length - 1], li = rows.length - 1;
+    var ly1 = y(last.v), ly2 = y(last.t); if (Math.abs(ly1 - ly2) < 14) { if (ly1 < ly2) ly2 = ly1 + 14; else ly1 = ly2 + 14; }
+    box.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Visitors and WhatsApp taps per day">' + grid + xl +
+      '<path d="' + path("v") + '" fill="none" stroke="#008F96" stroke-width="2" stroke-linejoin="round"/>' +
+      '<path d="' + path("t") + '" fill="none" stroke="#E4694A" stroke-width="2" stroke-linejoin="round"/>' +
+      '<circle cx="' + x(li) + '" cy="' + y(last.v) + '" r="4" fill="#008F96" stroke="#FFFDF9" stroke-width="2"/><circle cx="' + x(li) + '" cy="' + y(last.t) + '" r="4" fill="#E4694A" stroke="#FFFDF9" stroke-width="2"/>' +
+      '<text x="' + (x(li) + 8) + '" y="' + (ly1 + 4) + '" font-size="11" fill="#3D322A">Visitors</text><text x="' + (x(li) + 8) + '" y="' + (ly2 + 4) + '" font-size="11" fill="#3D322A">Taps</text>' +
+      '<line id="xh" y1="' + pt + '" y2="' + (H - pb) + '" stroke="rgba(43,33,26,.35)" stroke-dasharray="3 3" visibility="hidden"/>' +
+      '<rect x="' + pl + '" y="0" width="' + (W - pl - pr) + '" height="' + H + '" fill="transparent" id="hit"/></svg><div class="tip" hidden></div>';
+    var svg = box.querySelector("svg"), tip = box.querySelector(".tip"), xh = box.querySelector("#xh");
+    function move(e) {
+      var rc = svg.getBoundingClientRect(), px = (e.clientX - rc.left) * W / rc.width;
+      var i = Math.round((px - pl) / ((W - pl - pr) / Math.max(1, rows.length - 1))); i = Math.max(0, Math.min(rows.length - 1, i));
+      var r = rows[i]; xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
+      tip.hidden = false; tip.style.left = (x(i) * rc.width / W) + "px"; tip.style.top = (y(Math.max(r.v, r.t)) * rc.height / H) + "px";
+      tip.innerHTML = "<b>" + fmtDay(r.k) + '</b><i style="background:#008F96"></i>' + r.v + ' visitors<br><i style="background:#E4694A"></i>' + r.t + " WhatsApp taps";
+    }
+    svg.addEventListener("pointermove", move); svg.addEventListener("pointerdown", move);
+    svg.addEventListener("pointerleave", function () { tip.hidden = true; xh.setAttribute("visibility", "hidden"); });
+  }
+  $("#chart-table-btn").onclick = function () { var t = $("#chart-table"); t.hidden = !t.hidden; this.textContent = t.hidden ? "Show as table" : "Hide table"; };
+  var rz; addEventListener("resize", function () { clearTimeout(rz); rz = setTimeout(function () { if (!$('[data-pane="insights"]').hidden) renderInsights(); }, 200); });
+
+  /* =====================================================================
+     DESIGNS
+     ===================================================================== */
+  var dFilter = "all";
+  $$("[data-df]").forEach(function (b) { b.onclick = function () { dFilter = b.dataset.df; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); renderDesigns(); }; });
+  $("#d-q").addEventListener("input", function () { renderDesigns(); });
+  function renderDesigns() {
+    var q = $("#d-q").value.trim().toLowerCase(), all = designs();
+    var opens = {}; WB.db.events().forEach(function (e) { if (e.type === "design_open") opens[e.data.code] = (opens[e.data.code] || 0) + 1; });
+    var list = all.filter(function (d) {
+      if (dFilter === "live" && d.hidden) return false;
+      if (dFilter === "hidden" && !d.hidden) return false;
+      if (dFilter === "sample" && d.img) return false;
+      return !q || (d.name + " " + d.code + " " + (d.tags || []).join(" ")).toLowerCase().indexOf(q) > -1;
+    }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); });
+    var samples = all.filter(function (d) { return !d.img; }).length;
+    $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + (samples ? " · " + samples + " still sample artwork (replace with your photos)" : "");
+    $("#d-grid").innerHTML = '<button class="d-add" type="button" id="d-add-tile"><span>+</span>Add a design</button>' + list.map(function (d) {
+      return '<div class="d-card' + (d.hidden ? " off" : "") + '"><button class="pic" type="button" data-edit="' + d.code + '" aria-label="Edit ' + esc(d.name) + '">' + thumb(d) + '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="pill sample">Sample</span>') + '</button>' +
+        '<div class="body"><b>' + esc(d.name) + '</b><span class="stats">' + (opens[d.code] || 0) + " opens · " + (d.spaces || []).slice(0, 2).map(function (s) { return lbl(ROOMS, s); }).join(", ") + '</span>' +
+        '<div class="row"><label class="switch" style="font-size:.78rem"><input type="checkbox" data-live="' + d.code + '"' + (d.hidden ? "" : " checked") + '> ' + (d.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-edit="' + d.code + '" style="font-size:.84rem">Edit</button></div></div></div>';
+    }).join("");
+    paintThumbs($("#d-grid"));
+    $("#d-add-tile").onclick = function () { openDesign(null); };
+    $$("[data-edit]", $("#d-grid")).forEach(function (b) { b.onclick = function () { openDesign(b.dataset.edit); }; });
+    $$("[data-live]", $("#d-grid")).forEach(function (c) { c.onchange = function () { setDesign(c.dataset.code || c.dataset.live, { hidden: !c.checked }); toast(c.checked ? "Live on the website" : "Hidden from the website"); renderDesigns(); }; });
+  }
+  function setDesign(code, patch) {
+    var own = db.designs.filter(function (d) { return d.code === code; })[0];
+    if (own) Object.assign(own, patch); else db.edits[code] = Object.assign(db.edits[code] || {}, patch);
+    save();
+  }
+  function nextCode() { var n = 0; designs().forEach(function (d) { var m = /WB-(\d+)/.exec(d.code); if (m) n = Math.max(n, +m[1]); }); return "WB-" + String(n + 1).padStart(4, "0"); }
+
+  /* chips */
+  function chipSet(el, list, sel) {
+    el.innerHTML = list.map(function (o) { return '<button type="button" class="fchip" data-v="' + o[0] + '" aria-pressed="' + (sel.indexOf(o[0]) > -1) + '">' + (o[2] ? '<span class="sw" style="background:' + o[2] + '"></span>' : "") + o[1] + "</button>"; }).join("");
+  }
+  function chipVals(el) { return $$('[aria-pressed="true"]', el).map(function (b) { return b.dataset.v; }); }
+  ["#d-spaces", "#d-styles", "#d-colours"].forEach(function (s) { $(s).addEventListener("click", function (e) { var b = e.target.closest(".fchip"); if (!b) return; b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); b.classList.remove("sugg-on"); }); });
+  function segVal(el) { var b = $('[aria-pressed="true"]', el); return b ? b.dataset.v : null; }
+  function segSet(el, v) { $$("button", el).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.v === v); }); }
+  $$(".seg").forEach(function (sg) { sg.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; segSet(sg, b.dataset.v); sg.dispatchEvent(new Event("change")); }); });
+
+  /* image processing: resize, watermark, colour + shape suggestions */
+  var cur = null, srcImg = null, logo = new Image(); logo.src = "assets/img/mark.png";
+  function settings() { return Object.assign({ wmOn: true, wmText: "WallBliss Studio", wmStyle: "corner" }, db.settings); }
+  function renderImg() {
+    var c = $("#d-canvas"); if (!srcImg) return;
+    var max = 1400, s = Math.min(1, max / Math.max(srcImg.naturalWidth, srcImg.naturalHeight));
+    c.width = Math.round(srcImg.naturalWidth * s); c.height = Math.round(srcImg.naturalHeight * s);
+    var x = c.getContext("2d"); x.drawImage(srcImg, 0, 0, c.width, c.height);
+    if ($("#d-wm").checked) watermark(x, c.width, c.height, segVal($("#d-wm-style")), settings().wmText || "WallBliss Studio");
+  }
+  function watermark(x, W, H, style, text) {
+    x.save();
+    if (style === "across") {
+      var fs = Math.round(Math.max(W, H) * .045); x.font = "700 " + fs + "px 'DM Sans', sans-serif"; x.translate(W / 2, H / 2); x.rotate(-Math.PI / 7);
+      var tw = x.measureText(text).width + fs * 3, gap = fs * 3.4;
+      for (var yy = -H; yy < H; yy += gap) for (var xx = -W - ((yy / gap) % 2 ? tw / 2 : 0); xx < W; xx += tw) {
+        x.fillStyle = "rgba(255,255,255,.22)"; x.fillText(text, xx, yy); x.strokeStyle = "rgba(0,0,0,.08)"; x.lineWidth = 1; x.strokeText(text, xx, yy);
+      }
+    } else {
+      var f = Math.round(Math.min(W, H) * .045), pad = f * .8; x.font = "700 " + f + "px 'DM Sans', sans-serif";
+      var w = x.measureText(text).width, lw = logo.complete && logo.naturalWidth ? f * 1.5 : 0, lh = lw ? lw * logo.naturalHeight / logo.naturalWidth : 0;
+      var bw = w + lw + pad * (lw ? 2.6 : 2), bh = f * 1.9, bx = W - bw - pad, by = H - bh - pad;
+      x.fillStyle = "rgba(255,253,249,.78)"; if (x.roundRect) { x.beginPath(); x.roundRect(bx, by, bw, bh, bh / 2); x.fill(); } else x.fillRect(bx, by, bw, bh);
+      if (lw) x.drawImage(logo, bx + pad, by + (bh - lh) / 2, lw, lh);
+      x.fillStyle = "rgba(43,33,26,.9)"; x.textBaseline = "middle"; x.fillText(text, bx + pad + (lw ? lw + pad * .6 : 0), by + bh / 2 + 1);
+    }
+    x.restore();
+  }
+  function analyse(img) {
+    var c = document.createElement("canvas"); c.width = 40; c.height = 40; var x = c.getContext("2d"); x.drawImage(img, 0, 0, 40, 40);
+    var px = x.getImageData(0, 0, 40, 40).data, n = 0, sc = { green: 0, blue: 0, warm: 0, earth: 0, pastel: 0, mono: 0, dark: 0 }, L = 0;
+    for (var i = 0; i < px.length; i += 4) {
+      var r = px[i] / 255, g = px[i + 1] / 255, b = px[i + 2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+      var s = d ? d / (1 - Math.abs(2 * l - 1)) : 0, h = 0;
+      if (d) { h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+      n++; L += l;
+      if (s < .12) sc.mono++;
+      else if (l > .78) sc.pastel++;
+      else if (h >= 70 && h < 170) sc.green++;
+      else if (h >= 170 && h < 260) sc.blue++;
+      else if (h >= 15 && h < 45 && s < .6 && l < .55) sc.earth++;
+      else if (h < 60 || h >= 320) sc.warm++;
+      if (l < .25) sc.dark++;
+    }
+    var picks = Object.keys(sc).filter(function (k) { return sc[k] / n > (k === "dark" ? .45 : .22); }).sort(function (a, b) { return sc[b] - sc[a]; }).slice(0, 2);
+    var ar = img.naturalWidth / img.naturalHeight;
+    return { colours: picks, orient: ar > 1.2 ? "wide" : ar < .85 ? "tall" : "square", ar: ar };
+  }
+  function loadFile(file, cb) {
+    if (!file || !/^image\//.test(file.type)) { toast("Please choose a photo (JPG, PNG or WebP)"); return; }
+    var rd = new FileReader(); rd.onload = function () { var im = new Image(); im.onload = function () { cb(im); }; im.src = rd.result; }; rd.readAsDataURL(file);
+  }
+  function wireDrop(drop, input, cb) {
+    input.addEventListener("change", function () { loadFile(input.files[0], cb); input.value = ""; });
+    ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
+    ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("over"); if (t === "drop") loadFile(e.dataTransfer.files[0], cb); }); });
+  }
+  wireDrop($("#d-drop"), $("#d-file"), function (im) {
+    srcImg = im; $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
+    var a = analyse(im);
+    if (a.colours.length) { $$(".fchip", $("#d-colours")).forEach(function (b) { var on = a.colours.indexOf(b.dataset.v) > -1; if (on) { b.setAttribute("aria-pressed", "true"); b.classList.add("sugg-on"); } }); $("#d-col-note").hidden = false; }
+    segSet($("#d-orient"), a.orient); $("#d-orient-note").textContent = "Set from the image shape";
+    $("#d-imginfo").textContent = im.naturalWidth + " × " + im.naturalHeight + " px" + (Math.max(im.naturalWidth, im.naturalHeight) < 1200 ? " · small image: it may look soft when printed large. Ask the customer for a bigger file." : " · saved at website size; keep your original for printing.");
+  });
+  $("#d-change").onclick = function () { $("#d-file").click(); };
+  $("#d-wm").onchange = renderImg; $("#d-wm-style").addEventListener("change", renderImg);
+
+  function openDesign(code, wantWord) {
+    cur = code ? byCode()[code] : null; srcImg = null;
+    var st = settings();
+    $("#d-title").textContent = cur ? "Edit " + cur.code : "Add a design";
+    $("#d-code").value = cur ? cur.code : nextCode();
+    $("#d-name").value = cur ? cur.name : (wantWord ? wantWord.replace(/\b\w/g, function (c) { return c.toUpperCase(); }) : "");
+    $("#d-tags").value = cur ? (cur.tags || []).join(", ") : (wantWord || "");
+    chipSet($("#d-spaces"), ROOMS, cur ? cur.spaces || [] : []);
+    chipSet($("#d-styles"), STYLES, cur ? cur.styles || [] : []);
+    chipSet($("#d-colours"), COLOURS, cur ? cur.colours || [] : []);
+    $("#d-col-note").hidden = true; $("#d-orient-note").textContent = "";
+    segSet($("#d-orient"), cur ? cur.orient || "wide" : "wide");
+    $("#d-live").checked = cur ? !cur.hidden : true;
+    $("#d-feat").checked = cur ? (cur.pop || 0) >= 9 : false;
+    $("#d-wm").checked = st.wmOn; segSet($("#d-wm-style"), st.wmStyle);
+    $("#d-delete").hidden = !(cur && !cur.builtIn);
+    $("#d-drop").hidden = false; $("#d-prev").hidden = true;
+    $("#d-drop b").textContent = cur && !cur.img ? "Replace the sample with your photo" : cur ? "Replace the image" : "Tap to choose a photo";
+    if (cur && cur.img) {
+      var im = new Image(); im.onload = function () { var c = $("#d-canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext("2d").drawImage(im, 0, 0); $("#d-prev").hidden = false; $("#d-drop").hidden = true; $("#d-imginfo").textContent = "Current image. Choose “Change image” to replace it."; };
+      im.src = cur.img;
+    }
+    openDlg($("#d-dlg"));
+    if (wantWord) toast("People searched “" + wantWord + "”. Add a photo and it will appear for that search.");
+  }
+  $("#d-new").onclick = function () { openDesign(null); };
+  $("#d-save").onclick = function () {
+    var name = $("#d-name").value.trim();
+    if (!name) { toast("Give the design a name"); $("#d-name").focus(); return; }
+    var spaces = chipVals($("#d-spaces")); if (!spaces.length) { toast("Pick at least one room"); return; }
+    var isNew = !cur;
+    if (isNew && !srcImg) { toast("Add a photo of the design"); return; }
+    var data = { name: name, spaces: spaces, styles: chipVals($("#d-styles")), colours: chipVals($("#d-colours")), orient: segVal($("#d-orient")),
+      tags: $("#d-tags").value.split(",").map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean), hidden: !$("#d-live").checked };
+    if ($("#d-feat").checked) data.pop = 9.5; else if (cur && (cur.pop || 0) >= 9 && !cur.builtIn) data.pop = 5;
+    if (srcImg) {
+      var out = document.createElement("canvas"), c = $("#d-canvas"), s = Math.min(1, 1100 / Math.max(c.width, c.height));
+      out.width = Math.round(c.width * s); out.height = Math.round(c.height * s); out.getContext("2d").drawImage(c, 0, 0, out.width, out.height);
+      data.img = out.toDataURL("image/jpeg", .8);
+    }
+    if (isNew) { db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
+    else setDesign(cur.code, data);
+    if (!save()) { if (isNew) db.designs.pop(); return; }
+    $("#d-dlg").close(); renderDesigns();
+    toast(isNew ? "Saved. " + $("#d-code").value + " is live in the catalogue" : "Saved");
+  };
+  $("#d-delete").onclick = function () {
+    var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete design"; }, 2500); return; }
+    db.designs = db.designs.filter(function (d) { return d.code !== cur.code; }); save(); $("#d-dlg").close(); renderDesigns(); toast("Deleted");
+  };
+
+  /* =====================================================================
+     PROJECTS
+     ===================================================================== */
+  var P = null, step = 1, bImg = null, aImg = null, align = { dx: 0, dy: 0, z: 1, br: 1 };
+  function renderProjects() {
+    var list = db.projects;
+    $("#p-list").innerHTML = list.length ? list.map(function (p, i) {
+      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
+    }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
+    wireBA($("#p-list"));
+    $$("[data-plive]").forEach(function (c) { c.onchange = function () { db.projects[+c.dataset.plive].hidden = !c.checked; save(); renderProjects(); toast(c.checked ? "Live on the Projects page" : "Hidden"); }; });
+    $$("[data-pedit]").forEach(function (b) { b.onclick = function () { openProject(+b.dataset.pedit); }; });
+  }
+  function baHTML(before, after, title) {
+    return '<div class="ba" style="--pos:50%"><img src="' + before + '" alt="Before"><img class="after" src="' + after + '" alt="' + esc(title || "After") + '"><div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
+  }
+  function wireBA(root) { $$(".ba input[type=range]", root).forEach(function (r) { r.oninput = function () { r.parentNode.style.setProperty("--pos", r.value + "%"); }; }); }
+  function setStep(n) {
+    step = n;
+    $$("[data-step]").forEach(function (s) { s.hidden = +s.dataset.step !== n; });
+    $$("#p-steps span").forEach(function (s, i) { s.classList.toggle("on", i < n); });
+    $("#p-back").style.visibility = n > 1 ? "visible" : "hidden";
+    $("#p-next").textContent = n === 4 ? (P != null ? "Save project" : "Publish project") : "Next";
+    if (n === 2) drawGhost();
+    if (n === 4) { var o = outPair(); $("#p-preview").innerHTML = baHTML(o.b, o.a, $("#p-ttl").value) + '<div class="body"><small>' + esc($("#p-loc").value) + " · " + esc($("#p-space").value) + '</small><b>' + esc($("#p-ttl").value) + '</b><p class="muted" style="font-size:.88rem">' + esc($("#p-sum").value) + "</p></div>"; wireBA($("#p-preview")); }
+    $("#p-dlg .body").scrollTop = 0;
+  }
+  function openProject(i) {
+    P = i == null ? null : i; var p = P != null ? db.projects[P] : {};
+    bImg = aImg = null; align = { dx: 0, dy: 0, z: 1, br: 1 };
+    $("#p-title").textContent = P != null ? "Edit project" : "New project";
+    $("#p-space").innerHTML = ROOMS.map(function (r) { return "<option>" + r[1] + "</option>"; }).join("");
+    $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
+    $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room"; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
+    $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
+    $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-delete").hidden = P == null;
+    $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
+    if (P != null) { loadURL(p.before, function (im) { bImg = im; showDrop("#p-drop-b", p.before); }); loadURL(p.after, function (im) { aImg = im; showDrop("#p-drop-a", p.after); }); }
+    setStep(1); openDlg($("#p-dlg"));
+  }
+  function loadURL(u, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.src = u; }
+  function showDrop(sel, url) { var d = $(sel); d.style.backgroundImage = 'linear-gradient(rgba(255,253,249,.55),rgba(255,253,249,.55)),url("' + url + '")'; d.style.backgroundSize = "cover"; d.style.backgroundPosition = "center"; d.querySelector("b").textContent = "✓ Added · tap to change"; }
+  wireDrop($("#p-drop-b"), $("#p-file-b"), function (im) { bImg = im; align = { dx: 0, dy: 0, z: 1, br: 1 }; showDrop("#p-drop-b", im.src); });
+  wireDrop($("#p-drop-a"), $("#p-file-a"), function (im) { aImg = im; showDrop("#p-drop-a", im.src); });
+  $("#p-new").onclick = function () { openProject(null); };
+
+  var GW = 1200, GH = 900;
+  function cover(x, im, z, dx, dy) { var s = Math.max(GW / im.naturalWidth, GH / im.naturalHeight) * z, w = im.naturalWidth * s, h = im.naturalHeight * s; x.drawImage(im, (GW - w) / 2 + dx, (GH - h) / 2 + dy, w, h); }
+  function drawBefore(x) { x.save(); x.filter = "brightness(" + align.br + ")"; cover(x, bImg, align.z, align.dx, align.dy); x.restore(); }
+  function drawGhost() {
+    var c = $("#p-gcanvas"), x = c.getContext("2d"); x.clearRect(0, 0, GW, GH);
+    cover(x, aImg, 1, 0, 0); x.save(); x.globalAlpha = $("#p-op").value / 100; drawBefore(x); x.restore();
+  }
+  function outPair() {
+    var c = document.createElement("canvas"); c.width = GW; c.height = GH; var x = c.getContext("2d");
+    x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, GW, GH); drawBefore(x); var b = c.toDataURL("image/jpeg", .78);
+    x.clearRect(0, 0, GW, GH); cover(x, aImg, 1, 0, 0); var a = c.toDataURL("image/jpeg", .78);
+    return { b: b, a: a };
+  }
+  ["#p-op", "#p-zoom", "#p-bright"].forEach(function (s) { $(s).addEventListener("input", function () { align.z = $("#p-zoom").value / 100; align.br = $("#p-bright").value / 100; drawGhost(); }); });
+  $("#p-reset").onclick = function () { align = { dx: 0, dy: 0, z: 1, br: 1 }; $("#p-zoom").value = 100; $("#p-bright").value = 100; $("#p-op").value = 50; drawGhost(); };
+  (function () {
+    var g = $("#p-ghost"), drag = null;
+    g.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, y: e.clientY, dx: align.dx, dy: align.dy }; g.setPointerCapture(e.pointerId); });
+    g.addEventListener("pointermove", function (e) { if (!drag) return; var k = GW / g.clientWidth; align.dx = drag.dx + (e.clientX - drag.x) * k; align.dy = drag.dy + (e.clientY - drag.y) * k; drawGhost(); });
+    ["pointerup", "pointercancel"].forEach(function (t) { g.addEventListener(t, function () { drag = null; }); });
+  })();
+  $("#p-back").onclick = function () { if (step > 1) setStep(step - 1); };
+  $("#p-next").onclick = function () {
+    if (step === 1) { if (!bImg || !aImg) { toast("Add both the before and the after photo"); return; } setStep(2); return; }
+    if (step === 2) { setStep(3); return; }
+    if (step === 3) {
+      if (!$("#p-ttl").value.trim() || !$("#p-loc").value.trim()) { toast("Add a title and the locality"); return; }
+      if (!$("#p-consent").checked) { toast("Please confirm the customer agreed to show the photos"); return; }
+      setStep(4); return;
+    }
+    var o = outPair(), t = $("#p-ttl").value.trim();
+    var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, size: $("#p-size").value.trim(),
+      design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), before: o.b, after: o.a, consent: true, hidden: !$("#p-live").checked };
+    var prev = null;
+    if (P != null) { prev = db.projects[P]; p.slug = prev.slug; db.projects[P] = p; } else db.projects.unshift(p);
+    if (!save()) { if (P != null) db.projects[P] = prev; else db.projects.shift(); return; }
+    $("#p-dlg").close(); renderProjects(); toast(p.hidden ? "Saved (hidden)" : "Published on the Projects page");
+  };
+  $("#p-delete").onclick = function () {
+    var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete project"; }, 2500); return; }
+    db.projects.splice(P, 1); save(); $("#p-dlg").close(); renderProjects(); toast("Deleted");
+  };
+
+  /* =====================================================================
+     REVIEWS
+     ===================================================================== */
+  var R = null, stars = 5;
+  function renderReviews() {
+    var st = settings();
+    $("#s-greview").value = st.googleReviewsUrl || ""; $("#s-gwrite").value = st.googleWriteReviewUrl || "";
+    reqMsg();
+    var days = Math.max(0, Math.floor((Date.now() - new Date(GBP_LIVE + "T00:00:00+05:30")) / 864e5)), ready = new Date(new Date(GBP_LIVE).getTime() + 60 * 864e5);
+    $("#gbp-days").textContent = days + " of 60 days · around " + ready.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    $("#gbp-meter").style.width = Math.min(100, days / 60 * 100) + "%";
+    var hasLink = !!st.googleReviewsUrl;
+    $("#gbp-check").innerHTML = [
+      ["ok", "Profile verified and live", "Done"],
+      [hasLink ? "ok" : "wait", "Reviews link added here", hasLink ? "Done" : "Paste it above"],
+      ["wait", "Website address on the profile", "After you buy the domain"],
+      [days >= 60 ? "ok" : "wait", "Profile active for 60 days", days >= 60 ? "Done" : "In progress"],
+      ["", "Request API access from Google", "We'll do this when the 60 days are up"]
+    ].map(function (c) { return '<li><span class="st ' + c[0] + '">' + (c[0] === "ok" ? "✓" : c[0] === "wait" ? "…" : "") + '</span><span><b style="color:var(--ink)">' + c[1] + '</b><br><small class="muted">' + c[2] + "</small></span></li>"; }).join("");
+    $("#rv-list").innerHTML = db.reviews.length ? db.reviews.map(function (r, i) {
+      return '<div class="rv"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="stars" aria-label="' + r.stars + ' stars">' + "★".repeat(r.stars) + '</span><label class="switch" style="font-size:.8rem"><input type="checkbox" data-rshow="' + i + '"' + (r.show ? " checked" : "") + '> ' + (r.show ? "On website" : "Hidden") + '</label></div><q>' + esc(r.quote) + '</q><small>' + esc(r.name) + " · " + esc(r.place) + (r.type ? " · " + esc(r.type) : "") + ' · <button class="linkbtn" type="button" data-redit="' + i + '" style="font-size:.8rem;padding:0">Edit</button></small></div>';
+    }).join("") : '<p class="muted">No reviews added yet. When your first Google review comes in, copy it here and it shows on the home page.</p>';
+    $$("[data-rshow]").forEach(function (c) { c.onchange = function () { db.reviews[+c.dataset.rshow].show = c.checked; save(); renderReviews(); }; });
+    $$("[data-redit]").forEach(function (b) { b.onclick = function () { openReview(+b.dataset.redit); }; });
+  }
+  function reqMsg() {
+    var nm = $("#rq-name").value.trim(), link = settings().googleWriteReviewUrl || settings().googleReviewsUrl || "[your Google review link]";
+    var def = "Hi " + (nm || "there") + ", thank you for choosing WallBliss Studio! 🙏 We loved printing your wall. If you're happy with it, could you share a quick review on Google? It really helps other families find us.\n" + link + "\n\n– Anil & Manasa, WallBliss";
+    if (!$("#rq-msg").dataset.edited) $("#rq-msg").value = def;
+    var ph = $("#rq-phone").value.replace(/\D/g, ""); if (ph.length === 10) ph = "91" + ph;
+    $("#rq-send").href = "https://wa.me/" + ph + "?text=" + encodeURIComponent($("#rq-msg").value);
+  }
+  $("#rq-name").addEventListener("input", reqMsg); $("#rq-phone").addEventListener("input", reqMsg);
+  $("#rq-msg").addEventListener("input", function () { this.dataset.edited = 1; reqMsg(); });
+  $("#rv-save").onclick = function () {
+    db.settings.googleReviewsUrl = $("#s-greview").value.trim(); db.settings.googleWriteReviewUrl = $("#s-gwrite").value.trim();
+    save(); renderReviews(); toast(db.settings.googleReviewsUrl ? "Saved. The Google reviews buttons are now on the website" : "Saved");
+  };
+  $("#rv-qr").onclick = function () {
+    var link = $("#s-gwrite").value.trim() || $("#s-greview").value.trim();
+    if (!link) { toast("Paste your review link first"); $("#s-gwrite").focus(); return; }
+    var box = $("#qr-box"); box.hidden = !box.hidden; if (box.hidden) return;
+    $("#qr").innerHTML = "";
+    if (window.QRCode) new QRCode($("#qr"), { text: link, width: 220, height: 220, colorDark: "#2B211A", colorLight: "#ffffff" });
+    else $("#qr").textContent = "QR library could not load. Open the link on your phone instead.";
+  };
+  function starPick() { $("#r-stars").innerHTML = [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" data-s="' + n + '" class="' + (n <= stars ? "on" : "") + '" aria-label="' + n + ' stars">★</button>'; }).join(""); }
+  $("#r-stars").addEventListener("click", function (e) { var b = e.target.closest("[data-s]"); if (b) { stars = +b.dataset.s; starPick(); } });
+  function openReview(i) {
+    R = i == null ? null : i; var r = R != null ? db.reviews[R] : {};
+    $("#r-title").textContent = R != null ? "Edit review" : "Add a review";
+    $("#r-name").value = r.name || ""; $("#r-place").value = r.place || ""; $("#r-text").value = r.quote || ""; $("#r-type").value = r.type || ""; $("#r-show").checked = R != null ? !!r.show : true;
+    stars = r.stars || 5; starPick(); $("#r-delete").hidden = R == null; openDlg($("#r-dlg"));
+  }
+  $("#rv-add").onclick = function () { openReview(null); };
+  $("#r-save").onclick = function () {
+    var r = { name: $("#r-name").value.trim(), place: $("#r-place").value.trim(), quote: $("#r-text").value.trim(), type: $("#r-type").value.trim(), stars: stars, show: $("#r-show").checked, source: "google" };
+    if (!r.name || !r.quote) { toast("Add the name and the review text"); return; }
+    if (R != null) db.reviews[R] = r; else db.reviews.unshift(r);
+    save(); $("#r-dlg").close(); renderReviews(); toast(r.show ? "Saved. It's on the home page now" : "Saved");
+  };
+  $("#r-delete").onclick = function () { db.reviews.splice(R, 1); save(); $("#r-dlg").close(); renderReviews(); toast("Deleted"); };
+
+  /* =====================================================================
+     SETTINGS
+     ===================================================================== */
+  function renderSettings() {
+    var st = settings();
+    $("#s-wa").value = st.whatsapp || "917676701113"; $("#s-phone").value = st.phoneDisplay || "+91 76767 01113";
+    $("#s-wm-on").checked = st.wmOn; $("#s-wm-text").value = st.wmText; segSet($("#s-wm-style"), st.wmStyle);
+  }
+  $("#s-save").onclick = function () {
+    var wa = $("#s-wa").value.replace(/\D/g, ""); if (wa.length === 10) wa = "91" + wa;
+    if (wa.length < 11) { toast("Enter the WhatsApp number with country code, e.g. 917676701113"); return; }
+    db.settings.whatsapp = wa; db.settings.phoneDisplay = $("#s-phone").value.trim(); save(); renderSettings(); toast("Saved. Every WhatsApp button now uses this number");
+  };
+  $("#s-wm-on").onchange = function () { db.settings.wmOn = this.checked; save(); toast("Saved"); };
+  $("#s-wm-text").onchange = function () { db.settings.wmText = this.value.trim() || "WallBliss Studio"; save(); toast("Saved"); };
+  $("#s-wm-style").addEventListener("change", function () { db.settings.wmStyle = segVal(this); save(); toast("Saved"); });
+  $("#s-export").onclick = function () {
+    var blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), data: db, events: WB.db.events() }, null, 1)], { type: "application/json" });
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "wallbliss-admin-backup.json"; document.body.appendChild(a); a.click(); a.remove();
+  };
+  $("#s-reset").onclick = function () {
+    var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again: unpublished changes on this device are lost"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Throw away unpublished changes"; }, 3000); return; }
+    try { localStorage.removeItem("wb_admin_db"); } catch (e) {} WB.db.clearEvents(); db = WB.db.load(); toast("Back to what is live on the website"); route();
+  };
+
+  try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
+  $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
+  if (user) enter(user);
+})();
+</script>
+<script src="assets/publish.js"></script>
+<script>
+(function () {
+  var st = document.getElementById("s-key-state"); if (!st) return;
+  function show() { st.textContent = WB.publishing.hasKey() ? "Added. This device can publish to the website." : "Not added. This device can edit drafts but cannot publish."; }
+  document.getElementById("s-key-add").onclick = function () { WB.publishing.askKey(); };
+  document.getElementById("s-key-forget").onclick = function () { WB.publishing.forgetKey(); show(); };
+  show(); setInterval(show, 3000);
+})();
+</script>
+</body>
+</html>

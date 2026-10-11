@@ -1,0 +1,19 @@
+# WallBliss Studio
+
+> WallBliss Studio (WallBliss Interiors Private Limited) prints wall art directly onto walls in Bengaluru, Karnataka, India: murals, family photos, children's room themes, pooja room designs and business logos, for homes, offices, cafés, hotels and clinics.
+
+## Key facts
+- What it is: the chosen picture is printed straight onto the existing painted wall. No wallpaper, sticker or vinyl, so there are no edges or seams to peel.
+- Where: Bengaluru (Bangalore) and nearby areas. WallBliss comes to the customer's home or business.
+- Price: depends on wall size and design; larger walls cost less per sq ft. Minimum 30 sq ft per wall. Exact quote with a preview on WhatsApp, usually the same day, no site visit needed.
+- Time: most home walls are finished in one visit, often in a few hours. The colours are dry immediately, so the room can be used the same day.
+- Care and life: wipe clean with a damp cloth; stays bright for 7–10 years indoors; can be painted over later.
+- Designs: choose from the online catalogue (each design has a code like WB-0116), or send your own photo, artwork or logo.
+- Before printing day: a lift is needed for walls on the 1st floor or above; a power point or generator nearby; a smooth, dry, painted wall.
+- Contact: WhatsApp or call +91 76767 01113.
+
+## Pages
+- [Home](https://kollaanil.github.io/wallbliss-site/): stories, before and after, how it works, FAQs
+- [Design catalogue](https://kollaanil.github.io/wallbliss-site/catalogue.html): designs by room, style and colour, with a preview on a photo of your own wall
+- [Wallpaper or wall printing?](https://kollaanil.github.io/wallbliss-site/wallpaper-vs-wall-printing.html): which suits each room, compared on look, durability in humidity, time and changing it later
+- [Projects](https://kollaanil.github.io/wallbliss-site/projects.html): finished walls across Bengaluru
