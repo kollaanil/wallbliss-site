@@ -260,6 +260,7 @@
 <script src="assets/published.js"></script>
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/ba-carousel.js" defer></script>
 <main id="main">
   <!-- HERO -->
   <section class="hero">
@@ -329,17 +330,14 @@
       <div class="section-head reveal">
         <p class="eyebrow">Before and after</p>
         <h2>Same wall. Same afternoon.</h2>
-        <p class="lede">Drag the handle to see the change. There's no wallpaper and no sticker. The picture becomes part of your wall.</p>
+        <p class="lede">Swipe through real walls we've printed. Drag the round handle to see each one change. No wallpaper, no sticker: the picture becomes part of the wall.</p>
       </div>
-      <div class="bezel reveal"><div class="ba" id="ba" style="--pos:50%">
-        <picture><source media="(max-width: 640px)" type="image/webp" srcset="assets/img/ba-before-m.webp"><source media="(max-width: 640px)" srcset="assets/img/ba-before-m.jpg"><source type="image/webp" srcset="assets/img/ba-before-d.webp"><img src="assets/img/ba-before-d.jpg" width="1480" height="840" alt="The bare wall before printing" decoding="async" loading="lazy"></picture>
-        <picture class="after"><source media="(max-width: 640px)" type="image/webp" srcset="assets/img/ba-after-m.webp"><source media="(max-width: 640px)" srcset="assets/img/ba-after-m.jpg"><source type="image/webp" srcset="assets/img/ba-after-d.webp"><img src="assets/img/ba-after-d.jpg" width="1480" height="840" alt="The same wall with a world map printed on it" decoding="async" loading="lazy"></picture>
-        <span class="lbl l">Before</span><span class="lbl r">After</span>
-        <div class="handle"></div>
-        <label class="skip" for="ba-range">Compare before and after</label>
-        <input type="range" id="ba-range" min="0" max="100" value="50" aria-label="Compare before and after">
-      </div></div>
-      <p class="note">A world map feature wall: the plain painted wall, then the finished print.</p>
+      <div class="bac reveal" id="bac" role="region" aria-roledescription="carousel" aria-label="Before and after walls">
+        <div class="bac-track" tabindex="0"></div>
+        <button type="button" class="bac-arrow bac-prev" aria-label="Previous wall"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="bac-arrow bac-next" aria-label="Next wall"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <p class="bac-foot"><span class="bac-count" aria-live="polite"></span><a href="projects.html">See all projects →</a></p>
+      </div>
     </div>
   </section>
 
@@ -520,9 +518,6 @@
     }).observe(v);
   })();
 
-  /* before / after */
-  var ba = document.getElementById("ba"), r = document.getElementById("ba-range");
-  r.addEventListener("input", function () { ba.style.setProperty("--pos", r.value + "%"); });
 
   /* stories and room tiles */
   document.querySelectorAll(".story[data-code]").forEach(function (a) { WBArt.room(a.querySelector("canvas"), D[a.dataset.code], { wall: WALL }); });

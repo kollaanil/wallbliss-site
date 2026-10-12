@@ -29,6 +29,7 @@
   window.WBImages = {
     /* turn "idb:<key>" into a data URL (used by Publish and by thumbnails) */
     resolve: function (ref) { return /^idb:/.test(ref || "") ? IDB.get(ref.slice(4)) : Promise.resolve(ref); },
+    put: function (key, dataUrl) { return IDB.put(key, dataUrl).then(function () { return "idb:" + key; }); },
     forget: function (ref) { if (/^idb:/.test(ref || "")) IDB.del(ref.slice(4)); }
   };
   /* any <img data-idb="idb:…"> anywhere in the admin gets its picture filled in */

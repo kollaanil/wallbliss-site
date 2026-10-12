@@ -459,6 +459,7 @@
         <p class="muted">This is how it will look on the Projects page. Drag the slider to check.</p>
         <div class="proj-card" id="p-preview"></div>
         <label class="switch"><input type="checkbox" id="p-live" checked> Show on the website</label>
+        <label class="switch"><input type="checkbox" id="p-home" checked> Show in the homepage before/after carousel</label>
       </div>
     </div>
     <footer><button class="linkbtn danger" type="button" id="p-delete" hidden>Delete project</button><span class="grow"></span><button class="btn btn-ghost" type="button" id="p-back">Back</button><button class="btn btn-wa" type="button" id="p-next" style="background:var(--ink);box-shadow:none">Next</button></footer>
@@ -892,7 +893,8 @@
     $$("[data-pedit]").forEach(function (b) { b.onclick = function () { openProject(+b.dataset.pedit); }; });
   }
   function baHTML(before, after, title) {
-    return '<div class="ba" style="--pos:50%"><img src="' + before + '" alt="Before"><img class="after" src="' + after + '" alt="' + esc(title || "After") + '"><div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
+    function im(u, cls, alt) { return /^idb:/.test(u || "") ? '<img' + cls + ' data-idb="' + u + '" alt="' + alt + '">' : '<img' + cls + ' src="' + u + '" alt="' + alt + '">'; }
+    return '<div class="ba" style="--pos:50%">' + im(before, "", "Before") + im(after, ' class="after"', esc(title || "After")) + '<div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
   }
   function wireBA(root) { $$(".ba input[type=range]", root).forEach(function (r) { r.oninput = function () { r.parentNode.style.setProperty("--pos", r.value + "%"); }; }); }
   function setStep(n) {
@@ -913,9 +915,11 @@
     $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
     $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room"; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
     $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
-    $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-delete").hidden = P == null;
+    $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
     $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
-    if (P != null) { loadURL(p.before, function (im) { bImg = im; showDrop("#p-drop-b", p.before); }); loadURL(p.after, function (im) { aImg = im; showDrop("#p-drop-a", p.after); }); }
+    if (P != null) ["before", "after"].forEach(function (k) {
+      WBImages.resolve(p[k]).then(function (u) { if (!u) return; loadURL(u, function (im) { if (k === "before") bImg = im; else aImg = im; showDrop(k === "before" ? "#p-drop-b" : "#p-drop-a", u); }); });
+    });
     setStep(1); openDlg($("#p-dlg"));
   }
   function loadURL(u, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.src = u; }
@@ -956,11 +960,17 @@
     }
     var o = outPair(), t = $("#p-ttl").value.trim();
     var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, size: $("#p-size").value.trim(),
-      design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), before: o.b, after: o.a, consent: true, hidden: !$("#p-live").checked };
-    var prev = null;
-    if (P != null) { prev = db.projects[P]; p.slug = prev.slug; db.projects[P] = p; } else db.projects.unshift(p);
-    if (!save()) { if (P != null) db.projects[P] = prev; else db.projects.shift(); return; }
-    $("#p-dlg").close(); renderProjects(); toast(p.hidden ? "Saved (hidden)" : "Published on the Projects page");
+      design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), consent: true, hidden: !$("#p-live").checked, noHome: !$("#p-home").checked };
+    if (P != null) p.slug = db.projects[P].slug;
+    var btn = this; btn.disabled = true;
+    Promise.all([WBImages.put(p.slug + "-before-" + Date.now().toString(36), o.b), WBImages.put(p.slug + "-after-" + Date.now().toString(36), o.a)]).then(function (refs) {
+      p.before = refs[0]; p.after = refs[1];
+      var prev = null;
+      if (P != null) { prev = db.projects[P]; db.projects[P] = p; } else db.projects.unshift(p);
+      if (!save()) { if (P != null) db.projects[P] = prev; else db.projects.shift(); btn.disabled = false; return; }
+      btn.disabled = false; $("#p-dlg").close(); renderProjects();
+      toast(p.hidden ? "Saved as a hidden draft" : "Saved as a draft. Press Publish to show it on the website" + (p.noHome ? "" : " and the homepage"));
+    }).catch(function () { btn.disabled = false; toast("Could not save the photos on this device"); });
   };
   $("#p-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete project"; }, 2500); return; }
