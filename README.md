@@ -42,6 +42,18 @@ Hindi, Kannada and Telugu words (Roman and native script), typos, phrases ("seve
 and broad words ("god" → Krishna, Ganesha, Surya…). To teach it a new word, add it to the right line of
 `search-lexicon.js`. Each design's AI search words are searched too.
 
+## Analytics (searches, clicks, WhatsApp taps)
+
+Every search (including ones with no results), filter, design opened, heart, "on your wall" try and
+WhatsApp tap is recorded by `WB.track` in `assets/site.js`. To see these for **all visitors**:
+
+1. analytics.google.com → Admin → Create property "WallBliss" → Web stream for the site URL.
+2. Copy the Measurement ID (`G-…`) into `assets/site.js` → `ga4Id`.
+3. In GA4 → Reports → Engagement → Events you will see `search`, `search_no_results` (with `search_term`),
+   `design_open` (with `code`), `whatsapp_tap` (with `where`) and the rest, plus `lead_source` from `?src=` links.
+
+The admin's Insights page still shows only the activity of the device it is opened on.
+
 ## Google sign-in
 
 1. console.cloud.google.com → create project "WallBliss" → APIs & Services → OAuth consent screen

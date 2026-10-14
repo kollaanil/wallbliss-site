@@ -10,7 +10,7 @@
   var A = window.WBAdmin; if (!A) return;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var esc = A.esc, MAX = 10, MIN_TAGS = 3, AI_MODEL = "claude-haiku-5-5";
+  var esc = A.esc, MAX = 10, MIN_TAGS = 3, AI_MODEL = "claude-haiku-4-5-20251001";
   var AIKEY = "wb_ai_key";
   function aiKey() { try { return localStorage.getItem(AIKEY) || ""; } catch (e) { return ""; } }
   function setAiKey(k) { try { k ? localStorage.setItem(AIKEY, k) : localStorage.removeItem(AIKEY); } catch (e) {} }

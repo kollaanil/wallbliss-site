@@ -1,5 +1,5 @@
 /* WallBliss Studio — shared site script.
-   EDIT HERE: WhatsApp number, Google reviews link and analytics endpoint live in WB.config. */
+   EDIT HERE: WhatsApp number, Google reviews link and analytics IDs live in WB.config. */
 (function () {
   var WB = (window.WB = window.WB || {});
 
@@ -11,7 +11,10 @@
     // Paste your Google Business Profile links here (Google Business Profile > Share profile / Ask for reviews).
     googleReviewsUrl: "",              // e.g. "https://g.page/r/XXXXXXXX"
     googleWriteReviewUrl: "",          // e.g. "https://g.page/r/XXXXXXXX/review"
-    // Where searches and clicks are sent. Empty until the admin app exists; events still queue in window.WB_EVENTS.
+    // Google Analytics 4 Measurement ID (looks like "G-XXXXXXXXXX"). When set, every tracked
+    // search, filter, design opened, heart and WhatsApp tap is also sent to GA4 as an event.
+    ga4Id: "",
+    // Optional extra endpoint for the same events (not used yet). Events always queue in window.WB_EVENTS.
     eventsEndpoint: ""
   };
 
@@ -44,9 +47,28 @@
   var session = WB.store.get("wb_sid", null);
   if (!session) { session = Math.random().toString(36).slice(2, 10); WB.store.set("wb_sid", session); }
   window.WB_EVENTS = window.WB_EVENTS || [];
+
+  /* Google Analytics 4: loads only when ga4Id is set, and never on the admin page */
+  var GA = WB.config.ga4Id && !/(^|\/)admin\.html$/.test(location.pathname) ? WB.config.ga4Id : "";
+  if (GA) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", GA, WB.lead.src ? { campaign_source: WB.lead.src } : {});
+    var gs = document.createElement("script"); gs.async = true; gs.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA);
+    document.head.appendChild(gs);
+  }
+  function toGA(type, data) {
+    if (!GA || type === "page_view") return;                 // GA4 counts page views by itself
+    var p = { lead_source: WB.lead.src || "(direct)" };
+    Object.keys(data || {}).forEach(function (k) { var v = data[k]; if (v != null && typeof v !== "object") p[k === "q" ? "search_term" : k] = String(v).slice(0, 100); });
+    window.gtag("event", type, p);
+  }
+
   WB.track = function (type, data) {
     var ev = { type: type, data: data || {}, page: location.pathname.split("/").pop() || "index.html", src: WB.lead.src || "", sid: session, t: new Date().toISOString() };
     window.WB_EVENTS.push(ev);
+    try { toGA(type, ev.data); } catch (e) {}
     if (!WB.config.eventsEndpoint) return;
     try {
       var body = JSON.stringify(ev);
