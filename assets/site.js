@@ -13,7 +13,7 @@
     googleWriteReviewUrl: "",          // e.g. "https://g.page/r/XXXXXXXX/review"
     // Google Analytics 4 Measurement ID (looks like "G-XXXXXXXXXX"). When set, every tracked
     // search, filter, design opened, heart and WhatsApp tap is also sent to GA4 as an event.
-    ga4Id: "",
+    ga4Id: "G-NEMLFPMYMH",
     // Optional extra endpoint for the same events (not used yet). Events always queue in window.WB_EVENTS.
     eventsEndpoint: ""
   };
