@@ -780,7 +780,9 @@
     clearTimeout(logT);
     var term = q.value.trim().toLowerCase();
     if (!term || term === lastLogged) return;
-    var go = function () { lastLogged = term; WB.track(lastSearch && lastSearch.mode === "all" ? "search" : "search_no_results", { q: term, results: lastCount, mode: lastSearch ? lastSearch.mode : "" }); };
+    var go = function () {
+      if (state.q !== term) { clearTimeout(tmr); render(); }   // Enter or a tap can arrive before the typing pause: search first, then log
+      lastLogged = term; WB.track(lastSearch && lastSearch.mode === "all" ? "search" : "search_no_results", { q: term, results: lastCount, mode: lastSearch ? lastSearch.mode : "" }); };
     if (now) go(); else logT = setTimeout(go, 1500);
   }
   var tmr; q.addEventListener("input", function () { clearTimeout(tmr); tmr = setTimeout(function () { render(); suggest(); logSearch(false); }, 120); });
