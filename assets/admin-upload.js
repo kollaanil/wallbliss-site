@@ -26,6 +26,7 @@
     get: function (k) { return IDB.open().then(function (db) { return new Promise(function (res) { var r = db.transaction("img").objectStore("img").get(k); r.onsuccess = function () { res(r.result || null); }; r.onerror = function () { res(null); }; }); }); },
     del: function (k) { return IDB.open().then(function (db) { db.transaction("img", "readwrite").objectStore("img").delete(k); }); }
   };
+  window.WBAI = { key: function () { return aiKey(); }, model: AI_MODEL };   // also used by the project story writer
   window.WBImages = {
     /* turn "idb:<key>" into a data URL (used by Publish and by thumbnails) */
     resolve: function (ref) { return /^idb:/.test(ref || "") ? IDB.get(ref.slice(4)) : Promise.resolve(ref); },

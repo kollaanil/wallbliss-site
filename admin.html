@@ -183,7 +183,11 @@
   .proj-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
   .proj-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; }
   .proj-card .ba { border-radius: 0; box-shadow: none; aspect-ratio: 4 / 3; }
-  .proj-card .ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .proj-card .ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .lbl-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .suggest { border: 0; background: var(--accent-soft); color: var(--accent); font: 700 .78rem var(--font-body); padding: 6px 12px; border-radius: 999px; cursor: pointer; min-height: 32px; white-space: nowrap; }
+  .suggest:disabled { opacity: .55; cursor: progress; }
+  .story-note { font-size: .8rem; color: var(--muted); }
   .proj-card .body { padding: 12px 14px 14px; display: grid; gap: 6px; }
   .proj-card .body b { color: var(--ink); }
   .proj-card .body small { color: var(--faint); }
@@ -420,28 +424,18 @@
 <!-- ================= PROJECT SHEET ================= -->
 <dialog class="sheet" id="p-dlg" aria-labelledby="p-title">
   <div class="sheet-in">
-    <header><div style="display:grid;gap:8px;flex:1"><h2 id="p-title">New project</h2><div class="steps-nav" id="p-steps"><span></span><span></span><span></span><span></span></div></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <header><div style="display:grid;gap:8px;flex:1"><h2 id="p-title">New project</h2><div class="steps-nav" id="p-steps"><span></span><span></span><span></span></div></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
     <div class="body">
       <!-- step 1 -->
       <div data-step="1" style="display:grid;gap:14px">
-        <p class="muted">Add the photo from before printing and the finished wall. Take both from the same spot if you can.</p>
+        <p class="muted">Add the photo from before printing and the finished wall. Take both from the same spot if you can. Photos are kept whole: nothing is cropped.</p>
         <div class="ba-pair">
           <div class="field"><span class="lbl">Before</span><div class="drop" id="p-drop-b"><input type="file" id="p-file-b" accept="image/*" capture="environment" aria-label="Before photo"><div><b>Before photo</b>Tap to take or choose</div></div></div>
           <div class="field"><span class="lbl">After</span><div class="drop" id="p-drop-a"><input type="file" id="p-file-a" accept="image/*" capture="environment" aria-label="After photo"><div><b>After photo</b>Tap to take or choose</div></div></div>
         </div>
       </div>
-      <!-- step 2 -->
-      <div data-step="2" hidden style="display:grid;gap:12px">
-        <p class="muted">Both photos are cropped to the same size automatically. Drag the faded “before” photo until the wall lines up with the “after”.</p>
-        <div class="ghost" id="p-ghost"><canvas id="p-gcanvas" width="1200" height="900"></canvas><span class="hint">Drag to line up</span></div>
-        <div class="range-row"><label for="p-op">See-through</label><input type="range" id="p-op" min="0" max="100" value="50"></div>
-        <div class="range-row"><label for="p-zoom">Zoom before</label><input type="range" id="p-zoom" min="100" max="160" value="100"></div>
-        <div class="range-row"><label for="p-bright">Brighten before</label><input type="range" id="p-bright" min="80" max="140" value="100"></div>
-        <button class="linkbtn" type="button" id="p-reset" style="justify-self:start">Reset</button>
-      </div>
       <!-- step 3 -->
       <div data-step="3" hidden style="display:grid;gap:14px">
-        <div class="field"><label for="p-ttl">Title</label><input type="text" id="p-ttl" placeholder="e.g. A jungle wall for Aarav's room" maxlength="70"><small>Write it like a story. It shows on the card and in Google.</small></div>
         <div class="grid-2" style="gap:12px">
           <div class="field"><label for="p-loc">Locality</label><input type="text" id="p-loc" list="areas" placeholder="e.g. HSR Layout"><datalist id="areas"></datalist></div>
           <div class="field"><label for="p-space">Space</label><select id="p-space"></select></div>
@@ -450,13 +444,15 @@
           <div class="field"><label for="p-design">Design</label><select id="p-design"></select></div>
           <div class="field"><label for="p-month">Month</label><input type="month" id="p-month"></div>
         </div>
-        <div class="field"><label for="p-sum">What we did</label><textarea id="p-sum" rows="3" placeholder="Two lines on the family, the room and why they chose this design."></textarea></div>
+        <p class="story-note" id="p-story-note" hidden></p>
+        <div class="field"><div class="lbl-row"><label for="p-ttl">Title</label><button class="suggest" type="button" id="p-ttl-sg">✨ Suggest another</button></div><input type="text" id="p-ttl" placeholder="e.g. A jungle wall for Aarav's room" maxlength="70"><small>Suggested for you. Change anything you like. It shows on the card and in Google.</small></div>
+        <div class="field"><div class="lbl-row"><label for="p-sum">What we did</label><button class="suggest" type="button" id="p-sum-sg">✨ Rewrite</button></div><textarea id="p-sum" rows="4" placeholder="Two lines on the room, the design and how it feels now."></textarea><small>Suggested from the photos and details. Edit freely.</small></div>
         <div class="field"><label for="p-quote">What the customer said <span class="muted" style="font-weight:400">(optional)</span></label><textarea id="p-quote" rows="2" placeholder="Their words, exactly"></textarea></div>
         <label class="switch"><input type="checkbox" id="p-consent"> The customer agreed to us showing these photos</label>
       </div>
       <!-- step 4 -->
       <div data-step="4" hidden style="display:grid;gap:12px">
-        <p class="muted">This is how it will look on the Projects page. Drag the slider to check.</p>
+        <p class="muted">This is how it will look on the Projects page. Drag the slider to check. After saving, press <b>Publish</b> at the bottom of the screen to put it on the website.</p>
         <div class="proj-card" id="p-preview"></div>
         <label class="switch"><input type="checkbox" id="p-live" checked> Show on the website</label>
         <label class="switch"><input type="checkbox" id="p-home" checked> Show in the homepage before/after carousel</label>
@@ -881,40 +877,43 @@
   /* =====================================================================
      PROJECTS
      ===================================================================== */
-  var P = null, step = 1, bImg = null, aImg = null, align = { dx: 0, dy: 0, z: 1, br: 1 };
+  var P = null, step = 1, bImg = null, aImg = null;
   function renderProjects() {
     var list = db.projects;
     $("#p-list").innerHTML = list.length ? list.map(function (p, i) {
-      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
+      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
         '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
     }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
     wireBA($("#p-list"));
     $$("[data-plive]").forEach(function (c) { c.onchange = function () { db.projects[+c.dataset.plive].hidden = !c.checked; save(); renderProjects(); toast(c.checked ? "Live on the Projects page" : "Hidden"); }; });
     $$("[data-pedit]").forEach(function (b) { b.onclick = function () { openProject(+b.dataset.pedit); }; });
   }
-  function baHTML(before, after, title) {
+  function baHTML(before, after, title, ratio) {
     function im(u, cls, alt) { return /^idb:/.test(u || "") ? '<img' + cls + ' data-idb="' + u + '" alt="' + alt + '">' : '<img' + cls + ' src="' + u + '" alt="' + alt + '">'; }
-    return '<div class="ba" style="--pos:50%">' + im(before, "", "Before") + im(after, ' class="after"', esc(title || "After")) + '<div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
+    return '<div class="ba" style="--pos:50%' + (+ratio ? ";aspect-ratio:" + (+ratio) : "") + '">' + im(before, "", "Before") + im(after, ' class="after"', esc(title || "After")) + '<div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
   }
   function wireBA(root) { $$(".ba input[type=range]", root).forEach(function (r) { r.oninput = function () { r.parentNode.style.setProperty("--pos", r.value + "%"); }; }); }
+  var FLOW = [1, 3, 4];
   function setStep(n) {
     step = n;
     $$("[data-step]").forEach(function (s) { s.hidden = +s.dataset.step !== n; });
-    $$("#p-steps span").forEach(function (s, i) { s.classList.toggle("on", i < n); });
+    $$("#p-steps span").forEach(function (s, i) { s.classList.toggle("on", i <= FLOW.indexOf(n)); });
     $("#p-back").style.visibility = n > 1 ? "visible" : "hidden";
-    $("#p-next").textContent = n === 4 ? (P != null ? "Save project" : "Publish project") : "Next";
-    if (n === 2) drawGhost();
-    if (n === 4) { var o = outPair(); $("#p-preview").innerHTML = baHTML(o.b, o.a, $("#p-ttl").value) + '<div class="body"><small>' + esc($("#p-loc").value) + " · " + esc($("#p-space").value) + '</small><b>' + esc($("#p-ttl").value) + '</b><p class="muted" style="font-size:.88rem">' + esc($("#p-sum").value) + "</p></div>"; wireBA($("#p-preview")); }
+    $("#p-next").textContent = n === 4 ? "Save draft" : "Next";
+    if (n === 3) autoStory();
+    if (n === 4) { var o = outPair(); $("#p-preview").innerHTML = baHTML(o.b, o.a, $("#p-ttl").value, o.w / o.h) + '<div class="body"><small>' + esc($("#p-loc").value) + " · " + esc($("#p-space").value) + '</small><b>' + esc($("#p-ttl").value) + '</b><p class="muted" style="font-size:.88rem">' + esc($("#p-sum").value) + "</p></div>"; wireBA($("#p-preview")); }
     $("#p-dlg .body").scrollTop = 0;
   }
   function openProject(i) {
     P = i == null ? null : i; var p = P != null ? db.projects[P] : {};
-    bImg = aImg = null; align = { dx: 0, dy: 0, z: 1, br: 1 };
+    bImg = aImg = null;
     $("#p-title").textContent = P != null ? "Edit project" : "New project";
     $("#p-space").innerHTML = ROOMS.map(function (r) { return "<option>" + r[1] + "</option>"; }).join("");
     $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
     $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room"; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
     $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
+    aiTitles = []; tIdx = Math.floor(Math.random() * 3); note(""); picked = { "#p-ttl": false, "#p-sum": false };
+    $("#p-ttl").dataset.touched = p.title ? "1" : ""; $("#p-sum").dataset.touched = p.summary ? "1" : "";
     $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
     $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
     if (P != null) ["before", "after"].forEach(function (k) {
@@ -924,35 +923,114 @@
   }
   function loadURL(u, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.src = u; }
   function showDrop(sel, url) { var d = $(sel); d.style.backgroundImage = 'linear-gradient(rgba(255,253,249,.55),rgba(255,253,249,.55)),url("' + url + '")'; d.style.backgroundSize = "cover"; d.style.backgroundPosition = "center"; d.querySelector("b").textContent = "✓ Added · tap to change"; }
-  wireDrop($("#p-drop-b"), $("#p-file-b"), function (im) { bImg = im; align = { dx: 0, dy: 0, z: 1, br: 1 }; showDrop("#p-drop-b", im.src); });
+  wireDrop($("#p-drop-b"), $("#p-file-b"), function (im) { bImg = im; showDrop("#p-drop-b", im.src); });
   wireDrop($("#p-drop-a"), $("#p-file-a"), function (im) { aImg = im; showDrop("#p-drop-a", im.src); });
   $("#p-new").onclick = function () { openProject(null); };
 
-  var GW = 1200, GH = 900;
-  function cover(x, im, z, dx, dy) { var s = Math.max(GW / im.naturalWidth, GH / im.naturalHeight) * z, w = im.naturalWidth * s, h = im.naturalHeight * s; x.drawImage(im, (GW - w) / 2 + dx, (GH - h) / 2 + dy, w, h); }
-  function drawBefore(x) { x.save(); x.filter = "brightness(" + align.br + ")"; cover(x, bImg, align.z, align.dx, align.dy); x.restore(); }
-  function drawGhost() {
-    var c = $("#p-gcanvas"), x = c.getContext("2d"); x.clearRect(0, 0, GW, GH);
-    cover(x, aImg, 1, 0, 0); x.save(); x.globalAlpha = $("#p-op").value / 100; drawBefore(x); x.restore();
-  }
+  /* Photos are kept whole. The finished wall ("after") sets the shape; it is only scaled down
+     for the web (longest side 2000 px). The "before" photo is fitted inside the same frame without
+     cropping; if its shape differs, the spare edges are filled with the wall colour. */
+  var LONG = 2000;
   function outPair() {
-    var c = document.createElement("canvas"); c.width = GW; c.height = GH; var x = c.getContext("2d");
-    x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, GW, GH); drawBefore(x); var b = c.toDataURL("image/jpeg", .78);
-    x.clearRect(0, 0, GW, GH); cover(x, aImg, 1, 0, 0); var a = c.toDataURL("image/jpeg", .78);
-    return { b: b, a: a };
+    var s = Math.min(1, LONG / Math.max(aImg.naturalWidth, aImg.naturalHeight)),
+        W = Math.round(aImg.naturalWidth * s), H = Math.round(aImg.naturalHeight * s);
+    var c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
+    x.drawImage(aImg, 0, 0, W, H); var a = c.toDataURL("image/jpeg", .86);
+    var k = Math.min(W / bImg.naturalWidth, H / bImg.naturalHeight), bw = bImg.naturalWidth * k, bh = bImg.naturalHeight * k;
+    x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, W, H); x.drawImage(bImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
+    var b = c.toDataURL("image/jpeg", .86);
+    return { b: b, a: a, w: W, h: H };
   }
-  ["#p-op", "#p-zoom", "#p-bright"].forEach(function (s) { $(s).addEventListener("input", function () { align.z = $("#p-zoom").value / 100; align.br = $("#p-bright").value / 100; drawGhost(); }); });
-  $("#p-reset").onclick = function () { align = { dx: 0, dy: 0, z: 1, br: 1 }; $("#p-zoom").value = 100; $("#p-bright").value = 100; $("#p-op").value = 50; drawGhost(); };
-  (function () {
-    var g = $("#p-ghost"), drag = null;
-    g.addEventListener("pointerdown", function (e) { drag = { x: e.clientX, y: e.clientY, dx: align.dx, dy: align.dy }; g.setPointerCapture(e.pointerId); });
-    g.addEventListener("pointermove", function (e) { if (!drag) return; var k = GW / g.clientWidth; align.dx = drag.dx + (e.clientX - drag.x) * k; align.dy = drag.dy + (e.clientY - drag.y) * k; drawGhost(); });
-    ["pointerup", "pointercancel"].forEach(function (t) { g.addEventListener(t, function () { drag = null; }); });
-  })();
-  $("#p-back").onclick = function () { if (step > 1) setStep(step - 1); };
+
+  /* ---------- story writer: title + "What we did", suggested, always editable ---------- */
+  var STORY = {
+    "Living room": { t: ["The wall the whole family gathers around", "Where every evening now begins with a smile", "A living room that finally tells their story", "The view they come home to every day"], end: "It's now the first thing everyone sees when they walk in." },
+    "Bedroom": { t: ["A wall worth waking up to", "Calm, colour and a little magic above the bed", "The last thing they see at night, the first each morning"], end: "The room feels calmer, warmer and completely theirs." },
+    "Kids' room": { t: ["A wall that grows up with them", "Where little dreams now have a big home", "Bedtime stories, now on the wall", "A room that sparks wonder every morning"], end: "Now it's the first thing the little one sees every morning." },
+    "Pooja room": { t: ["A sacred corner, now glowing with devotion", "Where every prayer feels a little closer", "A quiet place of peace, made beautiful"], end: "The pooja corner now feels serene the moment you step in." },
+    "Office": { t: ["A workspace that tells its story with pride", "Walls that welcome every visitor", "Where the team now walks in inspired"], end: "Visitors notice it the moment they walk in." },
+    "Café & restaurant": { t: ["The wall every guest wants a photo with", "Where every table now has a view", "A café wall people come back for"], end: "Guests now stop, smile and reach for their phones." },
+    "Hotel lobby": { t: ["A first impression guests remember", "A lobby that welcomes like home", "Where every arrival begins with wonder"], end: "Guests now arrive to a welcome they remember." },
+    "Hospital & clinic": { t: ["A calmer wait, one wall at a time", "Healing begins with a gentler view", "A waiting room that feels like a deep breath"], end: "The waiting area now feels calmer and kinder." }
+  };
+  var aiTitles = [], tIdx = 0;
+  function details() {
+    var code = $("#p-design").value, d = code ? byCode()[code] : null;
+    return { space: $("#p-space").value, loc: $("#p-loc").value.trim(), size: $("#p-size").value.trim(), time: $("#p-time").value.trim(), design: d ? d.name : "", code: code };
+  }
+  function templateStory(shift) {
+    var d = details(), st = STORY[d.space] || STORY["Living room"];
+    tIdx = (tIdx + (shift || 0)) % st.t.length;
+    var what = d.design ? "the “" + d.design + "” design" : "a picture chosen by the family";
+    var where = d.space.toLowerCase() + (d.loc ? " in " + d.loc : "");
+    var sum = "A plain " + (d.size ? d.size + " " : "") + "wall in this " + where + " now carries " + what + ", printed straight onto the wall" + (d.time ? " in " + d.time : " in a single visit") + " with no mess. " + st.end;
+    return { title: st.t[tIdx], summary: sum };
+  }
+  function note(msg) { var n = $("#p-story-note"); n.textContent = msg || ""; n.hidden = !msg; }
+  function small(img) { var k = Math.min(1, 768 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .8).split(",")[1]; }
+  function askStory() {
+    var key = window.WBAI && WBAI.key(); if (!key || !bImg || !aImg) return Promise.reject(new Error("no-ai"));
+    var d = details();
+    var prompt = "You write for WallBliss Studio, a Bengaluru company that prints art directly onto walls. Photo 1 is the wall BEFORE printing, photo 2 is AFTER.\n" +
+      "Known details (use only these, never invent names, people, ages, prices or times): space: " + d.space + (d.loc ? "; locality: " + d.loc : "") + (d.size ? "; wall size: " + d.size : "") + (d.time ? "; time on site: " + d.time : "") + (d.design ? "; design: " + d.design : "") + ".\n" +
+      "Write:\n1) three different titles: 4 to 9 words, warm and emotionally touching, specific to what is printed in photo 2 and the feeling of the room; plain Indian English; no exclamation marks; avoid the words transform, stunning, amazing.\n" +
+      "2) summary: two sentences, at most 45 words, for the 'What we did' field: what the wall was like, what is printed on it now, that it was printed straight onto the wall, and how the room feels. Mention the locality if given.\n" +
+      'Reply with JSON only: {"titles":["","",""],"summary":""}';
+    return fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: WBAI.model, max_tokens: 500, messages: [{ role: "user", content: [
+        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: small(bImg) } },
+        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: small(aImg) } },
+        { type: "text", text: prompt }] }] })
+    }).then(function (r) { if (!r.ok) throw new Error("AI " + r.status); return r.json(); })
+      .then(function (j) {
+        var t = (j.content || []).map(function (c) { return c.text || ""; }).join(""), m = t.match(/\{[\s\S]*\}/);
+        var o = JSON.parse(m ? m[0] : t);
+        var titles = (o.titles || []).map(function (x) { return String(x || "").replace(/["“”]/g, "").trim(); }).filter(Boolean);
+        if (!titles.length || !o.summary) throw new Error("AI reply incomplete");
+        return { titles: titles, summary: String(o.summary).trim() };
+      });
+  }
+  function touched(id) { return $(id).dataset.touched === "1"; }
+  var picked = { "#p-ttl": false, "#p-sum": false };     // chosen with a Suggest button: automatic updates leave it alone
+  function fill(id, val) { $(id).value = val; $(id).dataset.touched = picked[id] ? "1" : ""; }
+  function autoStory(force) {
+    var wantT = force === "title" || force === "all" || !touched("#p-ttl"), wantS = force === "summary" || force === "all" || !touched("#p-sum");
+    if (!wantT && !wantS) return;
+    var tpl = templateStory(force === "title" ? 1 : 0);
+    if (force !== "refresh") {
+      if (wantT && (force || !$("#p-ttl").value.trim())) fill("#p-ttl", tpl.title);
+      if (wantS && (force || !$("#p-sum").value.trim())) fill("#p-sum", tpl.summary);
+    }
+    if (force === "title" && aiTitles.length > 1) { aiTitles.push(aiTitles.shift()); fill("#p-ttl", aiTitles[0]); return; }
+    if (!(window.WBAI && WBAI.key())) { note(""); return; }
+    note(force === "refresh" ? "✨ Updating the story with your details…" : "✨ Writing a title and story from your photos…"); $("#p-ttl-sg").disabled = $("#p-sum-sg").disabled = true;
+    askStory().then(function (r) {
+      aiTitles = r.titles;
+      if (wantT && (force === "title" || force === "all" || !touched("#p-ttl"))) fill("#p-ttl", r.titles[0]);
+      if (wantS && (force === "summary" || force === "all" || !touched("#p-sum"))) fill("#p-sum", r.summary);
+      note("✨ Written from your photos. Edit anything you like.");
+    }).catch(function () { note("Suggested from the details. Add the AI key in Settings for suggestions written from the photos."); })
+      .then(function () { $("#p-ttl-sg").disabled = $("#p-sum-sg").disabled = false; });
+  }
+  ["#p-ttl", "#p-sum"].forEach(function (id) { $(id).addEventListener("input", function () { this.dataset.touched = "1"; }); });
+  $("#p-ttl-sg").onclick = function () { picked["#p-ttl"] = true; $("#p-ttl").dataset.touched = ""; autoStory("title"); };
+  $("#p-sum-sg").onclick = function () { picked["#p-sum"] = true; $("#p-sum").dataset.touched = ""; autoStory("summary"); };
+  /* details changed: rewrite whatever the person hasn't edited themselves */
+  var stT; ["#p-space", "#p-design", "#p-loc", "#p-size", "#p-time"].forEach(function (id) {
+    $(id).addEventListener("change", function () {
+      if (touched("#p-ttl") && touched("#p-sum")) return;
+      clearTimeout(stT);
+      stT = setTimeout(function () {
+        if (window.WBAI && WBAI.key()) { aiTitles = []; autoStory("refresh"); return; }
+        var t = templateStory(0); if (!touched("#p-sum")) fill("#p-sum", t.summary); if (!touched("#p-ttl")) fill("#p-ttl", t.title);
+      }, 900);
+    });
+  });
+  $("#p-back").onclick = function () { var i = FLOW.indexOf(step); if (i > 0) setStep(FLOW[i - 1]); };
   $("#p-next").onclick = function () {
-    if (step === 1) { if (!bImg || !aImg) { toast("Add both the before and the after photo"); return; } setStep(2); return; }
-    if (step === 2) { setStep(3); return; }
+    if (step === 1) { if (!bImg || !aImg) { toast("Add both the before and the after photo"); return; } setStep(3); return; }
     if (step === 3) {
       if (!$("#p-ttl").value.trim() || !$("#p-loc").value.trim()) { toast("Add a title and the locality"); return; }
       if (!$("#p-consent").checked) { toast("Please confirm the customer agreed to show the photos"); return; }
@@ -960,7 +1038,8 @@
     }
     var o = outPair(), t = $("#p-ttl").value.trim();
     var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, size: $("#p-size").value.trim(),
-      design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), consent: true, hidden: !$("#p-live").checked, noHome: !$("#p-home").checked };
+      design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), consent: true, hidden: !$("#p-live").checked, noHome: !$("#p-home").checked,
+      w: o.w, h: o.h, ratio: Math.round(o.w / o.h * 10000) / 10000 };
     if (P != null) p.slug = db.projects[P].slug;
     var btn = this; btn.disabled = true;
     Promise.all([WBImages.put(p.slug + "-before-" + Date.now().toString(36), o.b), WBImages.put(p.slug + "-after-" + Date.now().toString(36), o.a)]).then(function (refs) {

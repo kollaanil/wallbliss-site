@@ -35,6 +35,14 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
 **AI tagging key (once per device):** console.anthropic.com → API keys → create key; set a monthly
 spend limit under Billing. Paste it in admin → Settings → AI tagging key. Stored on that device only.
 
+## Adding a project (admin → Projects → + New project)
+
+1. Add the before and after photos. They are kept whole (never cropped), only scaled to 2000 px on the longest side.
+   The after photo sets the shape; a before photo of a different shape is fitted inside it with plain edges.
+2. Fill in locality, space, design and size. The **title** and **What we did** are written for you: from the photos
+   when the AI key is added on that device, otherwise from the details. Use ✨ Suggest another / ✨ Rewrite, or type your own.
+3. Save draft, then press **Publish** at the bottom of the admin to put it on the website.
+
 ## Search
 
 `assets/search.js` + `assets/search-lexicon.js`: runs in the visitor's browser. Understands English,
