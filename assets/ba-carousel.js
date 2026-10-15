@@ -13,7 +13,7 @@
     .map(function (p) {
       return { before: '<img src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy" decoding="async">',
         after: '<img src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">',
-        title: p.title, meta: [p.locality, p.space, p.time].filter(Boolean).join(" · "), href: "projects.html#" + p.slug };
+        title: p.title, meta: [p.locality, p.space, p.time].filter(Boolean).join(" · "), href: "projects.html#" + p.slug, ratio: +p.ratio || 0 };
     });
   function pic(n, alt) {
     return '<picture><source type="image/webp" srcset="assets/img/ba-' + n + '-m.webp 800w, assets/img/ba-' + n + '-l.webp 1120w" sizes="(max-width: 640px) 86vw, 760px">' +
@@ -24,7 +24,7 @@
 
   track.innerHTML = slides.map(function (s, i) {
     return '<figure class="bac-slide" data-i="' + i + '" aria-roledescription="slide" aria-label="' + (i + 1) + " of " + slides.length + '">' +
-      '<div class="cmp" style="--pos:50%"><div class="cmp-b">' + s.before + '</div><div class="cmp-a">' + s.after + '</div>' +
+      '<div class="cmp' + (s.ratio ? " full" : "") + '" style="--pos:50%' + (s.ratio ? ";aspect-ratio:" + s.ratio : "") + '"><div class="cmp-b">' + s.before + '</div><div class="cmp-a">' + s.after + '</div>' +
       '<span class="cmp-l l">Before</span><span class="cmp-l r">After</span>' +
       '<div class="cmp-line"><button type="button" class="cmp-knob" aria-label="Drag to compare before and after" tabindex="-1">⟷</button></div>' +
       '<input class="cmp-range" type="range" min="0" max="100" value="50" aria-label="Compare before and after: ' + esc(s.title) + '"></div>' +

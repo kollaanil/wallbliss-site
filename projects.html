@@ -151,7 +151,7 @@
   P.forEach(function (p) {
     var el = document.createElement("article"); el.className = "panel proj"; el.id = p.slug;
     var pics = p.before && p.after
-      ? '<div class="ba" id="ba-' + esc(p.slug) + '"><img src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy">' +
+      ? '<div class="ba" id="ba-' + esc(p.slug) + '"' + (+p.ratio ? ' style="aspect-ratio:' + (+p.ratio) + '"' : "") + '><img src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy">' +
         '<img class="after" src="' + esc(p.after) + '" alt="' + esc(p.title) + ' after printing" loading="lazy"><div class="handle"></div>' +
         '<span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Slide to compare before and after"></div>'
       : '<div class="pics">' + (p.after ? '<figure style="grid-column:1/-1"><img src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy"><figcaption>After</figcaption></figure>' : '') + '</div>';
