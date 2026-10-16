@@ -980,11 +980,23 @@
   }
   function note(msg) { $("#p-story-note").textContent = msg; }
   function small(img) { var k = Math.min(1, 768 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .8).split(",")[1]; }
+  /* House style: the last few PUBLISHED projects, exactly as the team finally wrote them.
+     Claude sees them with every request and matches their tone. (API calls have no memory,
+     so this is how the AI "learns" your taste.) Drafts on this device are not used. */
+  function houseStyle() {
+    var pub = (WB.db.published().projects || []).filter(function (p) { return !p.hidden && p.title && p.summary; })
+      .sort(function (a, b) { return (b.month || "").localeCompare(a.month || ""); }).slice(0, 8);
+    if (P != null) { var me = db.projects[P]; pub = pub.filter(function (p) { return !me || p.slug !== me.slug; }); }
+    if (!pub.length) return "";
+    return "Titles and stories the WallBliss team has approved and published (newest first). Match their tone, length and style closely; do not copy their wording or their details:\n" +
+      pub.map(function (p, i) { return (i + 1) + ". Title: " + p.title + "\n   Story: " + p.summary; }).join("\n") + "\n\n";
+  }
   function askStory() {
     var key = window.WBAI && WBAI.key(); if (!key || !bImg || !aImg) return Promise.reject(new Error("no-ai"));
     var d = details();
     var prompt = "You write for WallBliss Studio, a Bengaluru company that prints art directly onto walls. Photo 1 is the wall BEFORE printing, photo 2 is AFTER.\n" +
       "Known details (use only these, never invent names, people, ages, prices or times): space: " + d.space + (d.loc ? "; locality: " + d.loc : "") + (d.size ? "; wall size: " + d.size : "") + (d.time ? "; time on site: " + d.time : "") + (d.design ? "; design: " + d.design : "") + ".\n" +
+      houseStyle() +
       "Write:\n1) titles: three clearly different titles, 4 to 9 words each, warm and emotionally touching, specific to what is printed in photo 2 and the feeling of the room; plain Indian English; no exclamation marks; avoid the words transform, stunning, amazing.\n" +
       "2) stories: three clearly different versions of a 'What we did' text, each two sentences and at most 45 words: one about how the room feels now, one about the artwork itself, one about the change from the bare wall. Each says it was printed straight onto the wall and mentions the locality if given.\n" +
       'Reply with JSON only: {"titles":["","",""],"stories":["","",""]}';

@@ -42,6 +42,8 @@ spend limit under Billing. Paste it in admin → Settings → AI tagging key. St
 2. Fill in locality, space, design and size. You get **three titles and three "What we did" stories** to pick from:
    written by Claude Haiku 5.5 from both photos when the AI key is added on that device, otherwise ready-made wording
    for the room. Tap one, edit it if you like, or press ✨ New suggestions. Your own edits are never overwritten.
+   The AI also sees your last 8 published titles and stories as house-style examples, so it learns your taste
+   from what you actually publish (the API itself has no memory).
 3. Save draft, then press **Publish** at the bottom of the admin to put it on the website.
 
 ## Search
