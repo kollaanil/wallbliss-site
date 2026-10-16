@@ -188,6 +188,13 @@
   .suggest { border: 0; background: var(--accent-soft); color: var(--accent); font: 700 .78rem var(--font-body); padding: 6px 12px; border-radius: 999px; cursor: pointer; min-height: 32px; white-space: nowrap; }
   .suggest:disabled { opacity: .55; cursor: progress; }
   .story-note { font-size: .8rem; color: var(--muted); }
+  .story-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .opts { display: grid; gap: 6px; }
+  .opt { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; text-align: left; border: 1px solid var(--line-strong); background: var(--surface); border-radius: 12px; padding: 10px 12px; font: 500 .92rem/1.45 var(--font-body); color: var(--ink-2); cursor: pointer; min-height: 44px; }
+  .opt::before { content: ""; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--line-strong); box-sizing: border-box; }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+  .opt[aria-pressed="true"]::before { border: 5px solid var(--accent); }
+  .opts.loading .opt { opacity: .5; }
   .proj-card .body { padding: 12px 14px 14px; display: grid; gap: 6px; }
   .proj-card .body b { color: var(--ink); }
   .proj-card .body small { color: var(--faint); }
@@ -444,9 +451,9 @@
           <div class="field"><label for="p-design">Design</label><select id="p-design"></select></div>
           <div class="field"><label for="p-month">Month</label><input type="month" id="p-month"></div>
         </div>
-        <p class="story-note" id="p-story-note" hidden></p>
-        <div class="field"><div class="lbl-row"><label for="p-ttl">Title</label><button class="suggest" type="button" id="p-ttl-sg">✨ Suggest another</button></div><input type="text" id="p-ttl" placeholder="e.g. A jungle wall for Aarav's room" maxlength="70"><small>Suggested for you. Change anything you like. It shows on the card and in Google.</small></div>
-        <div class="field"><div class="lbl-row"><label for="p-sum">What we did</label><button class="suggest" type="button" id="p-sum-sg">✨ Rewrite</button></div><textarea id="p-sum" rows="4" placeholder="Two lines on the room, the design and how it feels now."></textarea><small>Suggested from the photos and details. Edit freely.</small></div>
+        <div class="story-bar"><p class="story-note" id="p-story-note">Pick a title and a story below, then edit if you like.</p><button class="suggest" type="button" id="p-more">✨ New suggestions</button></div>
+        <div class="field"><span class="lbl">Title: pick one</span><div class="opts" id="p-ttl-opts" role="group" aria-label="Title suggestions"></div><input type="text" id="p-ttl" placeholder="Or type your own title" maxlength="70" aria-label="Title"><small>Shows on the card and in Google. Edit freely.</small></div>
+        <div class="field"><span class="lbl">What we did: pick one</span><div class="opts" id="p-sum-opts" role="group" aria-label="Story suggestions"></div><textarea id="p-sum" rows="4" placeholder="Or write your own" aria-label="What we did"></textarea><small>Edit freely after picking.</small></div>
         <div class="field"><label for="p-quote">What the customer said <span class="muted" style="font-weight:400">(optional)</span></label><textarea id="p-quote" rows="2" placeholder="Their words, exactly"></textarea></div>
         <label class="switch"><input type="checkbox" id="p-consent"> The customer agreed to us showing these photos</label>
       </div>
@@ -912,8 +919,7 @@
     $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
     $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room"; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
     $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
-    aiTitles = []; tIdx = Math.floor(Math.random() * 3); note(""); picked = { "#p-ttl": false, "#p-sum": false };
-    $("#p-ttl").dataset.touched = p.title ? "1" : ""; $("#p-sum").dataset.touched = p.summary ? "1" : "";
+    opts = { t: [], s: [] }; tplShift = Math.floor(Math.random() * 3); storyReq++; chosen = { "#p-ttl": !!p.title, "#p-sum": !!p.summary }; $("#p-ttl-opts").innerHTML = $("#p-sum-opts").innerHTML = "";
     $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
     $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
     if (P != null) ["before", "after"].forEach(function (k) {
@@ -942,7 +948,9 @@
     return { b: b, a: a, w: W, h: H };
   }
 
-  /* ---------- story writer: title + "What we did", suggested, always editable ---------- */
+  /* ---------- story writer: 3 titles + 3 stories to pick from, then edit ----------
+     With the AI key on this device, Claude (model in admin-upload.js) writes them from both photos
+     and the details. Without it, warm ready-made wording per room is offered. */
   var STORY = {
     "Living room": { t: ["The wall the whole family gathers around", "Where every evening now begins with a smile", "A living room that finally tells their story", "The view they come home to every day"], end: "It's now the first thing everyone sees when they walk in." },
     "Bedroom": { t: ["A wall worth waking up to", "Calm, colour and a little magic above the bed", "The last thing they see at night, the first each morning"], end: "The room feels calmer, warmer and completely theirs." },
@@ -953,80 +961,89 @@
     "Hotel lobby": { t: ["A first impression guests remember", "A lobby that welcomes like home", "Where every arrival begins with wonder"], end: "Guests now arrive to a welcome they remember." },
     "Hospital & clinic": { t: ["A calmer wait, one wall at a time", "Healing begins with a gentler view", "A waiting room that feels like a deep breath"], end: "The waiting area now feels calmer and kinder." }
   };
-  var aiTitles = [], tIdx = 0;
+  var opts = { t: [], s: [] }, tplShift = 0, storyReq = 0;
   function details() {
     var code = $("#p-design").value, d = code ? byCode()[code] : null;
     return { space: $("#p-space").value, loc: $("#p-loc").value.trim(), size: $("#p-size").value.trim(), time: $("#p-time").value.trim(), design: d ? d.name : "", code: code };
   }
-  function templateStory(shift) {
-    var d = details(), st = STORY[d.space] || STORY["Living room"];
-    tIdx = (tIdx + (shift || 0)) % st.t.length;
+  function templateOptions() {
+    var d = details(), st = STORY[d.space] || STORY["Living room"], n = st.t.length, t = [];
+    for (var i = 0; i < Math.min(3, n); i++) t.push(st.t[(tplShift + i) % n]);
     var what = d.design ? "the “" + d.design + "” design" : "a picture chosen by the family";
-    var where = d.space.toLowerCase() + (d.loc ? " in " + d.loc : "");
-    var sum = "A plain " + (d.size ? d.size + " " : "") + "wall in this " + where + " now carries " + what + ", printed straight onto the wall" + (d.time ? " in " + d.time : " in a single visit") + " with no mess. " + st.end;
-    return { title: st.t[tIdx], summary: sum };
+    var where = d.space.toLowerCase() + (d.loc ? " in " + d.loc : ""), sz = d.size ? d.size + " " : "", when = d.time ? "in " + d.time : "in a single visit";
+    var s = [
+      "A plain " + sz + "wall in this " + where + " now carries " + what + ", printed straight onto the wall " + when + " with no mess. " + st.end,
+      what.charAt(0).toUpperCase() + what.slice(1) + " now fills the " + sz + "wall of this " + where + ". We printed it directly onto the wall " + when + ": no wallpaper, no seams, no peeling edges. " + st.end,
+      "This " + where + " had a bare wall waiting for a story. We printed " + what + " right onto it " + when + ", and the whole room changed. " + st.end
+    ];
+    return { t: t, s: s };
   }
-  function note(msg) { var n = $("#p-story-note"); n.textContent = msg || ""; n.hidden = !msg; }
+  function note(msg) { $("#p-story-note").textContent = msg; }
   function small(img) { var k = Math.min(1, 768 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", .8).split(",")[1]; }
   function askStory() {
     var key = window.WBAI && WBAI.key(); if (!key || !bImg || !aImg) return Promise.reject(new Error("no-ai"));
     var d = details();
     var prompt = "You write for WallBliss Studio, a Bengaluru company that prints art directly onto walls. Photo 1 is the wall BEFORE printing, photo 2 is AFTER.\n" +
       "Known details (use only these, never invent names, people, ages, prices or times): space: " + d.space + (d.loc ? "; locality: " + d.loc : "") + (d.size ? "; wall size: " + d.size : "") + (d.time ? "; time on site: " + d.time : "") + (d.design ? "; design: " + d.design : "") + ".\n" +
-      "Write:\n1) three different titles: 4 to 9 words, warm and emotionally touching, specific to what is printed in photo 2 and the feeling of the room; plain Indian English; no exclamation marks; avoid the words transform, stunning, amazing.\n" +
-      "2) summary: two sentences, at most 45 words, for the 'What we did' field: what the wall was like, what is printed on it now, that it was printed straight onto the wall, and how the room feels. Mention the locality if given.\n" +
-      'Reply with JSON only: {"titles":["","",""],"summary":""}';
+      "Write:\n1) titles: three clearly different titles, 4 to 9 words each, warm and emotionally touching, specific to what is printed in photo 2 and the feeling of the room; plain Indian English; no exclamation marks; avoid the words transform, stunning, amazing.\n" +
+      "2) stories: three clearly different versions of a 'What we did' text, each two sentences and at most 45 words: one about how the room feels now, one about the artwork itself, one about the change from the bare wall. Each says it was printed straight onto the wall and mentions the locality if given.\n" +
+      'Reply with JSON only: {"titles":["","",""],"stories":["","",""]}';
     return fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({ model: WBAI.model, max_tokens: 500, messages: [{ role: "user", content: [
+      body: JSON.stringify({ model: WBAI.model, max_tokens: 700, messages: [{ role: "user", content: [
         { type: "image", source: { type: "base64", media_type: "image/jpeg", data: small(bImg) } },
         { type: "image", source: { type: "base64", media_type: "image/jpeg", data: small(aImg) } },
         { type: "text", text: prompt }] }] })
     }).then(function (r) { if (!r.ok) throw new Error("AI " + r.status); return r.json(); })
       .then(function (j) {
-        var t = (j.content || []).map(function (c) { return c.text || ""; }).join(""), m = t.match(/\{[\s\S]*\}/);
-        var o = JSON.parse(m ? m[0] : t);
-        var titles = (o.titles || []).map(function (x) { return String(x || "").replace(/["“”]/g, "").trim(); }).filter(Boolean);
-        if (!titles.length || !o.summary) throw new Error("AI reply incomplete");
-        return { titles: titles, summary: String(o.summary).trim() };
+        var txt = (j.content || []).map(function (c) { return c.text || ""; }).join(""), m = txt.match(/\{[\s\S]*\}/);
+        var o = JSON.parse(m ? m[0] : txt);
+        var clean = function (l) { return (l || []).map(function (x) { return String(x || "").replace(/^["“]|["”]$/g, "").trim(); }).filter(Boolean).slice(0, 3); };
+        var r2 = { t: clean(o.titles), s: clean(o.stories || (o.summary ? [o.summary] : [])) };
+        if (!r2.t.length || !r2.s.length) throw new Error("AI reply incomplete");
+        return r2;
       });
   }
-  function touched(id) { return $(id).dataset.touched === "1"; }
-  var picked = { "#p-ttl": false, "#p-sum": false };     // chosen with a Suggest button: automatic updates leave it alone
-  function fill(id, val) { $(id).value = val; $(id).dataset.touched = picked[id] ? "1" : ""; }
-  function autoStory(force) {
-    var wantT = force === "title" || force === "all" || !touched("#p-ttl"), wantS = force === "summary" || force === "all" || !touched("#p-sum");
-    if (!wantT && !wantS) return;
-    var tpl = templateStory(force === "title" ? 1 : 0);
-    if (force !== "refresh") {
-      if (wantT && (force || !$("#p-ttl").value.trim())) fill("#p-ttl", tpl.title);
-      if (wantS && (force || !$("#p-sum").value.trim())) fill("#p-sum", tpl.summary);
-    }
-    if (force === "title" && aiTitles.length > 1) { aiTitles.push(aiTitles.shift()); fill("#p-ttl", aiTitles[0]); return; }
-    if (!(window.WBAI && WBAI.key())) { note(""); return; }
-    note(force === "refresh" ? "✨ Updating the story with your details…" : "✨ Writing a title and story from your photos…"); $("#p-ttl-sg").disabled = $("#p-sum-sg").disabled = true;
-    askStory().then(function (r) {
-      aiTitles = r.titles;
-      if (wantT && (force === "title" || force === "all" || !touched("#p-ttl"))) fill("#p-ttl", r.titles[0]);
-      if (wantS && (force === "summary" || force === "all" || !touched("#p-sum"))) fill("#p-sum", r.summary);
-      note("✨ Written from your photos. Edit anything you like.");
-    }).catch(function () { note("Suggested from the details. Add the AI key in Settings for suggestions written from the photos."); })
-      .then(function () { $("#p-ttl-sg").disabled = $("#p-sum-sg").disabled = false; });
-  }
-  ["#p-ttl", "#p-sum"].forEach(function (id) { $(id).addEventListener("input", function () { this.dataset.touched = "1"; }); });
-  $("#p-ttl-sg").onclick = function () { picked["#p-ttl"] = true; $("#p-ttl").dataset.touched = ""; autoStory("title"); };
-  $("#p-sum-sg").onclick = function () { picked["#p-sum"] = true; $("#p-sum").dataset.touched = ""; autoStory("summary"); };
-  /* details changed: rewrite whatever the person hasn't edited themselves */
-  var stT; ["#p-space", "#p-design", "#p-loc", "#p-size", "#p-time"].forEach(function (id) {
-    $(id).addEventListener("change", function () {
-      if (touched("#p-ttl") && touched("#p-sum")) return;
-      clearTimeout(stT);
-      stT = setTimeout(function () {
-        if (window.WBAI && WBAI.key()) { aiTitles = []; autoStory("refresh"); return; }
-        var t = templateStory(0); if (!touched("#p-sum")) fill("#p-sum", t.summary); if (!touched("#p-ttl")) fill("#p-ttl", t.title);
-      }, 900);
+  /* once a suggestion is tapped or the text is typed, it is the person's choice and stays put;
+     until then the field shows the first suggestion and follows new ones */
+  var chosen = { "#p-ttl": false, "#p-sum": false };
+  function isOurs(id) { return !chosen[id] || !$(id).value.trim(); }
+  function paintOpts() {
+    [["t", "#p-ttl", "#p-ttl-opts"], ["s", "#p-sum", "#p-sum-opts"]].forEach(function (k) {
+      var v = $(k[1]).value.trim();
+      $(k[2]).innerHTML = opts[k[0]].map(function (o, i) { return '<button type="button" class="opt" data-k="' + k[0] + '" data-i="' + i + '" aria-pressed="' + (o === v) + '">' + esc(o) + "</button>"; }).join("");
     });
+  }
+  function setOpts(n) {
+    opts = n;
+    if (isOurs("#p-ttl")) $("#p-ttl").value = n.t[0] || "";
+    if (isOurs("#p-sum")) $("#p-sum").value = n.s[0] || "";
+    paintOpts();
+  }
+  function suggest(fresh) {
+    if (fresh) tplShift++;
+    var useAI = !!(window.WBAI && WBAI.key()), id = ++storyReq;
+    if (!useAI || !opts.t.length) setOpts(templateOptions());
+    if (!useAI) { note("Pick a title and a story below, then edit if you like. (Add the AI key in Settings for suggestions written from your photos.)"); return; }
+    note("✨ Writing suggestions from your photos…"); $("#p-more").disabled = true; $("#p-ttl-opts").classList.add("loading"); $("#p-sum-opts").classList.add("loading");
+    askStory().then(function (r) { if (id !== storyReq) return; setOpts(r); note("✨ Written from your photos. Pick one, then edit if you like."); })
+      .catch(function () { if (id !== storyReq) return; note("Couldn't reach the AI just now, so here are ready-made suggestions. Pick one, then edit if you like."); })
+      .then(function () { if (id !== storyReq) return; $("#p-more").disabled = false; $("#p-ttl-opts").classList.remove("loading"); $("#p-sum-opts").classList.remove("loading"); });
+  }
+  function autoStory() { if (!opts.t.length) suggest(false); else paintOpts(); }
+  ["#p-ttl-opts", "#p-sum-opts"].forEach(function (id) {
+    $(id).addEventListener("click", function (e) {
+      var b = e.target.closest(".opt"); if (!b) return;
+      var field = b.dataset.k === "t" ? "#p-ttl" : "#p-sum"; $(field).value = opts[b.dataset.k][+b.dataset.i]; chosen[field] = true; paintOpts();
+      if (b.dataset.k === "s") { var ta = $("#p-sum"); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+    });
+  });
+  ["#p-ttl", "#p-sum"].forEach(function (id) { $(id).addEventListener("input", function () { chosen[id] = !!this.value.trim(); paintOpts(); }); });
+  $("#p-more").onclick = function () { suggest(true); };
+  /* details changed: fresh suggestions (your own edits are kept) */
+  var stT; ["#p-space", "#p-design", "#p-loc", "#p-size", "#p-time"].forEach(function (id) {
+    $(id).addEventListener("change", function () { clearTimeout(stT); stT = setTimeout(function () { if (step === 3) suggest(false); }, 900); });
   });
   $("#p-back").onclick = function () { var i = FLOW.indexOf(step); if (i > 0) setStep(FLOW[i - 1]); };
   $("#p-next").onclick = function () {

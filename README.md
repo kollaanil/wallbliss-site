@@ -39,8 +39,9 @@ spend limit under Billing. Paste it in admin → Settings → AI tagging key. St
 
 1. Add the before and after photos. They are kept whole (never cropped), only scaled to 2000 px on the longest side.
    The after photo sets the shape; a before photo of a different shape is fitted inside it with plain edges.
-2. Fill in locality, space, design and size. The **title** and **What we did** are written for you: from the photos
-   when the AI key is added on that device, otherwise from the details. Use ✨ Suggest another / ✨ Rewrite, or type your own.
+2. Fill in locality, space, design and size. You get **three titles and three "What we did" stories** to pick from:
+   written by Claude Haiku 5.5 from both photos when the AI key is added on that device, otherwise ready-made wording
+   for the room. Tap one, edit it if you like, or press ✨ New suggestions. Your own edits are never overwritten.
 3. Save draft, then press **Publish** at the bottom of the admin to put it on the website.
 
 ## Search
