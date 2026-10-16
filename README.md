@@ -49,6 +49,16 @@ spend limit under Billing. Paste it in admin → Settings → AI tagging key. St
    from what you actually publish (the API itself has no memory).
 3. Save draft, then press **Publish** at the bottom of the admin to put it on the website.
 
+## FAQs (admin → FAQs)
+
+The questions on the home page come from the admin, not the code. Edit the wording, add or delete
+questions, change the order with the arrows, or switch one off. Press **Publish** and the home page
+updates in 1–2 minutes, including the FAQ data Google reads for search results.
+
+- Answers are plain text. A blank line starts a new paragraph; `[link words](wallpaper-vs-wall-printing.html)` or `[link words](https://…)` makes a link.
+- The list written in `index.html` is only a fallback for the rare visitor whose browser blocks scripts. Keep it roughly in step if you change an answer a lot.
+- Two editors can change different questions at the same time; Publish keeps both changes.
+
 ## Search
 
 `assets/search.js` + `assets/search-lexicon.js`: runs in the visitor's browser. Understands English,

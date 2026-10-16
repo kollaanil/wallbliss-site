@@ -217,9 +217,13 @@ section { padding-block: var(--section) calc(var(--section) * 1.06); }
 .hero-copy { display: grid; gap: 24px; min-width: 0; justify-items: start; }
 .hero h1 { font-size: clamp(2.6rem, 1.4rem + 3.6vw, 4.2rem); }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: 10px; }
-.hero-facts { display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--muted); font-size: 0.92rem; list-style: none; padding: 0; margin: 4px 0 0; }
-.hero-facts li { display: flex; gap: 8px; align-items: center; }
-.hero-facts li::before { content: ""; width: 14px; height: 1px; background: var(--accent); }
+/* four highlights under the main buttons (title + one line each) */
+.highlights { list-style: none; padding: 0; margin: 6px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); width: 100%; max-width: 560px; }
+.highlights li { display: grid; gap: 4px; align-content: start; padding: 16px 16px 16px 0; border-bottom: 1px solid var(--line); }
+.highlights li:nth-child(even) { padding: 16px 0 16px 16px; border-left: 1px solid var(--line); }
+.highlights b { font-family: var(--font-display); font-size: 1.18rem; line-height: 1.2; color: var(--ink); letter-spacing: -0.01em; }
+.highlights b::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin: 0 8px 2px 0; vertical-align: middle; }
+.highlights span { font-size: .88rem; color: var(--muted); line-height: 1.45; }
 
 .scene { position: relative; margin: 0; min-width: 0; padding: 8px; border-radius: calc(var(--radius-lg) + 8px); background: rgba(70, 45, 20, .045); box-shadow: inset 0 0 0 1px rgba(70, 45, 20, .06), var(--shadow-lg); }
 .scene-frame { position: relative; aspect-ratio: 5 / 4; max-width: 100%; border-radius: var(--radius-lg); overflow: hidden; background: var(--wall); box-shadow: inset 0 1px 0 rgba(255,255,255,.5); }
@@ -474,7 +478,9 @@ th.us { color: var(--accent); }
   .hero-grid > .scene { order: 4; max-width: none; padding: 6px; }
   .hero-copy > .lede:not([data-greet]) { order: 5; }
   .hero-copy > .hero-ctas { order: 6; }
-  .hero-copy > .hero-facts { order: 7; }
+  .hero-copy > .highlights { order: 7; justify-self: stretch; max-width: none; }
+  .highlights b { font-size: 1.05rem; }
+  .highlights li { padding: 14px 12px 14px 0; } .highlights li:nth-child(even) { padding: 14px 0 14px 12px; }
   .scene-video .scene-frame { aspect-ratio: 1 / 1; border-radius: 22px; }
   .scene-video .scene-cap { left: 12px; bottom: 12px; }
   .scene-video .scene-cap span { font-size: .84rem; padding: 7px 13px; }
