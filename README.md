@@ -7,7 +7,6 @@ Live site: https://www.wallbliss.in (served by GitHub Pages from the `main` bran
 | `index.html` | Home: hero video, wall stories, real before/after, how it works, FAQs, contact |
 | `catalogue.html` | Search and filter designs, preview on a wall, shortlist to WhatsApp |
 | `projects.html` | Finished walls (appears as projects are published from the admin) |
-| `wallpaper-vs-wall-printing.html` | Guide that answers "wallpaper or wall printing?" searches |
 | `admin.html` | Team admin (Anil, Manasa). Not linked in menus; marked noindex |
 
 ## Updating the site from the admin
@@ -31,9 +30,14 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
 - Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked
   (template v1 in `assets/watermark.js`: diagonal "WallBliss Studio" + corner badge with logo and code).
 - Code is suggested (next free WB-0000) and can be changed; duplicates are blocked.
-- Tags are mandatory (3+), hidden from customers, used by search. With the AI key, Claude suggests
-  name, tags, rooms, style, colours and multilingual search words; you finalise them.
-- Drafts keep images in the browser's IndexedDB until Publish. The first real upload retires the sample designs.
+- Tags are mandatory (3+), hidden from customers, used by search. With the AI key, Claude fills in
+  name, tags, rooms, style and multilingual search words (usually 5–10 s per photo, with a live timer;
+  gives up after 45 s). "Fill in myself" skips it for one photo, "Fill all in myself" for all.
+- Style: pick from the list (Traditional, Devotional, 3D, Artistic, …) or type your own; typed styles
+  become catalogue filters and search words. There is no colour field.
+- **Saving publishes automatically** (new designs, edits, deletes, Live/Hidden switch). Several quick
+  changes go in one commit. If the device has no publishing key yet, it asks for it once.
+  The first real upload retires the sample designs.
 
 **AI tagging key (once per device):** console.anthropic.com → API keys → create key; set a monthly
 spend limit under Billing. Paste it in admin → Settings → AI tagging key. Stored on that device only.
@@ -55,7 +59,7 @@ The questions on the home page come from the admin, not the code. Edit the wordi
 questions, change the order with the arrows, or switch one off. Press **Publish** and the home page
 updates in 1–2 minutes, including the FAQ data Google reads for search results.
 
-- Answers are plain text. A blank line starts a new paragraph; `[link words](wallpaper-vs-wall-printing.html)` or `[link words](https://…)` makes a link.
+- Answers are plain text. A blank line starts a new paragraph; `[link words](catalogue.html)` or `[link words](https://…)` makes a link.
 - The list written in `index.html` is only a fallback for the rare visitor whose browser blocks scripts. Keep it roughly in step if you change an answer a lot.
 - Two editors can change different questions at the same time; Publish keeps both changes.
 

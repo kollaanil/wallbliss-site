@@ -50,7 +50,19 @@
     var a = WB.db.load(), b = WB.db.published();
     return ["designs", "edits", "projects", "reviews", "settings", "faqs"].some(function (k) { return JSON.stringify(a[k]) !== JSON.stringify(b[k]); });
   }
-  var busy = false, lastOk = 0;
+  var busy = false, lastOk = 0, again = false, autoT = null;
+  function done() { busy = false; if (again) { again = false; auto(); } }
+  /* publish by itself after a save (designs), so nobody has to remember the Publish button.
+     Several quick changes are sent together; a change made while publishing goes in the next round. */
+  function auto() {
+    clearTimeout(autoT);
+    autoT = setTimeout(function () {
+      if (busy) { again = true; return; }
+      if (!dirty()) return;
+      var k = key(); if (!k) { askKey("Add the publishing key once on this phone or laptop. After that, saved designs go live by themselves."); return; }
+      publish(k);
+    }, 700);
+  }
   function refresh() {
     if (busy) return;
     var app = document.getElementById("app"); if (!app || app.hidden) { bar.hidden = true; return; }
@@ -154,7 +166,7 @@
           (m.clashes.length ? " You both changed " + m.clashes.slice(0, 3).join(", ") + (m.clashes.length > 3 ? "…" : "") + "; your version was used." : "");
       }
       return go();
-    }).catch(function (e) { busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
+    }).catch(function (e) { done(); pubBtn.disabled = false; msg.textContent = "Not published"; if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
 
     function go() {
     msg.textContent = "Publishing…";
@@ -166,7 +178,7 @@
     var R = window.WBImages;
     return Promise.all(refs.map(function (r) { usedRefs.push(r[0][r[1]]); return R.resolve(r[0][r[1]]).then(function (u) { if (!u) throw new Error("A photo for " + (r[0].code || r[0].title || "an item") + " is missing on this device. Upload it again."); r[0][r[1]] = u; }); }))
       .then(function () { return build(); })
-      .catch(function (e) { busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; alertMsg(e.message); });
+      .catch(function (e) { done(); pubBtn.disabled = false; msg.textContent = "Not published"; alertMsg(e.message); });
     function build() {
     function take(dataUrl, path) {
       var m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(dataUrl || ""); if (!m) return dataUrl;
@@ -205,12 +217,12 @@
         WB.db.save(Object.assign(WB.db.load(), { designs: out.designs, projects: out.projects }));
         WB.db.setBase(data);
         if (window.WBAdmin && WBAdmin.reload) WBAdmin.reload();      // the open admin screens now use the published photo paths
-        busy = false; lastOk = Date.now() + (note ? 8000 : 0); pubBtn.disabled = false;
+        done(); lastOk = Date.now() + (note ? 8000 : 0); pubBtn.disabled = false;
         bar.hidden = false; bar.classList.add("ok"); msg.textContent = "Published. The website updates in 1–2 minutes." + note;
         bar.querySelector('[data-act="discard"]').hidden = true; pubBtn.hidden = true;
       })
       .catch(function (e) {
-        busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
+        done(); pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
         if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message);
       });
     }
@@ -235,5 +247,5 @@
     setTimeout(function () { delete b.dataset.confirm; b.textContent = "Undo all"; }, 3000);
   };
 
-  WB.publishing = { hasKey: function () { return !!key(); }, forgetKey: function () { setKey(""); }, askKey: function () { askKey(); } };
+  WB.publishing = { auto: auto, hasKey: function () { return !!key(); }, forgetKey: function () { setKey(""); }, askKey: function () { askKey(); } };
 })();

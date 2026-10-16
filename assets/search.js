@@ -4,7 +4,7 @@
    3. Maps each word to concepts through the dictionary (search-lexicon.js) in English, Hindi,
       Kannada and Telugu, and fixes typos ("krishana" -> krishna, "peacok" -> peacock).
    4. Broad words widen to narrower ones ("god" also finds Krishna, Ganesha, Surya…).
-   5. Scores each design on its name, hidden tags, AI search words, rooms, styles and colours.
+   5. Scores each design on its name, hidden tags, AI search words, rooms and styles.
    Returns designs that match every part of the query; if none do, the closest ones, with a note. */
 (function () {
   var LEX = window.WB_LEXICON || [], STOP = {};
@@ -73,7 +73,8 @@
       add(name, 4);
       tags.forEach(function (t) { add(t, 3); });
       add(clean(d.code || ""), 5);
-      (d.spaces || []).concat(d.styles || [], d.colours || []).forEach(function (f) { concepts[f] = Math.max(concepts[f] || 0, 3); });
+      (d.spaces || []).concat(d.styles || []).forEach(function (f) { concepts[f] = Math.max(concepts[f] || 0, 3); });
+      (d.styles || []).forEach(function (f) { add(clean(String(f).replace(/\d+/g, " ")), 2); });   // style names are searchable words too (incl. styles the team typed)
       add(clean(extra), 1.5);
       d._s = { name: name, words: words, concepts: concepts };
     });
