@@ -15,4 +15,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://kollaanil.github.io/wallbliss-site/sitemap.xml
+Sitemap: https://www.wallbliss.in/sitemap.xml

@@ -1,6 +1,6 @@
 # WallBliss Studio website
 
-Live site: https://kollaanil.github.io/wallbliss-site/ (served by GitHub Pages from the `main` branch).
+Live site: https://www.wallbliss.in (served by GitHub Pages from the `main` branch; the old address https://kollaanil.github.io/wallbliss-site/ redirects to it).
 
 | Page | What it does |
 |---|---|
@@ -74,13 +74,13 @@ The admin's Insights page still shows only the activity of the device it is open
 3. Copy the Client ID into `assets/admin-config.js` → `googleClientId`.
 Allowed emails are listed in the same file.
 
-## Moving to wallbliss.in later
+## Domain: www.wallbliss.in
 
-1. Replace `https://kollaanil.github.io/wallbliss-site` with `https://www.wallbliss.in` in all files.
-2. Add a file `CNAME` containing `www.wallbliss.in`.
-3. At the domain registrar: a `CNAME` record for `www` pointing to `kollaanil.github.io`.
-4. Repo Settings → Pages → Custom domain → `www.wallbliss.in`, tick *Enforce HTTPS*.
-
+- Bought at Spaceship. DNS: `CNAME www → kollaanil.github.io`, and `A @` → 185.199.108.153 / .109.153 / .110.153 / .111.153
+  (so `wallbliss.in` without www also works and redirects to www).
+- The `CNAME` file in this repo holds the custom domain. Don't delete it.
+- Repo Settings → Pages: custom domain `www.wallbliss.in`, Enforce HTTPS ticked.
+- Google sign-in for the admin needs `https://www.wallbliss.in` in the OAuth client's Authorised JavaScript origins.
 ## Notes
 
 - `assets/catalogue-data.js` holds the built-in sample designs (drawn by `assets/art.js`). Replace them with real photos from the admin.

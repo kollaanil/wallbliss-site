@@ -13,7 +13,7 @@
 - Contact: WhatsApp or call +91 76767 01113.
 
 ## Pages
-- [Home](https://kollaanil.github.io/wallbliss-site/): stories, before and after, how it works, FAQs
-- [Design catalogue](https://kollaanil.github.io/wallbliss-site/catalogue.html): designs by room, style and colour, with a preview on a photo of your own wall
-- [Wallpaper or wall printing?](https://kollaanil.github.io/wallbliss-site/wallpaper-vs-wall-printing.html): which suits each room, compared on look, durability in humidity, time and changing it later
-- [Projects](https://kollaanil.github.io/wallbliss-site/projects.html): finished walls across Bengaluru
+- [Home](https://www.wallbliss.in/): stories, before and after, how it works, FAQs
+- [Design catalogue](https://www.wallbliss.in/catalogue.html): designs by room, style and colour, with a preview on a photo of your own wall
+- [Wallpaper or wall printing?](https://www.wallbliss.in/wallpaper-vs-wall-printing.html): which suits each room, compared on look, durability in humidity, time and changing it later
+- [Projects](https://www.wallbliss.in/projects.html): finished walls across Bengaluru
