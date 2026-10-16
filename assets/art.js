@@ -234,10 +234,17 @@
     ctx.fillStyle = opts.wall || "#E9E6DF"; ctx.fillRect(0, 0, w, floorY);
     if (d) {
       var aw = w * 0.86, ah = floorY * 0.86, ax = (w - aw) / 2, ay = floorY * 0.06;
-      var off = document.createElement("canvas");
-      draw(off, d, { w: aw / dpr, h: ah / dpr });
-      ctx.drawImage(off, ax, ay, aw, ah);
-      if (d.imgEl) { ctx.drawImage(d.imgEl, ax, ay, aw, ah); }
+      if (d.imgEl && d.imgEl.naturalWidth) {
+        /* a real design photo: shown whole, at its own shape, centred on the wall (never stretched or cropped) */
+        var sofaTop = floorY - h * 0.2, room = Math.max(ah * 0.55, sofaTop - ay - h * 0.03);   // keep the whole design above the sofa
+        var r = d.imgEl.naturalWidth / d.imgEl.naturalHeight, iw = aw, ih = aw / r;
+        if (ih > room) { ih = room; iw = room * r; }
+        ctx.drawImage(d.imgEl, (w - iw) / 2, ay + (room - ih) / 2, iw, ih);
+      } else {
+        var off = document.createElement("canvas");
+        draw(off, d, { w: aw / dpr, h: ah / dpr });
+        ctx.drawImage(off, ax, ay, aw, ah);
+      }
     }
     // skirting + floor
     ctx.fillStyle = "#D7D2C8"; ctx.fillRect(0, floorY - h * 0.012, w, h * 0.012);

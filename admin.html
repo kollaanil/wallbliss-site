@@ -137,6 +137,13 @@
   .d-card.off { opacity: .55; }
   .d-card .pic { position: relative; aspect-ratio: 4 / 3; background: var(--wall); border: 0; padding: 0; cursor: pointer; display: block; width: 100%; }
   .d-card .pic canvas, .d-card .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* real design photos are always shown whole: the picture is fitted inside the frame, and a soft,
+     blurred copy of the same picture fills any spare space so the frame never looks empty or cropped */
+  .fitbox { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; background: var(--wall); }
+  .fitbox img { position: absolute; inset: 0; width: 100% !important; height: 100% !important; border-radius: 0 !important; display: block; }
+  .fitbox img.fit { object-fit: contain !important; }
+  .fitbox img.fit-bg { object-fit: cover !important; filter: blur(14px) saturate(1.1) brightness(.92); transform: scale(1.18); opacity: .85; }
+  .top-d .fitbox { width: 56px; height: 42px; border-radius: 6px; }
   .d-card .pic .pill { position: absolute; left: 6px; bottom: 6px; }
   .d-card .code { position: absolute; left: 6px; top: 6px; background: rgba(255,255,255,.92); font: 700 .7rem var(--font-body); padding: 3px 6px; border-radius: 4px; color: #1A1714; }
   .d-card .body { padding: 10px 12px 12px; display: grid; gap: 6px; }
@@ -555,7 +562,10 @@
   }
   function byCode() { var m = {}; designs().forEach(function (d) { m[d.code] = d; }); return m; }
   function thumb(d, w, h) {
-    if (d && d.img) return /^idb:/.test(d.img) ? '<img data-idb="' + d.img + '" alt="">' : '<img src="' + d.img + '" alt="" loading="lazy">';
+    if (d && d.img) {
+      var src = /^idb:/.test(d.img) ? ' data-idb="' + d.img + '"' : ' src="' + d.img + '" loading="lazy"';
+      return '<span class="fitbox"><img class="fit-bg"' + src + ' alt="" aria-hidden="true"><img class="fit"' + src + ' alt=""></span>';
+    }
     return '<canvas data-code="' + (d ? d.code : "") + '" data-w="' + (w || 0) + '" data-h="' + (h || 0) + '"></canvas>';
   }
   function paintThumbs(root) {
