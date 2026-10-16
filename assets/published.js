@@ -4,23 +4,25 @@ window.WB_PUBLISHED = {
   {
    "code": "WB-0137",
    "added": "2026-10",
-   "pop": 9.5,
-   "name": "Kamadhenu Colorful",
+   "pop": 5,
+   "name": "Kamadhenu colored marble",
    "spaces": [
     "living",
     "pooja",
-    "hotel"
+    "office"
    ],
-   "styles": [],
+   "styles": [
+    "devotional"
+   ],
    "colours": [
     "warm"
    ],
    "orient": "wide",
    "tags": [
     "kamadhenu",
-    "cow",
-    "traditional",
-    "colorful"
+    "colorful",
+    "3d",
+    "marble"
    ],
    "hidden": false,
    "img": "assets/uploads/designs/wb-0137-167iim2.jpg"
@@ -51,6 +53,6 @@ window.WB_PUBLISHED = {
  ],
  "reviews": [],
  "settings": {},
- "updated": "2026-10-16T07:27:45.181Z",
+ "updated": "2026-10-16T07:31:48.302Z",
  "by": "Anil"
 };
