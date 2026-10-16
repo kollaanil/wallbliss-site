@@ -577,13 +577,17 @@
   var BY = {}; DATA.forEach(function (d) { BY[d.code] = d; });
   var FACETS = {
     spaces: { label: "Room", opts: [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]] },
-    styles: { label: "Style", opts: [["nature", "Nature"], ["folk", "Indian folk"], ["devotional", "Devotional"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"], ["texture3d", "3D texture"]] },
-    colours: { label: "Colour", opts: [["green", "Green", "#2E6B45"], ["blue", "Blue", "#1A6BAF"], ["earth", "Earthy", "#9C6B43"], ["warm", "Warm", "#E8962E"], ["pastel", "Pastel", "#F2C9C1"], ["mono", "Black & white", "#555"], ["dark", "Dark & moody", "#1D2B4A"]] }
+    styles: { label: "Style", opts: [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]] }
   };
+  /* styles the team typed themselves (e.g. "tanjore") get their own chip */
+  (function () {
+    var known = {}; FACETS.styles.opts.forEach(function (o) { known[o[0]] = 1; });
+    DATA.forEach(function (d) { (d.styles || []).forEach(function (v) { if (!known[v]) { known[v] = 1; FACETS.styles.opts.push([v, v.charAt(0).toUpperCase() + v.slice(1)]); } }); });
+  })();
   var ORIENT = { wide: "Wide wall", tall: "Tall wall", square: "Square" };
   var SORTS = [["pop", "Most loved"], ["new", "Newest"], ["name", "Name A–Z"]];
   var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", pooja: "pooja room puja mandir prayer room", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
-  var state = { q: "", sort: "pop", f: { spaces: [], styles: [], colours: [] } };
+  var state = { q: "", sort: "pop", f: { spaces: [], styles: [] } };
 
   /* ---------- search: multilingual engine in assets/search.js ---------- */
   WBSearch.index(DATA, SPACE_WORDS);
@@ -610,7 +614,7 @@
   /* ---------- filter sheet ---------- */
   var sheet = document.getElementById("fsheet"), fBody = document.getElementById("f-body");
   function chipHTML(key, o) { return '<button type="button" class="fchip" data-key="' + key + '" data-val="' + o[0] + '">' + (o[2] ? '<span class="sw" style="background:' + o[2] + '"></span>' : "") + o[1] + '</button>'; }
-  fBody.innerHTML = ["spaces", "styles", "colours"].map(function (key, i) {
+  fBody.innerHTML = ["spaces", "styles"].map(function (key, i) {
     return '<details class="fgroup"' + (i > 0 ? " open" : "") + ' data-group="' + key + '"><summary>' + FACETS[key].label + '<small></small></summary><div class="chips">' +
       FACETS[key].opts.map(function (o) { return chipHTML(key, o); }).join("") + '</div></details>';
   }).join("") + '<details class="fgroup" open><summary>Sort by</summary><div class="chips">' +
@@ -717,13 +721,13 @@
     fBody.querySelectorAll("[data-key]").forEach(function (b) { b.setAttribute("aria-pressed", state.f[b.dataset.key].indexOf(b.dataset.val) > -1); });
     fBody.querySelectorAll("[data-sort]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.sort === state.sort); });
     fBody.querySelectorAll("[data-group]").forEach(function (g) { var n = state.f[g.dataset.group].length; g.querySelector("summary small").textContent = n ? n + " selected" : ""; });
-    var n = state.f.spaces.length + state.f.styles.length + state.f.colours.length + (state.sort !== "pop" ? 1 : 0);
+    var n = state.f.spaces.length + state.f.styles.length + (state.sort !== "pop" ? 1 : 0);
     var badge = document.getElementById("f-badge"); badge.textContent = n; badge.hidden = !n;
     document.getElementById("f-done").textContent = lastCount ? "Show " + lastCount + (lastCount === 1 ? " design" : " designs") : "No designs match";
     // tags
     var tags = [];
     if (state.q) tags.push('<button type="button" class="tag" data-key="q">“' + esc(q.value.trim()) + '”<b aria-hidden="true">×</b><span class="skip">Remove search</span></button>');
-    ["styles", "colours"].concat(state.f.spaces.length > 1 ? ["spaces"] : []).forEach(function (k) {
+    ["styles"].concat(state.f.spaces.length > 1 ? ["spaces"] : []).forEach(function (k) {
       state.f[k].forEach(function (v) { tags.push('<button type="button" class="tag" data-key="' + k + '" data-val="' + v + '">' + label(k, v) + '<b aria-hidden="true">×</b><span class="skip">Remove filter</span></button>'); });
     });
     tagsEl.innerHTML = tags.join("");
@@ -736,7 +740,7 @@
   /* ---------- search box with suggestions ---------- */
   var sugg = document.getElementById("sugg"), sel = -1, items = [];
   var FACET_ITEMS = [];
-  ["spaces", "styles", "colours"].forEach(function (k) {
+  ["spaces", "styles"].forEach(function (k) {
     FACETS[k].opts.forEach(function (o) {
       var count = DATA.filter(function (d) { return [].concat(d[k]).indexOf(o[0]) > -1; }).length;
       if (count) FACET_ITEMS.push({ type: "facet", key: k, val: o[0], text: o[1], hint: FACETS[k].label, count: count, hay: (o[1] + " " + (k === "spaces" ? SPACE_WORDS[o[0]] : o[0])).toLowerCase() });
@@ -761,7 +765,7 @@
       items.forEach(function (it, i) {
         if (it.type !== lastType) { html += '<div class="hd">' + (it.type === "facet" ? "Filter by" : "Designs") + "</div>"; lastType = it.type; }
         html += it.type === "facet"
-          ? '<button type="button" role="option" data-i="' + i + '"><span class="ic">' + (it.key === "colours" ? '<span class="sw" style="width:16px;height:16px;border-radius:50%;background:' + FACETS.colours.opts.filter(function (o) { return o[0] === it.val; })[0][2] + '"></span>' : "#") + '</span><span>' + it.text + '<br><small>' + it.hint + '</small></span><small>' + it.count + '</small></button>'
+          ? '<button type="button" role="option" data-i="' + i + '"><span class="ic">' + "#" + '</span><span>' + it.text + '<br><small>' + it.hint + '</small></span><small>' + it.count + '</small></button>'
           : '<button type="button" role="option" data-i="' + i + '"><span class="ic">' + visual(it.d) + '</span><span>' + esc(it.d.name) + '<br><small>' + it.d.code + '</small></span><small></small></button>';
       });
       sugg.innerHTML = html;
@@ -914,7 +918,7 @@
   function similar() {
     var box = document.getElementById("d-similar"); box.innerHTML = "";
     DATA.filter(function (d) { return d !== cur; }).map(function (d) {
-      var s = 0; d.styles.forEach(function (x) { if (cur.styles.indexOf(x) > -1) s += 2; }); d.spaces.forEach(function (x) { if (cur.spaces.indexOf(x) > -1) s += 1; }); d.colours.forEach(function (x) { if (cur.colours.indexOf(x) > -1) s += 1; });
+      var s = 0; (d.styles || []).forEach(function (x) { if ((cur.styles || []).indexOf(x) > -1) s += 2; }); d.spaces.forEach(function (x) { if (cur.spaces.indexOf(x) > -1) s += 1; });
       return { d: d, s: s };
     }).sort(function (a, b) { return b.s - a.s || b.d.pop - a.d.pop; }).slice(0, 4).forEach(function (x) {
       var b = document.createElement("button"); b.type = "button"; b.title = x.d.code + " · " + x.d.name; b.setAttribute("aria-label", "View " + x.d.name);

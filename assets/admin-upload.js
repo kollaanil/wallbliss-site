@@ -1,10 +1,10 @@
 /* WallBliss admin — upload up to 10 designs at once.
    For every photo: trim plain borders (e.g. screenshot bars) → resize to 1600 px → suggest a
-   code, name, tags, rooms, style, colours and search words (AI) → you finalise → watermark
-   with the final code → saved as drafts (images kept in this browser's IndexedDB) → Publish.
+   code, name, tags, rooms, style and search words (AI) → you finalise → watermark with the
+   final code → saved (images kept in this browser's IndexedDB) and published automatically.
    AI: Claude (vision) called straight from this browser with the team's own API key, stored on
-   this device only (Settings → AI tagging key). Without a key you get colour/shape suggestions
-   and type the tags yourself. Tags are mandatory (3+) and never shown to customers. */
+   this device only (Settings → AI tagging key). Without a key, or if you tap "Fill in myself",
+   you type the details yourself. Tags are mandatory (3+) and never shown to customers. */
 (function () {
   "use strict";
   var A = window.WBAdmin; if (!A) return;
@@ -71,6 +71,10 @@
     ".u-add{flex:1;min-width:120px;border:1px dashed var(--line-strong)!important;border-radius:999px!important;min-height:32px!important;padding:4px 12px!important;font-size:.86rem!important}" +
     ".u-lbl{font-size:.78rem;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}.u-lbl small{font-weight:500;color:var(--faint)}" +
     ".u-item details summary{cursor:pointer;font-size:.84rem;color:var(--accent);font-weight:700}.u-item textarea{width:100%;min-height:70px;font:.86rem var(--font-body);padding:8px 10px;border-radius:10px;border:1px solid var(--line-strong)}" +
+    ".u-wait{display:grid;gap:10px;align-content:start}.u-wait .u-st{font-size:.9rem;color:var(--ink)}.u-wait p{margin:0;font-size:.8rem;color:var(--muted)}.u-skip{justify-self:start;border:1px solid var(--line-strong);background:#fff;border-radius:999px;padding:8px 14px;font:600 .84rem var(--font-body);color:var(--ink);cursor:pointer}" +
+    ".u-bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}.u-bar i{display:block;height:100%;background:var(--accent);transition:width 1s linear}" +
+    ".u-own{margin-top:8px;max-width:300px;border:1px dashed var(--line-strong)!important;border-radius:999px!important;min-height:34px!important;padding:4px 12px!important;font-size:.86rem!important;width:100%}" +
+    ".u-skipall{border:0;background:none;color:var(--accent);font:700 .84rem var(--font-body);cursor:pointer;padding:0;text-decoration:underline}" +
     ".u-rm{border:0;background:none;color:#B42318;font:600 .82rem var(--font-body);cursor:pointer;justify-self:end}" +
     ".u-zoom{border:0;padding:0;background:#111;max-width:min(96vw,900px);border-radius:14px;overflow:hidden}.u-zoom::backdrop{background:rgba(0,0,0,.75)}.u-zoom canvas{display:block;max-width:100%;max-height:86dvh}";
   document.head.appendChild(st);
@@ -80,8 +84,8 @@
   dlg.className = "sheet"; dlg.id = "u-dlg"; dlg.setAttribute("aria-labelledby", "u-title");
   dlg.innerHTML = '<div class="sheet-in"><header><h2 id="u-title">Upload designs</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>' +
     '<div class="body"><div id="u-pick" class="field"><div class="drop"><input type="file" id="u-file" accept="image/*" multiple aria-label="Choose photos"><div><b>Tap to choose up to ' + MAX + ' photos</b>JPG, PNG, WebP or iPhone photos. Print-size files are fine; they are resized for the website.</div></div>' +
-    '<p class="muted" id="u-ai-state" style="font-size:.84rem"></p></div><div class="u-items" id="u-items"></div></div>' +
-    '<footer><span class="muted" id="u-count" style="font-size:.86rem;margin-right:auto"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="u-save" style="background:var(--ink);box-shadow:none" disabled>Save as drafts</button></footer></div>';
+    '<p class="muted" id="u-ai-state" style="font-size:.84rem"></p></div><p id="u-skipall-row" hidden style="margin:0 0 4px;font-size:.84rem;color:var(--muted)">Claude is filling in the details. <button type="button" class="u-skipall" id="u-skipall">Fill all in myself</button></p><div class="u-items" id="u-items"></div></div>' +
+    '<footer><span class="muted" id="u-count" style="font-size:.86rem;margin-right:auto"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="u-save" style="background:var(--ink);box-shadow:none" disabled>Save and publish</button></footer></div>';
   document.body.appendChild(dlg);
   var zoom = document.createElement("dialog"); zoom.className = "u-zoom"; document.body.appendChild(zoom);
   zoom.addEventListener("click", function () { zoom.close(); });
@@ -91,8 +95,8 @@
 
   function aiState() {
     $("#u-ai-state").innerHTML = aiKey()
-      ? "✨ AI tagging is on: tags, rooms, style and search words are suggested for each photo. Check them before saving."
-      : "AI tagging is off on this device, so you'll type the tags. Add the AI key in <b>Settings</b> to get suggestions.";
+      ? "✨ Claude fills in the name, tags, rooms, style and search words for each photo, usually in 5–10 seconds. You can skip it and type them yourself."
+      : "AI is off on this device, so you'll type the details. Add the AI key in <b>Settings</b> and Claude will fill them in for you.";
   }
   function open() {
     items = []; $("#u-items").innerHTML = ""; $("#u-file").value = ""; $("#u-pick").hidden = false; aiState(); update();
@@ -154,20 +158,6 @@
     var c = document.createElement("canvas"); c.width = box.w; c.height = box.h;
     c.getContext("2d").drawImage(img, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h); return c;
   }
-  function colours(c) {
-    var t = document.createElement("canvas"); t.width = 40; t.height = 40; var x = t.getContext("2d"); x.drawImage(c, 0, 0, 40, 40);
-    var px = x.getImageData(0, 0, 40, 40).data, n = 0, sc = { green: 0, blue: 0, warm: 0, earth: 0, pastel: 0, mono: 0, dark: 0 };
-    for (var i = 0; i < px.length; i += 4) {
-      var r = px[i] / 255, g = px[i + 1] / 255, b = px[i + 2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, dd = mx - mn;
-      var s = dd ? dd / (1 - Math.abs(2 * l - 1)) : 0, hh = 0;
-      if (dd) { hh = mx === r ? ((g - b) / dd) % 6 : mx === g ? (b - r) / dd + 2 : (r - g) / dd + 4; hh *= 60; if (hh < 0) hh += 360; }
-      n++;
-      if (s < .12) sc.mono++; else if (l > .78) sc.pastel++; else if (hh >= 70 && hh < 170) sc.green++; else if (hh >= 170 && hh < 260) sc.blue++;
-      else if (hh >= 15 && hh < 45 && s < .6 && l < .55) sc.earth++; else if (hh < 60 || hh >= 320) sc.warm++;
-      if (l < .25) sc.dark++;
-    }
-    return Object.keys(sc).filter(function (k) { return sc[k] / n > (k === "dark" ? .45 : .22); }).sort(function (a, b) { return sc[b] - sc[a]; }).slice(0, 2);
-  }
   function shape(c) { var ar = c.width / c.height; return ar > 1.2 ? "wide" : ar < .85 ? "tall" : "square"; }
   function scaled(c, long, q) { var s = Math.min(1, long / Math.max(c.width, c.height)), o = document.createElement("canvas"); o.width = Math.round(c.width * s); o.height = Math.round(c.height * s); o.getContext("2d").drawImage(c, 0, 0, o.width, o.height); return o.toDataURL("image/jpeg", q || .8); }
   function watermarked(it) {
@@ -183,14 +173,17 @@
       '{"name": "2-4 word catchy English name", ' +
       '"tags": ["8-14 lowercase English tags, most specific first: deities or people by their common Indian name, animals, objects, scene, art style, mood. No generic words like art, design, wall, image"], ' +
       '"search_words": ["15-30 words or short phrases customers in India might type to find this: synonyms, Hindi, Kannada and Telugu words written in Roman letters AND in their own script, common misspellings, and intent phrases like \\"pooja room\\" or \\"seven horses vastu\\""], ' +
-      '"spaces": [pick from ' + JSON.stringify(ids(A.ROOMS)) + '], "styles": [pick from ' + JSON.stringify(ids(A.STYLES)) + '], "colours": [pick 1-3 from ' + JSON.stringify(ids(A.COLOURS)) + ']}\n' +
+      '"spaces": [all that suit it, from ' + JSON.stringify(ids(A.ROOMS)) + '], "styles": [1-3 that fit best, from ' + JSON.stringify(ids(A.STYLES)) + ']}\n' +
       "If the photo shows a finished wall in a room, tag the artwork, not the room. Be accurate: only tag what you can see.";
   }
+  var AI_TIMEOUT = 45000;
   function askAI(it) {
     var key = aiKey(); if (!key) return Promise.resolve(null);
     var data = scaled(it.base, 768, .82).split(",")[1];
+    it.ctl = window.AbortController ? new AbortController() : null;
+    it.timer = setTimeout(function () { if (it.ctl) { it.timedOut = true; it.ctl.abort(); } }, AI_TIMEOUT);
     return fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+      method: "POST", signal: it.ctl ? it.ctl.signal : undefined,
       headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
       body: JSON.stringify({ model: AI_MODEL, max_tokens: 1000, messages: [{ role: "user", content: [
         { type: "image", source: { type: "base64", media_type: "image/jpeg", data: data } }, { type: "text", text: aiPrompt() }] }] })
@@ -201,10 +194,24 @@
       return r.json();
     }).then(function (j) {
       var txt = (j.content || []).map(function (c) { return c.text || ""; }).join("");
-      var m = txt.match(/\{[\s\S]*\}/); if (!m) throw new Error("AI reply could not be read");
+      var m = txt.match(/\{[\s\S]*\}/); if (!m) throw new Error("AI reply could not be read.");
       return JSON.parse(m[0]);
-    });
+    }).catch(function (e) {
+      if (e && e.name === "AbortError") throw new Error(it.timedOut ? "Claude took too long." : "SKIP");
+      throw e;
+    }).finally(function () { clearTimeout(it.timer); it.ctl = null; });
   }
+  /* "Fill in myself": stop waiting for Claude on one photo (or all) */
+  function skipAI(it) { if (it.state !== "ai" || !it.base) return; it.skipped = true; if (it.ctl) it.ctl.abort(); else { it.state = ""; check(it); renderItem(it); } }
+  /* live seconds counter on photos Claude is still working on */
+  setInterval(function () {
+    items.forEach(function (it) {
+      if (it.state !== "ai" || !it.aiStart || !it.el) return;
+      var sec = Math.round((Date.now() - it.aiStart) / 1000), st = $(".u-sec", it.el), bar = $(".u-bar i", it.el);
+      if (st) st.textContent = sec + " s";
+      if (bar) bar.style.width = Math.min(96, sec / 10 * 90) + "%";
+    });
+  }, 1000);
   function clean(list, allowed) {
     var seen = {}, out = [];
     (list || []).forEach(function (t) { t = String(t || "").trim().toLowerCase().replace(/\s+/g, " "); if (!t || t.length > 40 || seen[t]) return; if (allowed && allowed.indexOf(t) < 0) return; seen[t] = 1; out.push(t); });
@@ -221,27 +228,31 @@
     if (files.length > room) A.toast("Up to " + MAX + " photos at a time. Taking the first " + room + ".");
     files.slice(0, room).forEach(function (f) {
       var used = usedCodes(null);
-      var it = { file: f, code: nextFree(used), name: "", tags: [], search: [], spaces: [], styles: [], colours: [], orient: "wide", status: "Preparing…", state: "ai" };
+      var it = { file: f, code: nextFree(used), name: "", tags: [], search: [], spaces: [], styles: [], orient: "wide", status: "Preparing…", state: "ai" };
       items.push(it); renderItem(it);
       load(f).then(function (img) {
         var box = trimBox(img), src = crop(img, box);
         it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
         it.base = WBImage.resize(src, WBImage.LONG);
-        it.colours = colours(it.base); it.orient = shape(it.base);
+        it.orient = shape(it.base);
         it.tags = fileWords(f.name);
-        it.status = aiKey() ? "AI is suggesting tags…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
-        paint(it); renderItem(it);
+        it.status = aiKey() ? "Claude is filling in the details…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
+        if (aiKey()) it.aiStart = Date.now();
+        renderItem(it); paint(it);
         return askAI(it).then(function (s) {
-          if (s) {
+          if (s && !it.skipped) {
             it.name = it.name || (s.name || "").slice(0, 40);
             it.tags = clean((s.tags || []).concat(it.tags)).slice(0, 16);
             it.search = clean(s.search_words).slice(0, 40);
             it.spaces = clean(s.spaces, ids(A.ROOMS)); it.styles = clean(s.styles, ids(A.STYLES));
-            var c = clean(s.colours, ids(A.COLOURS)); if (c.length) it.colours = c;
-            it.aiDone = true;
+            it.aiDone = true; it.aiSecs = Math.round((Date.now() - it.aiStart) / 1000);
           }
-          check(it); renderItem(it);
-        }).catch(function (e) { it.status = e.message + " Type the tags instead."; it.state = "bad"; it.aiErr = true; renderItem(it); });
+          it.state = ""; check(it); renderItem(it);
+        }).catch(function (e) {
+          it.state = ""; check(it);
+          if (e.message !== "SKIP") { it.aiErr = e.message + " Fill in the details yourself."; }
+          renderItem(it);
+        });
       }).catch(function (e) { it.status = e.message; it.state = "bad"; it.broken = true; renderItem(it); });
     });
     update();
@@ -254,8 +265,10 @@
     if (it.tags.length < MIN_TAGS) probs.push("add " + (MIN_TAGS - it.tags.length) + " more tag" + (MIN_TAGS - it.tags.length > 1 ? "s" : ""));
     if (!it.spaces.length) probs.push("pick a room");
     if (!it.base) { it.status = "Preparing…"; it.state = "ai"; return false; }
+    if (it.state === "ai") return false;
     if (probs.length) { it.status = "To finish: " + probs.join(", "); it.state = "bad"; }
-    else { it.status = (it.aiDone ? "✨ AI suggested. " : "") + "Ready" + (it.trimmed ? " · plain borders trimmed" : ""); it.state = "ok"; }
+    else { it.status = (it.aiDone ? "✨ Filled in by Claude in " + it.aiSecs + " s. Check it. " : "") + "Ready" + (it.trimmed ? " · plain borders trimmed" : ""); it.state = "ok"; }
+    if (it.aiErr && probs.length) it.status = it.aiErr + " " + it.status;
     return !probs.length;
   }
   function paint(it) {
@@ -267,6 +280,16 @@
   }
   function renderItem(it) {
     if (!it.el) { it.el = document.createElement("div"); it.el.className = "u-item"; $("#u-items").appendChild(it.el); }
+    if (it.state === "ai" && it.base) {                      // Claude is working: show progress, not a half-filled form
+      it.el.innerHTML = '<div class="u-top"><button type="button" class="u-thumb" aria-label="See larger"><canvas></canvas></button><div class="u-wait">' +
+        '<p class="u-st ai">✨ Claude is filling in the name, tags, rooms and style… <b class="u-sec">' + Math.round((Date.now() - it.aiStart) / 1000) + ' s</b></p>' +
+        '<div class="u-bar"><i style="width:4%"></i></div><p>Usually 5–10 seconds. ' + esc(it.file.name) + '</p>' +
+        '<button type="button" class="u-skip">Fill in myself</button></div></div>';
+      paint(it);
+      $(".u-thumb", it.el).onclick = function () { var c = watermarked(it); zoom.innerHTML = ""; zoom.appendChild(c); zoom.showModal(); };
+      $(".u-skip", it.el).onclick = function () { skipAI(it); };
+      update(); return;
+    }
     var focus = document.activeElement && it.el.contains(document.activeElement) ? document.activeElement.getAttribute("data-f") : null;
     it.el.innerHTML =
       '<div class="u-top"><button type="button" class="u-thumb" aria-label="See larger"><canvas></canvas></button><div style="display:grid;gap:8px;min-width:0">' +
@@ -277,8 +300,7 @@
       it.tags.map(function (t, i) { return '<span class="u-tag">' + esc(t) + '<button type="button" data-rmtag="' + i + '" aria-label="Remove ' + esc(t) + '">×</button></span>'; }).join("") +
       '<input type="text" class="u-add" data-f="addtag" placeholder="+ add tag" enterkeyhint="done" aria-label="Add a tag"></div></div>' +
       '<div><p class="u-lbl">Rooms it suits</p>' + chipRow(A.ROOMS, it.spaces, "spaces") + '</div>' +
-      '<div><p class="u-lbl">Style</p>' + chipRow(A.STYLES, it.styles, "styles") + '</div>' +
-      '<div><p class="u-lbl">Colours</p>' + chipRow(A.COLOURS, it.colours, "colours") + '</div>' +
+      '<div><p class="u-lbl">Style</p>' + chipRow(A.styleList(it.styles), it.styles, "styles") + '<input type="text" class="u-own" data-f="ownstyle" placeholder="+ type your own style" maxlength="24" enterkeyhint="done" aria-label="Add your own style"></div>' +
       '<details><summary>Also found by these search words (' + it.search.length + ')</summary><textarea data-f="search" aria-label="Search words">' + esc(it.search.join(", ")) + '</textarea><small class="muted" style="font-size:.74rem">Other ways customers may type it: Hindi, Kannada, Telugu, misspellings. Comma separated.</small></details>' +
       '<button type="button" class="u-rm">Remove this photo</button>';
     paint(it);
@@ -300,16 +322,23 @@
     add.onblur = function () { if (this.value.trim()) { addTag(it, this.value); this.value = ""; check(it); renderItem(it); } };
     $$("[data-rmtag]", el).forEach(function (b) { b.onclick = function () { it.tags.splice(+b.dataset.rmtag, 1); check(it); renderItem(it); }; });
     $$(".fchip[data-k]", el).forEach(function (b) { b.onclick = function () { var arr = it[b.dataset.k], i = arr.indexOf(b.dataset.v); if (i > -1) arr.splice(i, 1); else arr.push(b.dataset.v); check(it); renderItem(it); }; });
+    var own = $('[data-f="ownstyle"]', el);
+    function addOwn() { var v = A.ownStyle(own.value); own.value = ""; if (v && it.styles.indexOf(v) < 0) { it.styles.push(v); check(it); renderItem(it); } }
+    own.onkeydown = function (e) { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addOwn(); } };
+    own.onblur = addOwn;
     $('[data-f="search"]', el).onchange = function () { it.search = clean(this.value.split(",")); };
     $(".u-rm", el).onclick = function () { items.splice(items.indexOf(it), 1); el.remove(); items.forEach(function (o) { check(o); renderItem(o); }); update(); };
   }
   function update() {
-    var ready = items.filter(function (it) { return it.base && check(it); }).length, busy = items.filter(function (it) { return !it.base && !it.broken; }).length;
+    var ready = items.filter(function (it) { return it.base && check(it); }).length, busy = items.filter(function (it) { return !it.broken && (!it.base || it.state === "ai"); }).length;
+    var waiting = items.filter(function (it) { return it.state === "ai" && it.base; }).length;
+    $("#u-skipall-row").hidden = waiting < 2;
     $("#u-pick").hidden = items.length >= MAX;
-    $("#u-count").textContent = items.length ? ready + " of " + items.length + " ready" + (busy ? " · preparing " + busy : "") : "";
+    $("#u-count").textContent = items.length ? ready + " of " + items.length + " ready" + (busy ? " · " + (waiting ? "Claude working on " + waiting : "preparing " + busy) : "") : "";
     var b = $("#u-save"); b.disabled = !items.length || ready !== items.filter(function (it) { return !it.broken; }).length || busy > 0;
-    b.textContent = items.length > 1 ? "Save " + items.length + " as drafts" : "Save as draft";
+    b.textContent = items.length > 1 ? "Save " + items.length + " and publish" : "Save and publish";
   }
+  $("#u-skipall").onclick = function () { items.slice().forEach(skipAI); };
   $("#u-file").onchange = function () { addFiles(this.files); this.value = ""; };
   var drop = $("#u-pick .drop");
   ["dragover", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); if (ev === "drop") addFiles(e.dataTransfer.files); }); });
@@ -323,7 +352,7 @@
     Promise.all(ok.map(function (it) {
       var ref = it.code.toLowerCase() + "-" + stamp, data = watermarked(it).toDataURL("image/jpeg", 0.86);
       return IDB.put(ref, data).then(function () {
-        return { code: it.code, name: it.name.trim(), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), colours: it.colours.slice(), orient: it.orient, added: month, pop: 5 };
+        return { code: it.code, name: it.name.trim(), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), orient: it.orient, added: month, pop: 5 };
       });
     })).then(function (list) {
       var db = A.db();
@@ -332,7 +361,7 @@
       db.settings.samplesRetired = true;                 // the first real upload retires the drawn samples
       if (!A.save()) throw new Error("Could not save the draft on this device");
       dlg.close(); A.renderDesigns();
-      A.toast("Saved " + list.length + (list.length > 1 ? " designs" : " design") + " as drafts." + (first ? " Sample designs will be hidden." : "") + " Press Publish to put them online.");
+      A.autoPublish("Saved " + list.length + (list.length > 1 ? " designs" : " design") + (first ? " (sample designs will be hidden)" : ""));
     }).catch(function (e) { A.toast(e.message); btn.disabled = false; update(); });
   };
 

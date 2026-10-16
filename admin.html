@@ -215,6 +215,7 @@
   .checklist .st.wait { background: var(--marigold); }
   .meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
   .meter i { display: block; height: 100%; background: var(--marigold); border-radius: 4px; }
+  .own-style { margin-top: 8px; width: 100%; max-width: 320px; min-height: 38px; border: 1px dashed var(--line-strong) !important; border-radius: 999px !important; padding: 6px 14px !important; font-size: .88rem !important; }
   .rv { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
   .fq-list { list-style: none; margin: 0; padding: 0; counter-reset: fq; }
   .fq { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 14px 0; border-top: 1px solid var(--line); counter-increment: fq; }
@@ -447,8 +448,7 @@
         <div class="field"><label for="d-code">Design code</label><input type="text" id="d-code" readonly><small>Customers send this code on WhatsApp</small></div>
       </div>
       <div class="field"><span class="lbl">Rooms it suits</span><div class="chips" id="d-spaces"></div></div>
-      <div class="field"><span class="lbl">Style</span><div class="chips" id="d-styles"></div></div>
-      <div class="field"><span class="lbl">Colours <span class="auto-note" id="d-col-note" hidden>Suggested from the image</span></span><div class="chips" id="d-colours"></div></div>
+      <div class="field"><span class="lbl">Style</span><div class="chips" id="d-styles"></div><input type="text" id="d-style-own" class="own-style" placeholder="+ type your own style, e.g. Tanjore" maxlength="24" enterkeyhint="done" aria-label="Add your own style"></div>
       <div class="field"><label for="d-tags">Tags (at least 3)</label><input type="text" id="d-tags" placeholder="peacock, bird, feathers, blue"><small>Hidden from customers; search uses them. Separate with commas.</small></div>
       <div class="grid-2" style="gap:12px">
         <div class="field"><span class="lbl">Best wall shape</span><div class="seg" role="group" id="d-orient"><button type="button" data-v="wide" aria-pressed="true">Wide</button><button type="button" data-v="tall">Tall</button><button type="button" data-v="square">Square</button></div><small id="d-orient-note"></small></div>
@@ -549,8 +549,14 @@
   function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data."); return false; } return true; }
 
   var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
-  var STYLES = [["nature", "Nature"], ["folk", "Indian folk"], ["devotional", "Devotional"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"], ["texture3d", "3D texture"]];
-  var COLOURS = [["green", "Green", "#2E6B45"], ["blue", "Blue", "#1A6BAF"], ["earth", "Earthy", "#9C6B43"], ["warm", "Warm", "#E8962E"], ["pastel", "Pastel", "#F2C9C1"], ["mono", "Black & white", "#555"], ["dark", "Dark & moody", "#1D2B4A"]];
+  var STYLES = [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]];
+  /* styles typed by the team ("Tanjore", "Kerala mural") sit next to the fixed list */
+  function styleList(extra) {
+    var known = {}; STYLES.forEach(function (o) { known[o[0]] = 1; });
+    var own = {}; designs().concat(extra ? [{ styles: extra }] : []).forEach(function (d) { (d.styles || []).forEach(function (v) { if (!known[v]) own[v] = 1; }); });
+    return STYLES.concat(Object.keys(own).sort().map(function (v) { return [v, v.charAt(0).toUpperCase() + v.slice(1)]; }));
+  }
+  function ownStyle(v) { return String(v || "").trim().toLowerCase().replace(/\s+/g, " ").replace(/[^\p{L}\p{N} &'-]/gu, "").slice(0, 24); }
   var AREAS = ["Whitefield", "Indiranagar", "Koramangala", "HSR Layout", "Sarjapur Road", "Electronic City", "JP Nagar", "Jayanagar", "Bannerghatta Road", "Marathahalli", "Hebbal", "Yelahanka", "Malleshwaram", "Rajajinagar", "Bellandur", "BTM Layout", "Banashankari", "Hennur", "Kanakapura Road"];
   var GBP_LIVE = "2026-10-08"; // date the Google Business Profile went live
   function lbl(list, v) { var o = list.filter(function (x) { return x[0] === v; })[0]; return o ? o[1] : v; }
@@ -792,14 +798,19 @@
         '<div class="row"><label class="switch" style="font-size:.78rem"><input type="checkbox" data-live="' + d.code + '"' + (d.hidden ? "" : " checked") + '> ' + (d.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-edit="' + d.code + '" style="font-size:.84rem">Edit</button></div></div></div>';
     }).join("");
     paintThumbs($("#d-grid"));
-    $("#d-add-tile").onclick = function () { openDesign(null); };
+    $("#d-add-tile").onclick = function () { if (window.WBUpload) WBUpload.open(); else openDesign(null); };
     $$("[data-edit]", $("#d-grid")).forEach(function (b) { b.onclick = function () { openDesign(b.dataset.edit); }; });
-    $$("[data-live]", $("#d-grid")).forEach(function (c) { c.onchange = function () { setDesign(c.dataset.code || c.dataset.live, { hidden: !c.checked }); toast(c.checked ? "Live on the website" : "Hidden from the website"); renderDesigns(); }; });
+    $$("[data-live]", $("#d-grid")).forEach(function (c) { c.onchange = function () { setDesign(c.dataset.code || c.dataset.live, { hidden: !c.checked }); renderDesigns(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
   }
   function setDesign(code, patch) {
     var own = db.designs.filter(function (d) { return d.code === code; })[0];
     if (own) Object.assign(own, patch); else db.edits[code] = Object.assign(db.edits[code] || {}, patch);
     save();
+  }
+  /* design changes go live straight away: no separate Publish tap to forget */
+  function autoPublish(what) {
+    if (WB.publishing && WB.publishing.auto) { toast(what + ". Publishing to the website…"); WB.publishing.auto(); }
+    else toast(what + ". Press Publish to put it online.");
   }
   function nextCode() { var n = 0; designs().forEach(function (d) { var m = /WB-(\d+)/.exec(d.code); if (m) n = Math.max(n, +m[1]); }); return "WB-" + String(n + 1).padStart(4, "0"); }
 
@@ -808,7 +819,14 @@
     el.innerHTML = list.map(function (o) { return '<button type="button" class="fchip" data-v="' + o[0] + '" aria-pressed="' + (sel.indexOf(o[0]) > -1) + '">' + (o[2] ? '<span class="sw" style="background:' + o[2] + '"></span>' : "") + o[1] + "</button>"; }).join("");
   }
   function chipVals(el) { return $$('[aria-pressed="true"]', el).map(function (b) { return b.dataset.v; }); }
-  ["#d-spaces", "#d-styles", "#d-colours"].forEach(function (s) { $(s).addEventListener("click", function (e) { var b = e.target.closest(".fchip"); if (!b) return; b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); b.classList.remove("sugg-on"); }); });
+  ["#d-spaces", "#d-styles"].forEach(function (s) { $(s).addEventListener("click", function (e) { var b = e.target.closest(".fchip"); if (!b) return; b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); b.classList.remove("sugg-on"); }); });
+  function addOwnStyle() {
+    var inp = $("#d-style-own"), v = ownStyle(inp.value); inp.value = ""; if (!v) return;
+    var sel = chipVals($("#d-styles")); if (sel.indexOf(v) < 0) sel.push(v);
+    chipSet($("#d-styles"), styleList(sel), sel);
+  }
+  $("#d-style-own").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addOwnStyle(); } });
+  $("#d-style-own").addEventListener("blur", addOwnStyle);
   function segVal(el) { var b = $('[aria-pressed="true"]', el); return b ? b.dataset.v : null; }
   function segSet(el, v) { $$("button", el).forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.v === v); }); }
   $$(".seg").forEach(function (sg) { sg.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; segSet(sg, b.dataset.v); sg.dispatchEvent(new Event("change")); }); });
@@ -882,7 +900,6 @@
   wireDrop($("#d-drop"), $("#d-file"), function (im) {
     srcImg = im; $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
     var a = analyse(im);
-    if (a.colours.length) { $$(".fchip", $("#d-colours")).forEach(function (b) { var on = a.colours.indexOf(b.dataset.v) > -1; if (on) { b.setAttribute("aria-pressed", "true"); b.classList.add("sugg-on"); } }); $("#d-col-note").hidden = false; }
     segSet($("#d-orient"), a.orient); $("#d-orient-note").textContent = "Set from the image shape";
     $("#d-imginfo").textContent = im.naturalWidth + " × " + im.naturalHeight + " px" + (Math.max(im.naturalWidth, im.naturalHeight) < 1200 ? " · small image: it may look soft when printed large. Ask the customer for a bigger file." : " · saved at website size; keep your original for printing.");
   });
@@ -897,9 +914,8 @@
     $("#d-name").value = cur ? cur.name : (wantWord ? wantWord.replace(/\b\w/g, function (c) { return c.toUpperCase(); }) : "");
     $("#d-tags").value = cur ? (cur.tags || []).join(", ") : (wantWord || "");
     chipSet($("#d-spaces"), ROOMS, cur ? cur.spaces || [] : []);
-    chipSet($("#d-styles"), STYLES, cur ? cur.styles || [] : []);
-    chipSet($("#d-colours"), COLOURS, cur ? cur.colours || [] : []);
-    $("#d-col-note").hidden = true; $("#d-orient-note").textContent = "";
+    chipSet($("#d-styles"), styleList(), cur ? cur.styles || [] : []); $("#d-style-own").value = "";
+    $("#d-orient-note").textContent = "";
     segSet($("#d-orient"), cur ? cur.orient || "wide" : "wide");
     $("#d-live").checked = cur ? !cur.hidden : true;
     $("#d-feat").checked = cur ? (cur.pop || 0) >= 9 : false;
@@ -923,7 +939,7 @@
     if (isNew && !srcImg) { toast("Add a photo of the design"); return; }
     var tagCount = $("#d-tags").value.split(",").filter(function (s) { return s.trim(); }).length;
     if (tagCount < 3) { toast("Add at least 3 tags (" + tagCount + " so far)"); $("#d-tags").focus(); return; }
-    var data = { name: name, spaces: spaces, styles: chipVals($("#d-styles")), colours: chipVals($("#d-colours")), orient: segVal($("#d-orient")),
+    var data = { name: name, spaces: spaces, styles: (addOwnStyle(), chipVals($("#d-styles"))), orient: segVal($("#d-orient")),
       tags: $("#d-tags").value.split(",").map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean), hidden: !$("#d-live").checked };
     if ($("#d-feat").checked) data.pop = 9.5; else if (cur && (cur.pop || 0) >= 9 && !cur.builtIn) data.pop = 5;
     if (srcImg) {
@@ -933,11 +949,11 @@
     else setDesign(cur.code, data);
     if (!save()) { if (isNew) db.designs.pop(); return; }
     $("#d-dlg").close(); renderDesigns();
-    toast(isNew ? "Saved. " + $("#d-code").value + " is live in the catalogue" : "Saved");
+    autoPublish(isNew ? "Saved " + $("#d-code").value : "Saved");
   };
   $("#d-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete design"; }, 2500); return; }
-    db.designs = db.designs.filter(function (d) { return d.code !== cur.code; }); save(); $("#d-dlg").close(); renderDesigns(); toast("Deleted");
+    db.designs = db.designs.filter(function (d) { return d.code !== cur.code; }); save(); $("#d-dlg").close(); renderDesigns(); autoPublish("Deleted");
   };
 
   /* =====================================================================
@@ -1275,7 +1291,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, COLOURS: COLOURS };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>

@@ -67,6 +67,8 @@ window.WB_LEXICON = [
   "gym|Gym & studio|gym,fitness,yoga,yoga studio,dance studio,sports|",
   /* ---------- styles (ids match the Style filter) ---------- */
   "folk|Indian folk art|folk,folk art,traditional,ethnic,tribal,indian art,indian traditional,desi,heritage,madhubani,mithila,kalamkari,pattachitra,gond,kerala mural,tanjore,thanjavur,mysore painting,mysore art,rajasthani,pichwai,pichhwai,nathdwara,mughal,लोक कला,ಜಾನಪದ,జానపద|warli,mandala",
+  "traditional|Traditional|traditional,paramparik,paaramparik,classic indian,ethnic,heritage,temple art,tanjore,thanjavur,mysore painting,kerala mural,पारंपरिक,ಸಾಂಪ್ರದಾಯಿಕ,సాంప్రదాయ|",
+  "artistic|Artistic|artistic,artsy,art piece,painting,paintings,painted,hand painted,canvas,fine art,artwork,brush,oil painting,watercolour,watercolor|",
   "warli|Warli|warli,varli,worli,warli art,warli painting,वारली,ವಾರ್ಲಿ,వార్లి|",
   "mandala|Mandala & rangoli|mandala,mandalas,mandla,rangoli,rangoli design,kolam,muggu,muggulu,alpana,mandana,रंगोली,ರಂಗೋಲಿ,ముగ్గు|",
   "abstract|Abstract & modern|abstract,abstact,modern,modern art,contemporary,artistic,brush strokes,splash,fluid,aesthetic,trendy|",
