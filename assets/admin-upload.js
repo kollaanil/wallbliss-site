@@ -26,6 +26,27 @@
     get: function (k) { return IDB.open().then(function (db) { return new Promise(function (res) { var r = db.transaction("img").objectStore("img").get(k); r.onsuccess = function () { res(r.result || null); }; r.onerror = function () { res(null); }; }); }); },
     del: function (k) { return IDB.open().then(function (db) { db.transaction("img", "readwrite").objectStore("img").delete(k); }); }
   };
+  /* iPhone photos (HEIC). Safari opens them itself; in Chrome and other browsers they are converted
+     to JPG right here on this device (the converter, ~1.3 MB, loads only the first time it's needed). */
+  var heicLib = null;
+  function isHeic(f) { return /hei[cf]/i.test((f && f.type) || "") || /\.hei[cf]$/i.test((f && f.name) || ""); }
+  function heicToJpeg(f) {
+    heicLib = heicLib || new Promise(function (res, rej) {
+      var s = document.createElement("script"); s.src = "assets/vendor/heic2any.min.js";
+      s.onload = function () { res(window.heic2any); };
+      s.onerror = function () { heicLib = null; rej(new Error("Couldn't load the iPhone photo converter. Check the internet and try again.")); };
+      document.head.appendChild(s);
+    });
+    if (A && A.toast) A.toast("Converting iPhone photo…");
+    return heicLib.then(function (h) { return h({ blob: f, toType: "image/jpeg", quality: 0.92 }); })
+      .then(function (b) { return Array.isArray(b) ? b[0] : b; })
+      .catch(function (e) {
+        if (e instanceof Error && /converter/.test(e.message)) throw e;
+        throw new Error("Couldn't convert “" + f.name + "”. Share it from Photos as JPG (or set iPhone Settings → Camera → Formats → Most Compatible) and try again.");
+      });
+  }
+  window.WBHeic = { is: isHeic, toJpeg: heicToJpeg };
+
   window.WBAI = { key: function () { return aiKey(); }, model: AI_MODEL };   // also used by the project story writer
   window.WBImages = {
     /* turn "idb:<key>" into a data URL (used by Publish and by thumbnails) */
@@ -93,13 +114,16 @@
   }
 
   /* ---------- image steps ---------- */
-  function load(file) {
+  function openImg(blob, name) {
     return new Promise(function (res, rej) {
-      var url = URL.createObjectURL(file), im = new Image();
+      var url = URL.createObjectURL(blob), im = new Image();
       im.onload = function () { res(im); };
-      im.onerror = function () { rej(new Error("Can't open “" + file.name + "”. Use JPG, PNG or WebP (export TIFF, PSD or PDF print files to JPG first).")); };
+      im.onerror = function () { rej(new Error("Can't open “" + name + "”. Use JPG, PNG, WebP or iPhone photos (export TIFF, PSD or PDF print files to JPG first).")); };
       im.src = url;
     });
+  }
+  function load(file) {
+    return openImg(file, file.name).catch(function (e) { if (!isHeic(file)) throw e; return heicToJpeg(file).then(function (b) { return openImg(b, file.name); }); });
   }
   /* remove plain bars at the edges (black screenshot bars, white scanner margins) */
   function trimBox(img) {

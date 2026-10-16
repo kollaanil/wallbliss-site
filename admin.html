@@ -431,7 +431,7 @@
     <div class="body">
       <div class="field">
         <span class="lbl">Image</span>
-        <div class="drop" id="d-drop"><input type="file" id="d-file" accept="image/*" aria-label="Choose image"><div><b>Tap to choose a photo</b>or drag it here · JPG, PNG or WebP</div></div>
+        <div class="drop" id="d-drop"><input type="file" id="d-file" accept="image/*" aria-label="Choose image"><div><b>Tap to choose a photo</b>or drag it here · JPG, PNG, WebP or iPhone photo</div></div>
         <div id="d-prev" hidden style="display:grid;gap:10px">
           <div class="prev-wrap"><canvas id="d-canvas"></canvas></div>
           <div class="prev-tools">
@@ -860,8 +860,19 @@
     return { colours: picks, orient: ar > 1.2 ? "wide" : ar < .85 ? "tall" : "square", ar: ar };
   }
   function loadFile(file, cb) {
-    if (!file || !/^image\//.test(file.type)) { toast("Please choose a photo (JPG, PNG or WebP)"); return; }
-    var rd = new FileReader(); rd.onload = function () { var im = new Image(); im.onload = function () { cb(im); }; im.src = rd.result; }; rd.readAsDataURL(file);
+    if (!file) return;
+    var H = window.WBHeic, heic = H && H.is(file);
+    if (!heic && !/^image\//.test(file.type)) { toast("Please choose a photo (JPG, PNG, WebP or iPhone photo)"); return; }
+    function open(blob) {
+      return new Promise(function (res, rej) {
+        var rd = new FileReader();
+        rd.onload = function () { var im = new Image(); im.onload = function () { res(im); }; im.onerror = function () { rej(new Error("This photo can't be opened here. Use JPG, PNG, WebP or an iPhone photo.")); }; im.src = rd.result; };
+        rd.onerror = function () { rej(new Error("Couldn't read that file. Try again.")); };
+        rd.readAsDataURL(blob);
+      });
+    }
+    open(file).catch(function (e) { if (!heic) throw e; return H.toJpeg(file).then(open); })   /* Chrome etc. can't show iPhone HEIC photos: convert first */
+      .then(cb).catch(function (e) { toast(e.message); });
   }
   function wireDrop(drop, input, cb) {
     input.addEventListener("change", function () { loadFile(input.files[0], cb); input.value = ""; });
