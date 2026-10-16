@@ -2,11 +2,10 @@
    PUBLIC PAGES use only what has been published (assets/published.js, written by the admin's
    Publish button as a commit to GitHub). Everyone sees the same thing.
    THE ADMIN works on a draft kept in its own browser, seeded from the published data, until
-   someone presses Publish. Visitor events (searches, clicks, WhatsApp taps) are kept in each
-   visitor's own browser only; real analytics come from GA4 / Clarity. */
+   someone presses Publish. Visitor numbers (searches, clicks, WhatsApp taps) go to Google Analytics. */
 (function () {
   var WB = window.WB || (window.WB = {});
-  var KEY = "wb_admin_db", EV = "wb_events";
+  var KEY = "wb_admin_db";
   var isAdmin = /(^|\/)admin\.html$/.test(location.pathname);
   function get(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
@@ -33,9 +32,7 @@
     save: function (db) { if (!get(BASE, null)) set(BASE, this.published()); return set(KEY, db); },
     base: function () { return norm(get(BASE, null) || this.published()); },
     setBase: function (data) { set(BASE, data); },
-    discardDraft: function () { try { localStorage.removeItem(KEY); localStorage.removeItem(BASE); } catch (e) {} },
-    events: function () { return get(EV, []); },
-    clearEvents: function () { set(EV, []); }
+    discardDraft: function () { try { localStorage.removeItem(KEY); localStorage.removeItem(BASE); } catch (e) {} }
   };
 
   /* the admin previews its own draft; everyone else sees the published data */
@@ -70,12 +67,5 @@
   };
   WB.faqText = function (a) { return String(a || "").replace(LINK, "$1").trim(); };
 
-  if (WB.track) {
-    var send = WB.track;
-    WB.track = function (type, data) {
-      send(type, data);
-      var ev = window.WB_EVENTS[window.WB_EVENTS.length - 1];
-      var all = get(EV, []); all.push(ev); if (all.length > 3000) all = all.slice(-3000); set(EV, all);
-    };
-  }
+  try { localStorage.removeItem("wb_events"); } catch (e) {}   // old per-browser visit log, no longer kept
 })();
