@@ -55,6 +55,28 @@ window.WB_PUBLISHED = {
    ],
    "hidden": false,
    "img": "assets/uploads/designs/wb-0138-w0ubin.jpg"
+  },
+  {
+   "code": "WB-0139",
+   "name": "3D waterfall",
+   "img": "assets/uploads/designs/wb-0139-105oeix.jpg",
+   "tags": [
+    "waterfall",
+    "3d",
+    "nature"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "bedroom",
+    "hotel"
+   ],
+   "styles": [
+    "nature"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -190,7 +212,9 @@ window.WB_PUBLISHED = {
   }
  ],
  "reviews": [],
- "settings": {},
+ "settings": {
+  "samplesRetired": true
+ },
  "faqs": [
   {
    "id": "f-what-exactly-is-wall-printing",
@@ -283,6 +307,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-16T09:30:09.000Z",
- "by": "Claude"
+ "updated": "2026-10-16T10:17:47.729Z",
+ "by": "Manasa"
 };
