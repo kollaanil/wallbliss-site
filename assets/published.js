@@ -140,6 +140,26 @@ window.WB_PUBLISHED = {
  },
  "projects": [
   {
+   "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
+   "title": "Kerala's tradition, reimagined in a client's living room",
+   "locality": "South Bangalore",
+   "space": "Living room",
+   "size": "5 ft by 6 ft",
+   "design": "Customer's own picture",
+   "time": "3",
+   "month": "2026-10",
+   "summary": "A plain 5 ft by 6 ft wall in this living room in South Bangalore now carries Kerala's traditional nettipattam printed straight onto the wall in 3 hours. It's now the first thing everyone sees when they walk in.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 941,
+   "h": 1672,
+   "ratio": 0.5628,
+   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-before-v6gsyc.jpg",
+   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-after-1desu30.jpg"
+  },
+  {
    "slug": "kerala-s-tradition-reimagined-in-a-bangalore-living-room-cmqj",
    "title": "Kerala’s Tradition, Reimagined in a Bangalore Living Room",
    "locality": "South Bangalore",
@@ -151,7 +171,7 @@ window.WB_PUBLISHED = {
    "summary": "We brought the timeless beauty of Kerala’s traditional Nettipattam art into a contemporary Bangalore home, transforming the living room wall into a striking statement of heritage and craftsmanship.\n\nA traditional Kerala art form, recreated directly on the wall to bring together culture, character and modern interiors.",
    "quote": "",
    "consent": true,
-   "hidden": false,
+   "hidden": true,
    "noHome": false,
    "w": 1200,
    "h": 900,
@@ -254,6 +274,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-16T07:39:01.755Z",
+ "updated": "2026-10-16T09:02:05.120Z",
  "by": "Anil"
 };
