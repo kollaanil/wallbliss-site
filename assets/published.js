@@ -1,6 +1,31 @@
 /* Written by the admin Publish button. Do not edit by hand. */
 window.WB_PUBLISHED = {
- "designs": [],
+ "designs": [
+  {
+   "code": "WB-0137",
+   "added": "2026-10",
+   "pop": 9.5,
+   "name": "Kamadhenu Colorful",
+   "spaces": [
+    "living",
+    "pooja",
+    "hotel"
+   ],
+   "styles": [],
+   "colours": [
+    "warm"
+   ],
+   "orient": "wide",
+   "tags": [
+    "kamadhenu",
+    "cow",
+    "traditional",
+    "colorful"
+   ],
+   "hidden": false,
+   "img": "assets/uploads/designs/wb-0137-167iim2.jpg"
+  }
+ ],
  "edits": {},
  "projects": [
   {
@@ -26,5 +51,6 @@ window.WB_PUBLISHED = {
  ],
  "reviews": [],
  "settings": {},
- "updated": "2026-10-15T12:54:31.354Z"
+ "updated": "2026-10-16T07:27:45.181Z",
+ "by": "Anil"
 };
