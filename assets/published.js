@@ -77,6 +77,30 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0140",
+   "name": "Cute Krishna",
+   "img": "assets/uploads/designs/wb-0140-126pbz3.jpg",
+   "tags": [
+    "krishna",
+    "cute",
+    "colorful"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "kids",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -307,6 +331,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-16T10:17:47.729Z",
+ "updated": "2026-10-16T11:12:30.685Z",
  "by": "Manasa"
 };
