@@ -50,7 +50,7 @@
 
   /* Google Analytics 4: loads only when ga4Id is set, and never on the admin page */
   var GA = WB.config.ga4Id && !/(^|\/)admin\.html$/.test(location.pathname) ? WB.config.ga4Id : "";
-  if (GA) {
+  if (GA && !window.gtag) {                                   // pages that already carry the GA tag in <head> are not tagged twice
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag("js", new Date());
@@ -59,7 +59,7 @@
     document.head.appendChild(gs);
   }
   function toGA(type, data) {
-    if (!GA || type === "page_view") return;                 // GA4 counts page views by itself
+    if (!GA || !window.gtag || type === "page_view") return; // GA4 counts page views by itself
     var p = { lead_source: WB.lead.src || "(direct)" };
     Object.keys(data || {}).forEach(function (k) { var v = data[k]; if (v != null && typeof v !== "object") p[k === "q" ? "search_term" : k] = String(v).slice(0, 100); });
     window.gtag("event", type, p);
