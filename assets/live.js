@@ -18,11 +18,18 @@
   }
   var PUB = norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {})));
 
+  var BASE = "wb_admin_base";   // the published data this device's draft started from (for safe merging at Publish)
   WB.db = {
     published: function () { return norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {}))); },
-    load: function () { return norm(get(KEY, null) || this.published()); },
-    save: function (db) { return set(KEY, db); },
-    discardDraft: function () { try { localStorage.removeItem(KEY); } catch (e) {} },
+    load: function () {
+      var d = get(KEY, null);
+      if (!d) { set(BASE, this.published()); return this.published(); }     // fresh draft: starts from what is live now
+      return norm(d);
+    },
+    save: function (db) { if (!get(BASE, null)) set(BASE, this.published()); return set(KEY, db); },
+    base: function () { return norm(get(BASE, null) || this.published()); },
+    setBase: function (data) { set(BASE, data); },
+    discardDraft: function () { try { localStorage.removeItem(KEY); localStorage.removeItem(BASE); } catch (e) {} },
     events: function () { return get(EV, []); },
     clearEvents: function () { set(EV, []); }
   };

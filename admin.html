@@ -1143,6 +1143,7 @@
   $("#r-save").onclick = function () {
     var r = { name: $("#r-name").value.trim(), place: $("#r-place").value.trim(), quote: $("#r-text").value.trim(), type: $("#r-type").value.trim(), stars: stars, show: $("#r-show").checked, source: "google" };
     if (!r.name || !r.quote) { toast("Add the name and the review text"); return; }
+    r.id = (R != null && db.reviews[R].id) || ("r" + Date.now().toString(36));
     if (R != null) db.reviews[R] = r; else db.reviews.unshift(r);
     save(); $("#r-dlg").close(); renderReviews(); toast(r.show ? "Saved. It's on the home page now" : "Saved");
   };
@@ -1175,7 +1176,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, COLOURS: COLOURS };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, COLOURS: COLOURS };
   if (user) enter(user);
 })();
 </script>
