@@ -80,7 +80,7 @@ WhatsApp tap is recorded by `WB.track` in `assets/site.js`. To see these for **a
 3. In GA4 → Reports → Engagement → Events you will see `search`, `search_no_results` (with `search_term`),
    `design_open` (with `code`), `whatsapp_tap` (with `where`) and the rest, plus `lead_source` from `?src=` links.
 
-The admin's Insights page still shows only the activity of the device it is opened on.
+There is no visitor-numbers page in the admin; use GA4 for views, searches and WhatsApp taps.
 
 ## Google sign-in
 
