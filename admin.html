@@ -498,7 +498,7 @@
 <script src="assets/site-data.js"></script>
 <script src="assets/art.js"></script>
 <script src="assets/admin-config.js"></script>
-<script src="assets/published.js"></script>
+<script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
