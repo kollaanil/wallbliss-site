@@ -216,6 +216,20 @@
   .meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
   .meter i { display: block; height: 100%; background: var(--marigold); border-radius: 4px; }
   .rv { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .fq-list { list-style: none; margin: 0; padding: 0; counter-reset: fq; }
+  .fq { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 14px 0; border-top: 1px solid var(--line); counter-increment: fq; }
+  .fq::before { content: counter(fq); font: 700 .8rem var(--font-body); color: var(--muted); background: var(--surface-2); border-radius: 50%; width: 26px; height: 26px; display: grid; place-items: center; margin-top: 2px; }
+  .fq.off > .fq-main { opacity: .5; }
+  .fq-main { border: 0; background: none; padding: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; display: grid; gap: 4px; }
+  .fq-main b { color: var(--ink); font-size: .98rem; }
+  .fq-main span { color: var(--muted); font-size: .86rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .fq-tools { display: flex; align-items: center; gap: 2px; }
+  .fq-tools button.mv { border: 1px solid var(--line); background: #fff; border-radius: 8px; width: 34px; height: 34px; cursor: pointer; font-size: .9rem; color: var(--ink-2); }
+  .fq-tools button.mv:disabled { opacity: .3; cursor: default; }
+  .fq-tools .switch { font-size: 0; gap: 0; margin-left: 6px; }
+  .fq-prev { border: 1px dashed var(--line); border-radius: 12px; padding: 12px 14px; color: var(--muted); font-size: .92rem; display: grid; gap: 8px; }
+  .fq-prev b { color: var(--ink); }
+  @media (max-width: 760px) { .fq { grid-template-columns: auto minmax(0, 1fr); } .fq-tools { grid-column: 2; } }
   .rv:first-of-type { border-top: 0; }
   .rv .stars { color: #E8A317; letter-spacing: 1px; }
   .rv q { color: var(--ink); quotes: "“" "”"; }
@@ -269,6 +283,7 @@
       <button type="button" data-view="designs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Designs</button>
       <button type="button" data-view="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>Projects</button>
       <button type="button" data-view="reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg>Reviews</button>
+      <button type="button" data-view="faqs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.9"/><path d="M12 17.2v.1"/></svg>FAQs</button>
       <div class="sep"></div>
       <button type="button" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
     </nav>
@@ -359,6 +374,15 @@
             <p class="sub" style="margin-top:0">Copy a review from Google exactly as written. Turned-on reviews show on the home page.</p>
             <div id="rv-list"></div>
           </div>
+        </div>
+      </section>
+
+      <!-- ===== FAQS ===== -->
+      <section data-pane="faqs" hidden>
+        <div class="view-head"><div><h1>FAQs</h1><p>The questions and answers on the home page. Google can show them in search results too, so keep answers short and clear.</p></div><button class="btn btn-wa" type="button" id="fq-add" style="background:var(--ink);box-shadow:none">+ Add a question</button></div>
+        <div class="card">
+          <p class="sub" style="margin-top:0">Tap a question to edit it. Use the arrows to change the order. Turned-off questions stay here but are hidden from the website.</p>
+          <ol class="fq-list" id="fq-list"></ol>
         </div>
       </section>
 
@@ -494,6 +518,20 @@
   </div>
 </dialog>
 
+<!-- ================= FAQ SHEET ================= -->
+<dialog class="sheet" id="f-dlg" aria-labelledby="f-title">
+  <div class="sheet-in">
+    <header><h2 id="f-title">Add a question</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="field"><label for="f-q">Question</label><input type="text" id="f-q" maxlength="140" placeholder="e.g. How much space do you need in front of the wall?"><small>Write it the way a customer would ask it.</small></div>
+      <div class="field"><label for="f-a">Answer</label><textarea id="f-a" rows="7" placeholder="Short and friendly. Two to four sentences is ideal."></textarea><small>Leave a blank line to start a new paragraph. To add a link, write [link words](wallpaper-vs-wall-printing.html) or [link words](https://…).</small></div>
+      <label class="switch"><input type="checkbox" id="f-show" checked> Show on the website</label>
+      <div class="field"><span class="lbl">Preview</span><div class="fq-prev" id="f-prev"></div></div>
+    </div>
+    <footer><button class="linkbtn danger" type="button" id="f-delete" hidden>Delete</button><span class="grow"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="f-save" style="background:var(--ink);box-shadow:none">Save question</button></footer>
+  </div>
+</dialog>
+
 <script src="assets/catalogue-data.js"></script>
 <script src="assets/site-data.js"></script>
 <script src="assets/art.js"></script>
@@ -541,12 +579,12 @@
   };
 
   /* ---------- routing ---------- */
-  var VIEWS = ["insights", "designs", "projects", "reviews", "settings"];
+  var VIEWS = ["insights", "designs", "projects", "reviews", "faqs", "settings"];
   function route() {
     var v = (location.hash || "").slice(1).split("?")[0]; if (VIEWS.indexOf(v) < 0) v = "insights";
     $$("[data-pane]").forEach(function (p) { p.hidden = p.dataset.pane !== v; });
     $$(".a-nav [data-view]").forEach(function (b) { b.toggleAttribute("aria-current", b.dataset.view === v); if (b.dataset.view === v) b.setAttribute("aria-current", "page"); });
-    ({ insights: renderInsights, designs: renderDesigns, projects: renderProjects, reviews: renderReviews, settings: renderSettings })[v]();
+    ({ insights: renderInsights, designs: renderDesigns, projects: renderProjects, reviews: renderReviews, faqs: renderFaqs, settings: renderSettings })[v]();
     window.scrollTo(0, 0);
   }
   $$(".a-nav [data-view]").forEach(function (b) { b.onclick = function () { location.hash = b.dataset.view; }; });
@@ -1158,6 +1196,46 @@
     save(); $("#r-dlg").close(); renderReviews(); toast(r.show ? "Saved. It's on the home page now" : "Saved");
   };
   $("#r-delete").onclick = function () { db.reviews.splice(R, 1); save(); $("#r-dlg").close(); renderReviews(); toast("Deleted"); };
+
+  /* =====================================================================
+     FAQS (home page questions; published with everything else)
+     ===================================================================== */
+  var F = null;
+  function renderFaqs() {
+    db.faqs = db.faqs || [];
+    var n = db.faqs.length;
+    $("#fq-list").innerHTML = n ? db.faqs.map(function (f, i) {
+      var on = f.show !== false;
+      return '<li class="fq' + (on ? "" : " off") + '"><button type="button" class="fq-main" data-fedit="' + i + '"><b>' + esc(f.q) + '</b><span>' + esc(WB.faqText(f.a)) + '</span></button>' +
+        '<div class="fq-tools"><button type="button" class="mv" data-fup="' + i + '" aria-label="Move up"' + (i ? "" : " disabled") + '>↑</button><button type="button" class="mv" data-fdown="' + i + '" aria-label="Move down"' + (i < n - 1 ? "" : " disabled") + '>↓</button>' +
+        '<label class="switch" title="' + (on ? "On the website" : "Hidden") + '"><input type="checkbox" data-fshow="' + i + '"' + (on ? " checked" : "") + ' aria-label="Show on the website">' + (on ? "On" : "Off") + '</label></div></li>';
+    }).join("") : '<p class="muted">No questions yet. Add the first one, or the home page shows its built-in list.</p>';
+    $$("[data-fedit]").forEach(function (b) { b.onclick = function () { openFaq(+b.dataset.fedit); }; });
+    $$("[data-fup]").forEach(function (b) { b.onclick = function () { moveFaq(+b.dataset.fup, -1); }; });
+    $$("[data-fdown]").forEach(function (b) { b.onclick = function () { moveFaq(+b.dataset.fdown, 1); }; });
+    $$("[data-fshow]").forEach(function (c) { c.onchange = function () { db.faqs[+c.dataset.fshow].show = c.checked; save(); renderFaqs(); toast(c.checked ? "Shown on the website after you publish" : "Hidden after you publish"); }; });
+  }
+  function moveFaq(i, d) { var j = i + d; if (j < 0 || j >= db.faqs.length) return; var x = db.faqs.splice(i, 1)[0]; db.faqs.splice(j, 0, x); save(); renderFaqs(); }
+  function faqPrev() { $("#f-prev").innerHTML = "<b>" + esc($("#f-q").value.trim() || "Your question") + "</b>" + (WB.faqHTML($("#f-a").value) || '<p>Your answer</p>'); }
+  function openFaq(i) {
+    F = i == null ? null : i; var f = F != null ? db.faqs[F] : {};
+    $("#f-title").textContent = F != null ? "Edit question" : "Add a question";
+    $("#f-q").value = f.q || ""; $("#f-a").value = f.a || ""; $("#f-show").checked = F != null ? f.show !== false : true;
+    $("#f-delete").hidden = F == null; faqPrev(); openDlg($("#f-dlg"));
+  }
+  $("#f-q").addEventListener("input", faqPrev); $("#f-a").addEventListener("input", faqPrev);
+  $("#fq-add").onclick = function () { openFaq(null); };
+  $("#f-save").onclick = function () {
+    var f = { q: $("#f-q").value.trim(), a: $("#f-a").value.trim(), show: $("#f-show").checked };
+    if (!f.q || !f.a) { toast("Add the question and the answer"); return; }
+    f.id = (F != null && db.faqs[F].id) || ("f" + Date.now().toString(36));
+    if (F != null) db.faqs[F] = f; else db.faqs.push(f);
+    save(); $("#f-dlg").close(); renderFaqs(); toast("Saved. Press Publish to put it on the website");
+  };
+  $("#f-delete").onclick = function () {
+    var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete"; }, 3000); return; }
+    delete b.dataset.confirm; b.textContent = "Delete"; db.faqs.splice(F, 1); save(); $("#f-dlg").close(); renderFaqs(); toast("Deleted");
+  };
 
   /* =====================================================================
      SETTINGS

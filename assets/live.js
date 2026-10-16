@@ -10,10 +10,14 @@
   var isAdmin = /(^|\/)admin\.html$/.test(location.pathname);
   function get(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  var RAW = window.WB_PUBLISHED || {};
+  function clone(x) { return JSON.parse(JSON.stringify(x)); }
   function norm(db) {
     db = db || {};
     db.designs = db.designs || []; db.edits = db.edits || {}; db.projects = db.projects || [];
     db.reviews = db.reviews || []; db.settings = db.settings || {};
+    /* FAQs came later: a draft or snapshot saved before then starts from the published FAQs */
+    if (!Array.isArray(db.faqs)) db.faqs = Array.isArray(RAW.faqs) ? clone(RAW.faqs) : [];
     return db;
   }
   var PUB = norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {})));
@@ -53,7 +57,18 @@
     window.WB_DESIGNS = window.WB_DESIGNS_ALL.filter(function (d) { return !d.hidden; });
   }
   if (db.projects.length) window.WB_PROJECTS = db.projects.filter(function (p) { return !p.hidden; }).concat(window.WB_PROJECTS || []);
+  if (Array.isArray(RAW.faqs) || isAdmin) window.WB_FAQS = db.faqs.filter(function (f) { return f.show !== false && f.q && f.a; });
   if (db.reviews.length) window.WB_REVIEWS = db.reviews.filter(function (r) { return r.show; }).concat(window.WB_REVIEWS || []);
+
+  /* FAQ answers are plain text: a blank line starts a new paragraph, [words](link) makes a link */
+  var LINK = /\[([^\]]+)\]\(((?:https?:\/\/|mailto:|tel:|#|\/|[\w-]+\.html)[^)\s]*)\)/g;
+  function escH(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  WB.faqHTML = function (a) {
+    return String(a || "").trim().split(/\n\s*\n/).map(function (p) {
+      return "<p>" + escH(p).replace(LINK, function (m, t, u) { return '<a href="' + u + '"' + (/^https?:/.test(u) ? ' target="_blank" rel="noopener"' : "") + ">" + t + "</a>"; }).replace(/\n/g, "<br>") + "</p>";
+    }).join("");
+  };
+  WB.faqText = function (a) { return String(a || "").replace(LINK, "$1").trim(); };
 
   if (WB.track) {
     var send = WB.track;

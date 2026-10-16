@@ -48,7 +48,7 @@
   function stable(o) { return JSON.stringify(o, Object.keys(o || {}).sort()); }
   function dirty() {
     var a = WB.db.load(), b = WB.db.published();
-    return ["designs", "edits", "projects", "reviews", "settings"].some(function (k) { return JSON.stringify(a[k]) !== JSON.stringify(b[k]); });
+    return ["designs", "edits", "projects", "reviews", "settings", "faqs"].some(function (k) { return JSON.stringify(a[k]) !== JSON.stringify(b[k]); });
   }
   var busy = false, lastOk = 0;
   function refresh() {
@@ -85,27 +85,27 @@
     return gh("/repos/" + OWNER + "/" + REPO + "/contents/assets/published.js?ref=" + BRANCH, null, k).then(function (f) {
       var txt = decodeURIComponent(escape(atob(String(f.content || "").replace(/\s/g, ""))));
       var json = txt.replace(/^[\s\S]*?window\.WB_PUBLISHED\s*=\s*/, "").replace(/;\s*$/, "");
-      var d = JSON.parse(json); ["designs", "projects", "reviews"].forEach(function (x) { d[x] = d[x] || []; }); d.edits = d.edits || {}; d.settings = d.settings || {};
+      var d = JSON.parse(json); ["designs", "projects", "reviews", "faqs"].forEach(function (x) { d[x] = d[x] || []; }); d.edits = d.edits || {}; d.settings = d.settings || {};
       return d;
     });
   }
   function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
-  function idOf(kind, x) { return kind === "designs" ? x.code : kind === "projects" ? x.slug : (x.id || (x.name + "|" + x.quote)); }
+  function idOf(kind, x) { return kind === "designs" ? x.code : kind === "projects" ? x.slug : kind === "faqs" ? x.id : (x.id || (x.name + "|" + x.quote)); }
   function mergeList(kind, base, mine, theirs, clashes) {
     var B = {}, M = {}, T = {};
     base.forEach(function (x) { B[idOf(kind, x)] = x; }); mine.forEach(function (x) { M[idOf(kind, x)] = x; }); theirs.forEach(function (x) { T[idOf(kind, x)] = x; });
     var out = [], seen = {};
     mine.forEach(function (x) {
       var id = idOf(kind, x), b = B[id], t = T[id];
-      if (b && !t) { if (!same(x, b)) { out.push(x); clashes.push(x.code || x.title || x.name); } seen[id] = 1; return; }   // they deleted it; keep only if I changed it
-      if (b && t && !same(t, b) && !same(x, b) && !same(x, t)) clashes.push(x.code || x.title || x.name);
+      if (b && !t) { if (!same(x, b)) { out.push(x); clashes.push(x.code || x.title || x.name || x.q); } seen[id] = 1; return; }   // they deleted it; keep only if I changed it
+      if (b && t && !same(t, b) && !same(x, b) && !same(x, t)) clashes.push(x.code || x.title || x.name || x.q);
       out.push(b && same(x, b) && t ? t : x); seen[id] = 1;                                                         // unchanged by me → take theirs
     });
     theirs.forEach(function (t) {
       var id = idOf(kind, t); if (seen[id]) return;
       var b = B[id];
       if (b && same(t, b)) return;                                                                                      // I deleted it and they didn't touch it
-      if (kind === "designs") out.push(t); else out.unshift(t);                                                         // their new (or changed) item
+      if (kind === "designs" || kind === "faqs") out.push(t); else out.unshift(t);                                                         // their new (or changed) item
     });
     return out;
   }
@@ -119,12 +119,23 @@
     });
     return out;
   }
+  /* FAQs are an ordered list: if only the other editor re-ordered them, keep their order */
+  function mergeFaqs(base, mine, theirs, clashes) {
+    var out = mergeList("faqs", base, mine, theirs, clashes);
+    var ids = function (l) { return l.map(function (x) { return x.id; }).join("|"); };
+    if (ids(mine) === ids(base) && ids(theirs) !== ids(base)) {
+      var pos = {}; theirs.forEach(function (x, i) { pos[x.id] = i; });
+      out.sort(function (a, b) { return (a.id in pos ? pos[a.id] : 1e6) - (b.id in pos ? pos[b.id] : 1e6); });
+    }
+    return out;
+  }
   function merge(base, mine, theirs) {
     var clashes = [];
     var out = {
       designs: mergeList("designs", base.designs || [], mine.designs, theirs.designs, clashes),
       projects: mergeList("projects", base.projects || [], mine.projects, theirs.projects, clashes),
       reviews: mergeList("reviews", base.reviews || [], mine.reviews, theirs.reviews, clashes),
+      faqs: mergeFaqs(base.faqs || [], mine.faqs || [], theirs.faqs || [], clashes),
       edits: mergeMap(base.edits || {}, mine.edits, theirs.edits),
       settings: mergeMap(base.settings || {}, mine.settings, theirs.settings)
     };
@@ -165,7 +176,7 @@
     var out = JSON.parse(JSON.stringify(draft));
     out.designs.forEach(function (d) { d.img = take(d.img, "assets/uploads/designs/" + slug(d.code)); });
     out.projects.forEach(function (p) { var s = slug(p.slug || p.title); p.before = take(p.before, "assets/uploads/projects/" + s + "-before"); p.after = take(p.after, "assets/uploads/projects/" + s + "-after"); });
-    var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, updated: new Date().toISOString(),
+    var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, faqs: out.faqs || [], updated: new Date().toISOString(),
       by: ((document.getElementById("who-nm") || {}).textContent || "").trim() };
     files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
 
