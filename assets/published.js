@@ -28,7 +28,17 @@ window.WB_PUBLISHED = {
    "img": "assets/uploads/designs/wb-0137-167iim2.jpg"
   }
  ],
- "edits": {},
+ "edits": {
+  "WB-0136": {
+   "hidden": true
+  },
+  "WB-0135": {
+   "hidden": true
+  },
+  "WB-0133": {
+   "hidden": true
+  }
+ },
  "projects": [
   {
    "slug": "kerala-s-tradition-reimagined-in-a-bangalore-living-room-cmqj",
@@ -53,6 +63,6 @@ window.WB_PUBLISHED = {
  ],
  "reviews": [],
  "settings": {},
- "updated": "2026-10-16T07:31:48.302Z",
+ "updated": "2026-10-16T07:37:46.046Z",
  "by": "Anil"
 };
