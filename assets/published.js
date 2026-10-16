@@ -26,6 +26,35 @@ window.WB_PUBLISHED = {
    ],
    "hidden": false,
    "img": "assets/uploads/designs/wb-0137-167iim2.jpg"
+  },
+  {
+   "code": "WB-0138",
+   "added": "2026-10",
+   "pop": 9.5,
+   "name": "Surya bhagawan 7 horses",
+   "spaces": [
+    "living",
+    "pooja",
+    "office",
+    "cafe",
+    "hotel"
+   ],
+   "styles": [
+    "nature"
+   ],
+   "colours": [
+    "earth",
+    "warm"
+   ],
+   "orient": "wide",
+   "tags": [
+    "3d",
+    "surya",
+    "7 horses",
+    "devotional"
+   ],
+   "hidden": false,
+   "img": "assets/uploads/designs/wb-0138-w0ubin.jpg"
   }
  ],
  "edits": {
@@ -142,7 +171,7 @@ window.WB_PUBLISHED = {
   {
    "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
    "title": "Kerala's tradition, reimagined in a client's living room",
-   "locality": "South Bangalore",
+   "locality": "Mullathanur",
    "space": "Living room",
    "size": "5 ft by 6 ft",
    "design": "Customer's own picture",
@@ -156,28 +185,8 @@ window.WB_PUBLISHED = {
    "w": 941,
    "h": 1672,
    "ratio": 0.5628,
-   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-before-v6gsyc.jpg",
-   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-after-1desu30.jpg"
-  },
-  {
-   "slug": "kerala-s-tradition-reimagined-in-a-bangalore-living-room-cmqj",
-   "title": "Kerala’s Tradition, Reimagined in a Bangalore Living Room",
-   "locality": "South Bangalore",
-   "space": "Living room",
-   "size": "5 ft by 9 ft",
-   "design": "Customer's own picture",
-   "time": "3",
-   "month": "2026-10",
-   "summary": "We brought the timeless beauty of Kerala’s traditional Nettipattam art into a contemporary Bangalore home, transforming the living room wall into a striking statement of heritage and craftsmanship.\n\nA traditional Kerala art form, recreated directly on the wall to bring together culture, character and modern interiors.",
-   "quote": "",
-   "consent": true,
-   "hidden": true,
-   "noHome": false,
-   "w": 1200,
-   "h": 900,
-   "ratio": 1.3333,
-   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-banga-before-1f27tkf.jpg",
-   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-banga-after-ahr13d.jpg"
+   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-before-1g4wnxt.jpg",
+   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-after-gdk9mf.jpg"
   }
  ],
  "reviews": [],
@@ -274,6 +283,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-16T09:02:05.120Z",
+ "updated": "2026-10-16T09:26:31.230Z",
  "by": "Anil"
 };
