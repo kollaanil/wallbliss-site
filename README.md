@@ -17,6 +17,9 @@ Live site: https://www.wallbliss.in (served by GitHub Pages from the `main` bran
 3. Press **Publish** (bottom of the screen). The admin commits everything to this repo in one go:
    uploaded photos go to `assets/uploads/`, the data goes to `assets/published.js`.
 4. GitHub Pages rebuilds in 1–2 minutes. Browsers may keep the old version for up to 10 minutes.
+5. Two editors are safe: before publishing, the admin reads what is live now. If the other person published in the
+   meantime, both sets of changes are combined. If you both changed the same item, the message names it and your
+   version is used.
 
 **Publishing key (once per device):** a GitHub fine-grained token with access to only this
 repository and the permission *Contents: Read and write*. Create it at

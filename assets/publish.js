@@ -77,8 +77,76 @@
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i += 7) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
   function slug(s) { return String(s || "item").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "item"; }
 
+  /* ---------- two editors, one website ----------
+     Before publishing, read what is live on GitHub right now. If someone else published since this
+     device's draft started, combine both: their changes are kept, and this device's changes are added
+     on top. If both changed the same item, this device's version wins and the message says so. */
+  function liveData(k) {
+    return gh("/repos/" + OWNER + "/" + REPO + "/contents/assets/published.js?ref=" + BRANCH, null, k).then(function (f) {
+      var txt = decodeURIComponent(escape(atob(String(f.content || "").replace(/\s/g, ""))));
+      var json = txt.replace(/^[\s\S]*?window\.WB_PUBLISHED\s*=\s*/, "").replace(/;\s*$/, "");
+      var d = JSON.parse(json); ["designs", "projects", "reviews"].forEach(function (x) { d[x] = d[x] || []; }); d.edits = d.edits || {}; d.settings = d.settings || {};
+      return d;
+    });
+  }
+  function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+  function idOf(kind, x) { return kind === "designs" ? x.code : kind === "projects" ? x.slug : (x.id || (x.name + "|" + x.quote)); }
+  function mergeList(kind, base, mine, theirs, clashes) {
+    var B = {}, M = {}, T = {};
+    base.forEach(function (x) { B[idOf(kind, x)] = x; }); mine.forEach(function (x) { M[idOf(kind, x)] = x; }); theirs.forEach(function (x) { T[idOf(kind, x)] = x; });
+    var out = [], seen = {};
+    mine.forEach(function (x) {
+      var id = idOf(kind, x), b = B[id], t = T[id];
+      if (b && !t) { if (!same(x, b)) { out.push(x); clashes.push(x.code || x.title || x.name); } seen[id] = 1; return; }   // they deleted it; keep only if I changed it
+      if (b && t && !same(t, b) && !same(x, b) && !same(x, t)) clashes.push(x.code || x.title || x.name);
+      out.push(b && same(x, b) && t ? t : x); seen[id] = 1;                                                         // unchanged by me → take theirs
+    });
+    theirs.forEach(function (t) {
+      var id = idOf(kind, t); if (seen[id]) return;
+      var b = B[id];
+      if (b && same(t, b)) return;                                                                                      // I deleted it and they didn't touch it
+      if (kind === "designs") out.push(t); else out.unshift(t);                                                         // their new (or changed) item
+    });
+    return out;
+  }
+  function mergeMap(base, mine, theirs) {
+    var out = {}, keys = {};
+    [base, mine, theirs].forEach(function (o) { Object.keys(o || {}).forEach(function (k) { keys[k] = 1; }); });
+    Object.keys(keys).forEach(function (k) {
+      var b = base[k], m = mine[k], t = theirs[k];
+      var v = same(m, b) ? t : m;                                                                                       // my change wins, otherwise theirs
+      if (v !== undefined) out[k] = v;
+    });
+    return out;
+  }
+  function merge(base, mine, theirs) {
+    var clashes = [];
+    var out = {
+      designs: mergeList("designs", base.designs || [], mine.designs, theirs.designs, clashes),
+      projects: mergeList("projects", base.projects || [], mine.projects, theirs.projects, clashes),
+      reviews: mergeList("reviews", base.reviews || [], mine.reviews, theirs.reviews, clashes),
+      edits: mergeMap(base.edits || {}, mine.edits, theirs.edits),
+      settings: mergeMap(base.settings || {}, mine.settings, theirs.settings)
+    };
+    return { data: out, clashes: clashes };
+  }
+
   function publish(k) {
-    busy = true; pubBtn.disabled = true; msg.textContent = "Publishing…"; bar.classList.remove("ok");
+    busy = true; pubBtn.disabled = true; msg.textContent = "Checking for changes from the team…"; bar.classList.remove("ok");
+    var note = "";
+    return liveData(k).then(function (live) {
+      var base = WB.db.base(), draft = WB.db.load();
+      if ((live.updated || null) !== (base.updated || null)) {
+        var m = merge(base, draft, live);
+        WB.db.save(Object.assign(draft, m.data)); WB.db.setBase(live);
+        note = " Also kept " + (live.by || "the team") + "'s changes published " + (live.updated ? new Date(live.updated).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "earlier") + "." +
+          (m.clashes.length ? " You both changed " + m.clashes.slice(0, 3).join(", ") + (m.clashes.length > 3 ? "…" : "") + "; your version was used." : "");
+      }
+      return go();
+    }).catch(function (e) { busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
+
+    function go() {
+    msg.textContent = "Publishing…";
     var draft = WB.db.load(), files = [], usedRefs = [];
     /* images saved by the uploader live in this browser's image store ("idb:…"); fetch them first */
     var refs = [];
@@ -97,7 +165,8 @@
     var out = JSON.parse(JSON.stringify(draft));
     out.designs.forEach(function (d) { d.img = take(d.img, "assets/uploads/designs/" + slug(d.code)); });
     out.projects.forEach(function (p) { var s = slug(p.slug || p.title); p.before = take(p.before, "assets/uploads/projects/" + s + "-before"); p.after = take(p.after, "assets/uploads/projects/" + s + "-after"); });
-    var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, updated: new Date().toISOString() };
+    var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, updated: new Date().toISOString(),
+      by: ((document.getElementById("who-nm") || {}).textContent || "").trim() };
     files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
 
     var headSha, treeSha;
@@ -123,14 +192,17 @@
         window.WB_PUBLISHED = data;                       // draft now equals what is live
         if (R) usedRefs.forEach(function (ref) { R.forget(ref); });
         WB.db.save(Object.assign(WB.db.load(), { designs: out.designs, projects: out.projects }));
-        busy = false; lastOk = Date.now(); pubBtn.disabled = false;
-        bar.hidden = false; bar.classList.add("ok"); msg.textContent = "Published. The website updates in 1–2 minutes.";
+        WB.db.setBase(data);
+        if (window.WBAdmin && WBAdmin.reload) WBAdmin.reload();      // the open admin screens now use the published photo paths
+        busy = false; lastOk = Date.now() + (note ? 8000 : 0); pubBtn.disabled = false;
+        bar.hidden = false; bar.classList.add("ok"); msg.textContent = "Published. The website updates in 1–2 minutes." + note;
         bar.querySelector('[data-act="discard"]').hidden = true; pubBtn.hidden = true;
       })
       .catch(function (e) {
         busy = false; pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
         if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message);
       });
+    }
     }
   }
   function alertMsg(t) { var tEl = document.querySelector(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" })); tEl.textContent = t; tEl.hidden = false; setTimeout(function () { tEl.hidden = true; }, 6000); }
