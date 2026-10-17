@@ -410,10 +410,10 @@ window.WB_PUBLISHED = {
    "show": true
   },
   {
-   "id": "f-how-is-the-price-decided",
    "q": "How is the price decided?",
-   "a": "It depends on the size of the area you'd like printed and the design. The bigger the wall, the less you pay per sq ft. Send your wall size and a photo on WhatsApp and we'll reply with an exact price and a preview, usually the same day. No visit needed for a quote.",
-   "show": true
+   "a": "It depends on the size of the area you'd like printed and the design. Send your wall size and wall photo on WhatsApp and we'll reply with an exact price, usually the same day. No visit needed for a quote.",
+   "show": true,
+   "id": "f-how-is-the-price-decided"
   },
   {
    "id": "f-is-wall-printing-better-than-wallpaper",
@@ -488,6 +488,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-17T10:09:31.345Z",
+ "updated": "2026-10-17T10:10:34.012Z",
  "by": "Anil"
 };
