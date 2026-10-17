@@ -81,7 +81,7 @@ window.WB_PUBLISHED = {
   {
    "code": "WB-0140",
    "name": "Cute Krishna",
-   "img": "assets/uploads/designs/wb-0140-126pbz3.jpg",
+   "img": "assets/uploads/designs/wb-0140-yyon2u.jpg",
    "tags": [
     "krishna",
     "cute",
@@ -98,9 +98,10 @@ window.WB_PUBLISHED = {
     "devotional",
     "folk"
    ],
-   "orient": "tall",
+   "orient": "square",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   },
   {
    "code": "WB-0141",
@@ -487,6 +488,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-17T02:32:55.163Z",
+ "updated": "2026-10-17T02:56:35.201Z",
  "by": "Manasa"
 };
