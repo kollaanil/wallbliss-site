@@ -101,6 +101,162 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0141",
+   "name": "Traditional nettipattam",
+   "img": "assets/uploads/designs/wb-0141-1l4f3k.jpg",
+   "tags": [
+    "traditional",
+    "nettipattam",
+    "indian"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "kerala"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0142",
+   "name": "Serene Buddha",
+   "img": "assets/uploads/designs/wb-0142-uf2rxw.jpg",
+   "tags": [
+    "buddha",
+    "calm",
+    "aesthetic",
+    "peaceful",
+    "relaxing",
+    "meditation",
+    "zen",
+    "spiritual",
+    "mindfulness",
+    "yoga"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "cafe",
+    "hotel",
+    "clinic",
+    "bedroom"
+   ],
+   "styles": [
+    "devotional",
+    "artistic",
+    "nature"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0143",
+   "name": "Radha krishna 3d colorful",
+   "img": "assets/uploads/designs/wb-0143-8fa29z.jpg",
+   "tags": [
+    "radha",
+    "krishna",
+    "3d",
+    "premium"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "bedroom",
+    "hotel",
+    "cafe"
+   ],
+   "styles": [
+    "traditional",
+    "folk",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0144",
+   "name": "3d marble kamadhenu",
+   "img": "assets/uploads/designs/wb-0144-f6qu1u.jpg",
+   "tags": [
+    "kamadhenu",
+    "3d",
+    "marble",
+    "premium"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d",
+    "folk"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0145",
+   "name": "Kid radha krishna",
+   "img": "assets/uploads/designs/wb-0145-113z4kh.jpg",
+   "tags": [
+    "radha",
+    "krishna",
+    "artistic"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "artistic"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0146",
+   "name": "3d surya bhagawan 7 horses",
+   "img": "assets/uploads/designs/wb-0146-rauigz.jpg",
+   "tags": [
+    "7 horses",
+    "3d",
+    "surya"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "clinic",
+    "cafe"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -331,6 +487,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-16T11:12:30.685Z",
+ "updated": "2026-10-17T02:32:55.163Z",
  "by": "Manasa"
 };
