@@ -398,10 +398,10 @@ window.WB_PUBLISHED = {
  },
  "faqs": [
   {
-   "id": "f-what-exactly-is-wall-printing",
    "q": "What exactly is wall printing?",
-   "a": "We print the picture you choose directly onto your painted wall, the way a printer prints on paper, only much bigger. There's no wallpaper or sticker, so there are no edges to peel. The picture becomes part of your wall.",
-   "show": true
+   "a": "We print the picture you choose directly onto your painted wall, the way a printer prints on paper, only much bigger. The picture becomes part of your wall.",
+   "show": true,
+   "id": "f-what-exactly-is-wall-printing"
   },
   {
    "id": "f-do-you-print-for-offices-and-commercial-",
@@ -488,6 +488,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-17T02:56:35.201Z",
- "by": "Manasa"
+ "updated": "2026-10-17T10:09:31.345Z",
+ "by": "Anil"
 };
