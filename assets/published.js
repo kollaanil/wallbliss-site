@@ -446,10 +446,10 @@ window.WB_PUBLISHED = {
    "show": true
   },
   {
-   "id": "f-does-the-wall-need-to-be-painted-first",
    "q": "Does the wall need to be painted first?",
-   "a": "Usually not. If your paint is smooth and clean, we print right on it. If there's damp, cracks or peeling paint, those need fixing first so the picture lasts.",
-   "show": true
+   "a": "If your paint is smooth and clean, we print right on it. If there's damp, cracks or peeling paint, those need fixing first so the picture lasts.",
+   "show": true,
+   "id": "f-does-the-wall-need-to-be-painted-first"
   },
   {
    "id": "f-how-much-space-do-you-need-in-front-of-t",
@@ -464,30 +464,30 @@ window.WB_PUBLISHED = {
    "show": true
   },
   {
-   "id": "f-what-else-can-you-print-on",
    "q": "What else can you print on?",
-   "a": "Painted walls are ideal. We can also print on wood, glass, metal and tiles. For these, we try a small patch first to make sure you'll love the result.",
-   "show": true
+   "a": "Painted walls are ideal. We can also print on canvas, wood, glass, metal and tiles. For these, we try a small patch first to make sure you'll love the result.",
+   "show": true,
+   "id": "f-what-else-can-you-print-on"
   },
   {
-   "id": "f-can-i-change-the-design-later",
    "q": "Can I change the design later?",
-   "a": "Yes. When you're ready for something new, the wall can be painted over like any other wall, or we can print a new design.",
-   "show": true
+   "a": "Yes. When you're ready for something new, the wall can be painted over like any other wall, and we can print a new design.",
+   "show": true,
+   "id": "f-can-i-change-the-design-later"
   },
   {
-   "id": "f-do-you-come-outside-bengaluru",
    "q": "Do you come outside Bengaluru?",
-   "a": "We cover all of Bengaluru. For sites outside the city, we add a travel charge based on the distance. Message us your town and wall size.",
-   "show": true
+   "a": "We cover all of Bengaluru and outskirts. For sites outside the city, we add a travel charge based on the distance. Message us your town and wall size.",
+   "show": true,
+   "id": "f-do-you-come-outside-bengaluru"
   },
   {
-   "id": "f-how-do-i-book",
    "q": "How do I book?",
-   "a": "Send your wall size and the design you like (or your own picture) on WhatsApp at +91 76767 01113. We'll share the price and a preview, and a small advance reserves your date.",
-   "show": true
+   "a": "Send your wall size and the design you like (or your own picture) on WhatsApp at +91 76767 01113. We'll share the price and a small advance reserves your date.",
+   "show": true,
+   "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-17T10:11:50.886Z",
+ "updated": "2026-10-17T10:32:10.730Z",
  "by": "Anil"
 };
