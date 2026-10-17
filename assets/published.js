@@ -258,6 +258,28 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0147",
+   "name": "Yashoda krishna",
+   "img": "assets/uploads/designs/wb-0147-1rrecwf.jpg",
+   "tags": [
+    "krishna",
+    "yashoda",
+    "devotional"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "bedroom"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -488,6 +510,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-17T10:32:10.730Z",
- "by": "Anil"
+ "updated": "2026-10-17T15:55:14.773Z",
+ "by": "Manasa"
 };
