@@ -416,22 +416,22 @@ window.WB_PUBLISHED = {
    "id": "f-how-is-the-price-decided"
   },
   {
-   "id": "f-is-wall-printing-better-than-wallpaper",
    "q": "Is wall printing better than wallpaper?",
    "a": "For a single feature wall, usually yes. A printed wall has no seams or edges, so nothing lifts in Bengaluru's monsoon humidity, and you can use any photo or artwork in full detail. Wallpaper is a good choice for repeating patterns across many walls, or for rented homes where you need to remove it.",
-   "show": true
+   "show": false,
+   "id": "f-is-wall-printing-better-than-wallpaper"
   },
   {
-   "id": "f-how-long-does-it-take",
    "q": "How long does it take?",
-   "a": "Most walls are printed in a few hours. The colours are dry the moment they're printed, so you can use the room the same evening. For very large walls, we'll confirm the timing with your quote.",
-   "show": true
+   "a": "Most walls are printed in a few hours. The colours are dry the moment they're printed, so you can use the room the same evening.",
+   "show": true,
+   "id": "f-how-long-does-it-take"
   },
   {
-   "id": "f-can-i-clean-it",
    "q": "Can I clean it?",
    "a": "Yes. The print is waterproof and scratch proof, so you can wipe it with a soft, damp cloth. It handles everyday life, including curious little hands. Just avoid harsh scrubbers and chemicals.",
-   "show": true
+   "show": true,
+   "id": "f-can-i-clean-it"
   },
   {
    "id": "f-how-long-will-it-last",
@@ -488,6 +488,6 @@ window.WB_PUBLISHED = {
    "show": true
   }
  ],
- "updated": "2026-10-17T10:10:34.012Z",
+ "updated": "2026-10-17T10:11:50.886Z",
  "by": "Anil"
 };
