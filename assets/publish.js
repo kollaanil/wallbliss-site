@@ -76,7 +76,7 @@
   function gh(path, opts, k) {
     opts = opts || {};
     return fetch(API + path, {
-      method: opts.method || "GET",
+      method: opts.method || "GET", cache: "no-store",            // never reuse an old answer about the latest commit
       headers: { "Authorization": "Bearer " + k, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" },
       body: opts.body ? JSON.stringify(opts.body) : undefined
     }).then(function (r) {
@@ -154,7 +154,8 @@
     return { data: out, clashes: clashes };
   }
 
-  function publish(k) {
+  function publish(k, attempt) {
+    attempt = attempt || 1;
     busy = true; pubBtn.disabled = true; msg.textContent = "Checking for changes from the team…"; bar.classList.remove("ok");
     var note = "";
     return liveData(k).then(function (live) {
@@ -222,8 +223,13 @@
         bar.querySelector('[data-act="discard"]').hidden = true; pubBtn.hidden = true;
       })
       .catch(function (e) {
+        /* someone (or this device a moment ago) published while this was uploading: start again on top of it */
+        if (/fast forward|Reference cannot be updated|409/.test(e.message) && attempt < 4) {
+          msg.textContent = "The website just changed. Trying again…";
+          setTimeout(function () { publish(k, attempt + 1); }, 1500 * attempt); return;          // stays "busy" meanwhile, so nothing else starts
+        }
         done(); pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
-        if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message);
+        if (/key/.test(e.message)) askKey(e.message); else alertMsg(/fast forward/.test(e.message) ? "The website was busy with another update. Tap Publish again." : e.message);
       });
     }
     }
