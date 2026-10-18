@@ -280,6 +280,104 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0148",
+   "name": "Serene leaves",
+   "img": "assets/uploads/designs/wb-0148-xsfdx7.jpg",
+   "tags": [
+    "nature",
+    "modern",
+    "artistic"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "cafe",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "artistic",
+    "nature"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0149",
+   "name": "Colorful flowers",
+   "img": "assets/uploads/designs/wb-0149-1pk4mrs.jpg",
+   "tags": [
+    "colorful",
+    "flowers",
+    "premium"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office",
+    "cafe",
+    "clinic"
+   ],
+   "styles": [
+    "artistic",
+    "nature"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0150",
+   "name": "Beautiful flowers",
+   "img": "assets/uploads/designs/wb-0150-1s1ibvl.jpg",
+   "tags": [
+    "flowers",
+    "premium",
+    "royal"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office",
+    "cafe",
+    "clinic"
+   ],
+   "styles": [
+    "artistic",
+    "nature"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0151",
+   "name": "Cute birds",
+   "img": "assets/uploads/designs/wb-0151-5kzyia.jpg",
+   "tags": [
+    "birds",
+    "colorful",
+    "premium"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "bedroom",
+    "cafe"
+   ],
+   "styles": [
+    "nature",
+    "artistic",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -510,6 +608,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-18T02:47:10.771Z",
+ "updated": "2026-10-18T02:51:30.232Z",
  "by": "Anil"
 };
