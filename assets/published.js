@@ -518,6 +518,26 @@ window.WB_PUBLISHED = {
  },
  "projects": [
   {
+   "slug": "shiva-in-cosmos-gzvn",
+   "title": "Shiva in cosmos",
+   "locality": "RR Nagar",
+   "space": "Living room",
+   "size": "7 ft by 5 ft",
+   "design": "WB-0152",
+   "time": "1 hour",
+   "month": "2026-10",
+   "summary": "This living room in RR Nagar had a bare wall waiting for a story. We printed the “Shiva in cosmos” design right onto it in 1 hour, and the whole room changed. It's now the first thing everyone sees when they walk in.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 1125,
+   "h": 2000,
+   "ratio": 0.5625,
+   "before": "assets/uploads/projects/shiva-in-cosmos-gzvn-before-1rt73wh.jpg",
+   "after": "assets/uploads/projects/shiva-in-cosmos-gzvn-after-dsrdnr.jpg"
+  },
+  {
    "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
    "title": "Kerala's tradition, reimagined in a client's living room",
    "locality": "Mullathanur",
@@ -634,6 +654,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-18T12:41:56.038Z",
+ "updated": "2026-10-18T12:43:47.766Z",
  "by": "Anil"
 };
