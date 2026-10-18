@@ -378,6 +378,32 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0152",
+   "name": "Shiva in cosmos",
+   "img": "assets/uploads/designs/wb-0152-6k34j2.jpg",
+   "tags": [
+    "shiva",
+    "cosmic",
+    "galaxy",
+    "blue",
+    "surreal"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -608,6 +634,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-18T03:41:31.500Z",
+ "updated": "2026-10-18T12:41:56.038Z",
  "by": "Anil"
 };
