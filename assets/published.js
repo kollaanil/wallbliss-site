@@ -404,6 +404,129 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0153",
+   "name": "Krishna with cow",
+   "img": "assets/uploads/designs/wb-0153-1ubal1a.jpg",
+   "tags": [
+    "krishna",
+    "cow",
+    "beautiful"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0154",
+   "name": "Radha Krishna swinging",
+   "img": "assets/uploads/designs/wb-0154-131qkup.jpg",
+   "tags": [
+    "radha",
+    "krishna",
+    "beautiful",
+    "stunning",
+    "colorful"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "cafe"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0155",
+   "name": "Radha Krishna",
+   "img": "assets/uploads/designs/wb-0155-me9rhk.jpg",
+   "tags": [
+    "radha",
+    "krishna",
+    "beautiful",
+    "stunning"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "bedroom"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0156",
+   "name": "Kamadhenu classic",
+   "img": "assets/uploads/designs/wb-0156-15r7sgx.jpg",
+   "tags": [
+    "kamadhenu",
+    "traditional",
+    "classic"
+   ],
+   "search": [],
+   "spaces": [
+    "office",
+    "hotel",
+    "pooja",
+    "living",
+    "clinic"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0157",
+   "name": "Srinivasa kalyanam",
+   "img": "assets/uploads/designs/wb-0157-1fgkfob.jpg",
+   "tags": [
+    "srinivasa",
+    "kalyanam",
+    "god",
+    "devotional"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -654,6 +777,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-18T12:43:47.766Z",
+ "updated": "2026-10-18T18:00:50.600Z",
  "by": "Anil"
 };
