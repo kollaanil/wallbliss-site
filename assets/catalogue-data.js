@@ -27,7 +27,6 @@ window.WB_DESIGNS = [
   { code: "WB-0123", name: "Starry Kodachadri", gen: "stars", seed: 16, palette: ["#0B1430", "#283D74", "#F4E9C9", "#0F1A2E"], spaces: ["bedroom", "kids", "hotel"], styles: ["nature"], colours: ["blue", "dark"], orient: "wide", tags: ["night sky", "stars", "moon", "chand", "chandra", "taare", "nakshatra", "bedroom ceiling"], pop: 9, added: "2026-09" },
   { code: "WB-0124", name: "Space Explorers", gen: "stars", seed: 28, opts: { planets: true }, palette: ["#0C1233", "#2A1E5C", "#F2994A", "#56CCF2", "#BB6BD9"], spaces: ["kids"], styles: ["kids"], colours: ["dark", "blue"], orient: "wide", tags: ["space", "planets", "rocket", "astronaut", "boys", "galaxy", "solar system", "school", "play school"], pop: 10, added: "2026-10" },
   { code: "WB-0130", name: "Boho Arches", gen: "arches", seed: 18, palette: ["#F4E9DC", "#D98E5F", "#E8C9A8", "#8FAE8B", "#C26A4A"], spaces: ["kids", "bedroom", "cafe"], styles: ["kids", "minimal"], colours: ["earth", "pastel"], orient: "wide", tags: ["rainbow", "boho", "nursery", "arches", "sun", "kids room"], pop: 9, added: "2026-09" },
-  { code: "WB-0135", name: "Healing Greens", gen: "mountains", seed: 70, palette: ["#E9F3EC", "#F7FBF8", "#9CC9AD", "#5FA37C", "#FFFFFF"], spaces: ["clinic", "office", "bedroom"], styles: ["nature", "minimal"], colours: ["green", "pastel"], orient: "wide", tags: ["hospital", "clinic", "calm", "wellness", "waiting room", "dental"], pop: 8, added: "2026-10" },
 ];
 
 /* Search synonyms: a word on the left also matches every word on the right. */

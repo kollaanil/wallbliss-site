@@ -247,12 +247,12 @@
     </nav>
 
     <main class="a-main" id="main">
-      <div class="preview-note" id="preview-note"><span aria-hidden="true">✍️</span><span><b>How saving works.</b> Changes are drafts on this device. Press <b>Publish</b> (bottom of the screen) to put them on the website for everyone. Visitor numbers (views, searches, WhatsApp taps) are in Google Analytics.</span><button class="linkbtn" type="button" id="pn-x" style="margin-left:auto;padding:0;color:#6B4A12" aria-label="Hide this note">Hide</button></div>
+      <div class="preview-note" id="preview-note"><span aria-hidden="true">✍️</span><span><b>How saving works.</b> Designs, projects, reviews and FAQs go on the website as soon as you save (it updates in 1–2 minutes). Only Settings changes wait for the <b>Publish</b> button at the bottom. Visitor numbers (views, searches, WhatsApp taps) are in Google Analytics.</span><button class="linkbtn" type="button" id="pn-x" style="margin-left:auto;padding:0;color:#6B4A12" aria-label="Hide this note">Hide</button></div>
 
       <!-- ===== DESIGNS ===== -->
       <section data-pane="designs" hidden>
         <div class="view-head">
-          <div><h1>Designs</h1><p>Everything in the website catalogue. Save your changes, then press <b>Publish</b> at the bottom to put them on the website.</p></div>
+          <div><h1>Designs</h1><p>Everything in the website catalogue. Saving puts your changes on the website by itself.</p></div>
           <button class="btn btn-wa" type="button" id="d-new" style="background:var(--ink);box-shadow:none">+ Add design</button>
         </div>
         <div class="toolbar">
@@ -419,7 +419,7 @@
       </div>
       <!-- step 4 -->
       <div data-step="4" hidden style="display:grid;gap:12px">
-        <p class="muted">This is how it will look on the Projects page. Drag the slider to check. After saving, press <b>Publish</b> at the bottom of the screen to put it on the website.</p>
+        <p class="muted">This is how it will look on the Projects page. Drag the slider to check. Saving puts it on the website by itself.</p>
         <div class="proj-card" id="p-preview"></div>
         <label class="switch"><input type="checkbox" id="p-live" checked> Show on the website</label>
         <label class="switch"><input type="checkbox" id="p-home" checked> Show in the homepage before/after carousel</label>
@@ -501,6 +501,12 @@
 
   /* ---------- sign in: pick a name; publishing is protected by the key in publish.js ---------- */
   var user = null;
+  /* a Google sign-in is remembered on this device for 30 days (set in admin-auth.js); "Sign out" ends it */
+  try {
+    var rs = JSON.parse(localStorage.getItem("wb_admin_session") || "null"), al = (window.WB_ADMIN_CONFIG || {}).allowed || {};
+    if (rs && rs.exp > Date.now() && al[rs.email]) { sessionStorage.setItem("wb_admin_user", al[rs.email]); sessionStorage.setItem("wb_admin_email", rs.email); }
+    else if (rs) localStorage.removeItem("wb_admin_session");
+  } catch (e) {}
   try { user = sessionStorage.getItem("wb_admin_user"); } catch (e) {}
   function enter(u) {
     user = u; try { sessionStorage.setItem("wb_admin_user", u); } catch (e) {}
@@ -510,7 +516,7 @@
   }
   $$(".acct").forEach(function (b) { b.onclick = function () { enter(b.dataset.user); }; });
   $("#who").onclick = function () {
-    if (this.dataset.confirm) { try { sessionStorage.removeItem("wb_admin_user"); sessionStorage.removeItem("wb_admin_email"); } catch (e) {} location.hash = ""; location.reload(); return; }
+    if (this.dataset.confirm) { try { sessionStorage.removeItem("wb_admin_user"); sessionStorage.removeItem("wb_admin_email"); localStorage.removeItem("wb_admin_session"); localStorage.setItem("wb_admin_signedout", "1"); } catch (e) {} try { google.accounts.id.disableAutoSelect(); } catch (e) {} location.hash = ""; location.reload(); return; }
     this.dataset.confirm = "1"; $("#who-nm").textContent = "Sign out?"; var b = this;
     setTimeout(function () { delete b.dataset.confirm; $("#who-nm").textContent = user; }, 2500);
   };
@@ -583,6 +589,14 @@
   function autoPublish(what) {
     if (WB.publishing && WB.publishing.auto) { toast(what + ". Publishing to the website…"); WB.publishing.auto(); }
     else toast(what + ". Press Publish to put it online.");
+  }
+  /* "surya bhagawan 7 horses" -> "Surya Bhagawan 7 Horses"; words already in capitals (3D, WB) are kept */
+  function niceName(v) {
+    var small = { a: 1, an: 1, and: 1, of: 1, the: 1, in: 1, on: 1, with: 1, for: 1, to: 1, "&": 1 };
+    return String(v || "").trim().replace(/\s+/g, " ").split(" ").map(function (w, i) {
+      if (i && small[w.toLowerCase()]) return w.toLowerCase();
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(" ");
   }
   function nextCode() { var n = 0; designs().forEach(function (d) { var m = /WB-(\d+)/.exec(d.code); if (m) n = Math.max(n, +m[1]); }); return "WB-" + String(n + 1).padStart(4, "0"); }
 
@@ -704,7 +718,7 @@
   }
   $("#d-new").onclick = function () { openDesign(null); };
   $("#d-save").onclick = function () {
-    var name = $("#d-name").value.trim();
+    var name = niceName($("#d-name").value);
     if (!name) { toast("Give the design a name"); $("#d-name").focus(); return; }
     var spaces = chipVals($("#d-spaces")).concat(cur ? (cur.spaces || []).filter(function (x) { return !DESIGN_ROOMS.some(function (r) { return r[0] === x; }); }) : []);   // keeps rooms no longer offered (e.g. clinic) on older designs if (!spaces.length) { toast("Pick at least one room"); return; }
     var isNew = !cur;
@@ -739,7 +753,7 @@
         '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
     }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
     wireBA($("#p-list"));
-    $$("[data-plive]").forEach(function (c) { c.onchange = function () { db.projects[+c.dataset.plive].hidden = !c.checked; save(); renderProjects(); toast(c.checked ? "Live on the Projects page" : "Hidden"); }; });
+    $$("[data-plive]").forEach(function (c) { c.onchange = function () { db.projects[+c.dataset.plive].hidden = !c.checked; save(); renderProjects(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
     $$("[data-pedit]").forEach(function (b) { b.onclick = function () { openProject(+b.dataset.pedit); }; });
   }
   function baHTML(before, after, title, ratio) {
@@ -753,7 +767,7 @@
     $$("[data-step]").forEach(function (s) { s.hidden = +s.dataset.step !== n; });
     $$("#p-steps span").forEach(function (s, i) { s.classList.toggle("on", i <= FLOW.indexOf(n)); });
     $("#p-back").style.visibility = n > 1 ? "visible" : "hidden";
-    $("#p-next").textContent = n === 4 ? "Save draft" : "Next";
+    $("#p-next").textContent = n === 4 ? "Save and publish" : "Next";
     if (n === 3) autoStory();
     if (n === 4) { var o = outPair(); $("#p-preview").innerHTML = baHTML(o.b, o.a, $("#p-ttl").value, o.w / o.h) + '<div class="body"><small>' + esc($("#p-loc").value) + " · " + esc($("#p-space").value) + '</small><b>' + esc($("#p-ttl").value) + '</b><p class="muted" style="font-size:.88rem">' + esc($("#p-sum").value) + "</p></div>"; wireBA($("#p-preview")); }
     $("#p-dlg .body").scrollTop = 0;
@@ -924,12 +938,12 @@
       if (P != null) { prev = db.projects[P]; db.projects[P] = p; } else db.projects.unshift(p);
       if (!save()) { if (P != null) db.projects[P] = prev; else db.projects.shift(); btn.disabled = false; return; }
       btn.disabled = false; $("#p-dlg").close(); renderProjects();
-      toast(p.hidden ? "Saved as a hidden draft" : "Saved as a draft. Press Publish to show it on the website" + (p.noHome ? "" : " and the homepage"));
+      autoPublish(p.hidden ? "Saved (hidden from the website)" : "Saved");
     }).catch(function () { btn.disabled = false; toast("Could not save the photos on this device"); });
   };
   $("#p-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete project"; }, 2500); return; }
-    db.projects.splice(P, 1); save(); $("#p-dlg").close(); renderProjects(); toast("Deleted");
+    db.projects.splice(P, 1); save(); $("#p-dlg").close(); renderProjects(); autoPublish("Deleted");
   };
 
   /* =====================================================================
@@ -954,7 +968,7 @@
     $("#rv-list").innerHTML = db.reviews.length ? db.reviews.map(function (r, i) {
       return '<div class="rv"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="stars" aria-label="' + r.stars + ' stars">' + "★".repeat(r.stars) + '</span><label class="switch" style="font-size:.8rem"><input type="checkbox" data-rshow="' + i + '"' + (r.show ? " checked" : "") + '> ' + (r.show ? "On website" : "Hidden") + '</label></div><q>' + esc(r.quote) + '</q><small>' + esc(r.name) + " · " + esc(r.place) + (r.type ? " · " + esc(r.type) : "") + ' · <button class="linkbtn" type="button" data-redit="' + i + '" style="font-size:.8rem;padding:0">Edit</button></small></div>';
     }).join("") : '<p class="muted">No reviews added yet. When your first Google review comes in, copy it here and it shows on the home page.</p>';
-    $$("[data-rshow]").forEach(function (c) { c.onchange = function () { db.reviews[+c.dataset.rshow].show = c.checked; save(); renderReviews(); }; });
+    $$("[data-rshow]").forEach(function (c) { c.onchange = function () { db.reviews[+c.dataset.rshow].show = c.checked; save(); renderReviews(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
     $$("[data-redit]").forEach(function (b) { b.onclick = function () { openReview(+b.dataset.redit); }; });
   }
   function reqMsg() {
@@ -968,7 +982,7 @@
   $("#rq-msg").addEventListener("input", function () { this.dataset.edited = 1; reqMsg(); });
   $("#rv-save").onclick = function () {
     db.settings.googleReviewsUrl = $("#s-greview").value.trim(); db.settings.googleWriteReviewUrl = $("#s-gwrite").value.trim();
-    save(); renderReviews(); toast(db.settings.googleReviewsUrl ? "Saved. The Google reviews buttons are now on the website" : "Saved");
+    save(); renderReviews(); autoPublish("Links saved");
   };
   $("#rv-qr").onclick = function () {
     var link = $("#s-gwrite").value.trim() || $("#s-greview").value.trim();
@@ -992,9 +1006,9 @@
     if (!r.name || !r.quote) { toast("Add the name and the review text"); return; }
     r.id = (R != null && db.reviews[R].id) || ("r" + Date.now().toString(36));
     if (R != null) db.reviews[R] = r; else db.reviews.unshift(r);
-    save(); $("#r-dlg").close(); renderReviews(); toast(r.show ? "Saved. It's on the home page now" : "Saved");
+    save(); $("#r-dlg").close(); renderReviews(); autoPublish("Saved");
   };
-  $("#r-delete").onclick = function () { db.reviews.splice(R, 1); save(); $("#r-dlg").close(); renderReviews(); toast("Deleted"); };
+  $("#r-delete").onclick = function () { db.reviews.splice(R, 1); save(); $("#r-dlg").close(); renderReviews(); autoPublish("Deleted"); };
 
   /* =====================================================================
      FAQS (home page questions; published with everything else)
@@ -1012,9 +1026,9 @@
     $$("[data-fedit]").forEach(function (b) { b.onclick = function () { openFaq(+b.dataset.fedit); }; });
     $$("[data-fup]").forEach(function (b) { b.onclick = function () { moveFaq(+b.dataset.fup, -1); }; });
     $$("[data-fdown]").forEach(function (b) { b.onclick = function () { moveFaq(+b.dataset.fdown, 1); }; });
-    $$("[data-fshow]").forEach(function (c) { c.onchange = function () { db.faqs[+c.dataset.fshow].show = c.checked; save(); renderFaqs(); toast(c.checked ? "Shown on the website after you publish" : "Hidden after you publish"); }; });
+    $$("[data-fshow]").forEach(function (c) { c.onchange = function () { db.faqs[+c.dataset.fshow].show = c.checked; save(); renderFaqs(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
   }
-  function moveFaq(i, d) { var j = i + d; if (j < 0 || j >= db.faqs.length) return; var x = db.faqs.splice(i, 1)[0]; db.faqs.splice(j, 0, x); save(); renderFaqs(); }
+  function moveFaq(i, d) { var j = i + d; if (j < 0 || j >= db.faqs.length) return; var x = db.faqs.splice(i, 1)[0]; db.faqs.splice(j, 0, x); save(); renderFaqs(); autoPublish("Order saved"); }
   function faqPrev() { $("#f-prev").innerHTML = "<b>" + esc($("#f-q").value.trim() || "Your question") + "</b>" + (WB.faqHTML($("#f-a").value) || '<p>Your answer</p>'); }
   function openFaq(i) {
     F = i == null ? null : i; var f = F != null ? db.faqs[F] : {};
@@ -1029,11 +1043,11 @@
     if (!f.q || !f.a) { toast("Add the question and the answer"); return; }
     f.id = (F != null && db.faqs[F].id) || ("f" + Date.now().toString(36));
     if (F != null) db.faqs[F] = f; else db.faqs.push(f);
-    save(); $("#f-dlg").close(); renderFaqs(); toast("Saved. Press Publish to put it on the website");
+    save(); $("#f-dlg").close(); renderFaqs(); autoPublish("Saved");
   };
   $("#f-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete"; }, 3000); return; }
-    delete b.dataset.confirm; b.textContent = "Delete"; db.faqs.splice(F, 1); save(); $("#f-dlg").close(); renderFaqs(); toast("Deleted");
+    delete b.dataset.confirm; b.textContent = "Delete"; db.faqs.splice(F, 1); save(); $("#f-dlg").close(); renderFaqs(); autoPublish("Deleted");
   };
 
   /* =====================================================================
@@ -1063,7 +1077,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>
