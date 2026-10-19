@@ -378,7 +378,7 @@
       </div>
       <div class="field"><span class="lbl">Rooms it suits</span><div class="chips" id="d-spaces"></div></div>
       <div class="field"><span class="lbl">Style</span><div class="chips" id="d-styles"></div><input type="text" id="d-style-own" class="own-style" placeholder="+ type your own style, e.g. Tanjore" maxlength="24" enterkeyhint="done" aria-label="Add your own style"></div>
-      <div class="field"><label for="d-tags">Tags (at least 3)</label><input type="text" id="d-tags" placeholder="peacock, bird, feathers, blue"><small>Hidden from customers; search uses them. Separate with commas.</small></div>
+      <div class="field"><label for="d-tags">Tags (at least 2)</label><input type="text" id="d-tags" placeholder="peacock, bird, feathers, blue"><small>Hidden from customers; search uses them. Separate with commas.</small></div>
       <div class="grid-2" style="gap:12px">
         <div class="field"><span class="lbl">Best wall shape</span><div class="seg" role="group" id="d-orient"><button type="button" data-v="wide" aria-pressed="true">Wide</button><button type="button" data-v="tall">Tall</button><button type="button" data-v="square">Square</button></div><small id="d-orient-note"></small></div>
         <div class="field"><span class="lbl">Show</span><label class="switch"><input type="checkbox" id="d-live" checked> Live on the website</label><label class="switch"><input type="checkbox" id="d-feat"> Feature near the top</label></div>
@@ -710,7 +710,7 @@
     var isNew = !cur;
     if (isNew && !srcImg) { toast("Add a photo of the design"); return; }
     var tagCount = $("#d-tags").value.split(",").filter(function (s) { return s.trim(); }).length;
-    if (tagCount < 3) { toast("Add at least 3 tags (" + tagCount + " so far)"); $("#d-tags").focus(); return; }
+    if (tagCount < 2) { toast("Add at least 2 tags (" + tagCount + " so far)"); $("#d-tags").focus(); return; }
     var data = { name: name, spaces: spaces, styles: (addOwnStyle(), chipVals($("#d-styles"))), orient: segVal($("#d-orient")),
       tags: $("#d-tags").value.split(",").map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean), hidden: !$("#d-live").checked };
     if ($("#d-feat").checked) data.pop = 9.5; else if (cur && (cur.pop || 0) >= 9 && !cur.builtIn) data.pop = 5;
