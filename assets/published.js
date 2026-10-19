@@ -760,6 +760,160 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0168",
+   "name": "Srinivasa Kalyanam Wide",
+   "img": "assets/uploads/designs/wb-0168-1wn5cgk.jpg",
+   "tags": [
+    "big",
+    "kalyanam",
+    "srinivasa",
+    "srinivasa kalyanam",
+    "wide"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "cafe",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0169",
+   "name": "Surya with 7 Horses Without Carving",
+   "img": "assets/uploads/designs/wb-0169-1kk3640.jpg",
+   "tags": [
+    "surya",
+    "bhagavan",
+    "carving",
+    "7 horses",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "cafe",
+    "living",
+    "hotel",
+    "office",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d",
+    "folk"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0170",
+   "name": "Balaji Namam",
+   "img": "assets/uploads/designs/wb-0170-19qwak1.jpg",
+   "tags": [
+    "balaji",
+    "venkateswara",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "texture3d",
+    "devotional",
+    "traditional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0171",
+   "name": "Baby Krishna 3d with Cow",
+   "img": "assets/uploads/designs/wb-0171-1ra4t55.jpg",
+   "tags": [
+    "babykrishna",
+    "cow",
+    "3d",
+    "krishna",
+    "baby"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "texture3d",
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0173",
+   "name": "Srinivasa Kalyanam New Border",
+   "img": "assets/uploads/designs/wb-0173-web1l.jpg",
+   "tags": [
+    "srinivasa kalyanam",
+    "srinivasa",
+    "kalyanam"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0174",
+   "name": "Srinivasa Kalyanam Dark Interior",
+   "img": "assets/uploads/designs/wb-0174-17fhb2.jpg",
+   "tags": [
+    "deity",
+    "srinivasa",
+    "kalyanam",
+    "interior",
+    "dark"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -952,6 +1106,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-19T13:32:05.898Z",
+ "updated": "2026-10-19T13:38:56.973Z",
  "by": "Manasa"
 };
