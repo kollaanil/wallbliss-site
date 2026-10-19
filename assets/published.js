@@ -796,6 +796,26 @@ window.WB_PUBLISHED = {
  },
  "projects": [
   {
+   "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
+   "title": "The wall every guest wants a photo with",
+   "locality": "Lal Bagh",
+   "space": "Café & restaurant",
+   "size": "7 ft by 5 ft",
+   "design": "WB-0138",
+   "time": "4 hours",
+   "month": "2026-10",
+   "summary": "A plain 7 ft by 5 ft wall in this café & restaurant in Lal Bagh now carries the “Surya bhagawan 7 horses” design, printed straight onto the wall in 4 hours with no mess. Guests now stop, smile and reach for their phones.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 1500,
+   "h": 2000,
+   "ratio": 0.75,
+   "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-1lpxsfm.jpg",
+   "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-f7kozc.jpg"
+  },
+  {
    "slug": "shiva-in-cosmos-gzvn",
    "title": "Shiva in cosmos",
    "locality": "RR Nagar",
@@ -932,6 +952,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-19T13:04:00.269Z",
+ "updated": "2026-10-19T13:32:05.898Z",
  "by": "Manasa"
 };
