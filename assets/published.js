@@ -527,6 +527,239 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0158",
+   "name": "Srinivasa Kalyanam blue sky",
+   "img": "assets/uploads/designs/wb-0158-1ispv5m.jpg",
+   "tags": [
+    "srinivasa kalyanam",
+    "srinivasa",
+    "kalyanam",
+    "devotional"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0159",
+   "name": "Rama parivar",
+   "img": "assets/uploads/designs/wb-0159-1qu8432.jpg",
+   "tags": [
+    "ram",
+    "sita",
+    "family",
+    "ram parivar",
+    "ayodhya ram"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0160",
+   "name": "Dinosaur theme kids room",
+   "img": "assets/uploads/designs/wb-0160-2ykbkw.jpg",
+   "tags": [
+    "dinosaur",
+    "spiderman",
+    "kids"
+   ],
+   "search": [],
+   "spaces": [
+    "kids"
+   ],
+   "styles": [
+    "kids"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0161",
+   "name": "Rama pattabhishekham new kolam",
+   "img": "assets/uploads/designs/wb-0161-1i9m418.jpg",
+   "tags": [
+    "kolam",
+    "ram",
+    "lord ram",
+    "rama pattabhishekham",
+    "bapu"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0162",
+   "name": "Srinivasa Kalyanam lotus border",
+   "img": "assets/uploads/designs/wb-0162-1hhuj81.jpg",
+   "tags": [
+    "srinivasa",
+    "srinivasa kalyanam",
+    "lotus"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0163",
+   "name": "World map colors",
+   "img": "assets/uploads/designs/wb-0163-se1xco.jpg",
+   "tags": [
+    "map",
+    "world map",
+    "india map",
+    "world",
+    "school",
+    "institution"
+   ],
+   "search": [],
+   "spaces": [
+    "kids"
+   ],
+   "styles": [
+    "kids"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0164",
+   "name": "Srinivasa Kalyanam orange theme",
+   "img": "assets/uploads/designs/wb-0164-8o88yl.jpg",
+   "tags": [
+    "srinivasa kalyanam",
+    "srinivasa",
+    "kalyanam"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0165",
+   "name": "Baby gods",
+   "img": "assets/uploads/designs/wb-0165-1c62vxp.jpg",
+   "tags": [
+    "baby",
+    "gods",
+    "beautiful"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "kids",
+    "pooja"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0166",
+   "name": "Siva Kalyanam Tanjore style",
+   "img": "assets/uploads/designs/wb-0166-1fnpinb.jpg",
+   "tags": [
+    "siva",
+    "kalyanam",
+    "tanjore"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0167",
+   "name": "Baby Krishna with calf",
+   "img": "assets/uploads/designs/wb-0167-171w1xy.jpg",
+   "tags": [
+    "baby",
+    "krishna",
+    "calf"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "pooja"
+   ],
+   "styles": [
+    "texture3d",
+    "devotional",
+    "traditional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -699,6 +932,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-19T12:50:48.435Z",
+ "updated": "2026-10-19T13:02:42.792Z",
  "by": "Manasa"
 };
