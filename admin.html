@@ -478,6 +478,8 @@
   function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data."); return false; } return true; }
 
   var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
+  /* rooms offered when adding or editing a design (projects keep the full list above) */
+  var DESIGN_ROOMS = ROOMS.filter(function (r) { return r[0] !== "clinic"; }).map(function (r) { return r[0] === "office" ? ["office", "Office / corporate"] : r; });
   var STYLES = [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]];
   /* styles typed by the team ("Tanjore", "Kerala mural") sit next to the fixed list */
   function styleList(extra) {
@@ -564,7 +566,7 @@
     $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + (samples ? " · " + samples + " homepage artworks (used on the home page only, never in the catalogue)" : "");
     $("#d-grid").innerHTML = '<button class="d-add" type="button" id="d-add-tile"><span>+</span>Add a design</button>' + list.map(function (d) {
       return '<div class="d-card' + (d.hidden ? " off" : "") + '"><button class="pic" type="button" data-edit="' + d.code + '" aria-label="Edit ' + esc(d.name) + '">' + thumb(d) + '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="pill sample">Sample</span>') + '</button>' +
-        '<div class="body"><b>' + esc(d.name) + '</b><span class="stats">' + (d.spaces || []).slice(0, 2).map(function (s) { return lbl(ROOMS, s); }).join(", ") + '</span>' +
+        '<div class="body"><b>' + esc(d.name) + '</b><span class="stats">' + (d.spaces || []).slice(0, 2).map(function (s) { return lbl(DESIGN_ROOMS.concat(ROOMS), s); }).join(", ") + '</span>' +
         '<div class="row"><label class="switch" style="font-size:.78rem"><input type="checkbox" data-live="' + d.code + '"' + (d.hidden ? "" : " checked") + '> ' + (d.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-edit="' + d.code + '" style="font-size:.84rem">Edit</button></div></div></div>';
     }).join("");
     paintThumbs($("#d-grid"));
@@ -683,7 +685,7 @@
     $("#d-code").value = cur ? cur.code : nextCode();
     $("#d-name").value = cur ? cur.name : (wantWord ? wantWord.replace(/\b\w/g, function (c) { return c.toUpperCase(); }) : "");
     $("#d-tags").value = cur ? (cur.tags || []).join(", ") : (wantWord || "");
-    chipSet($("#d-spaces"), ROOMS, cur ? cur.spaces || [] : []);
+    chipSet($("#d-spaces"), DESIGN_ROOMS, cur ? cur.spaces || [] : []);
     chipSet($("#d-styles"), styleList(), cur ? cur.styles || [] : []); $("#d-style-own").value = "";
     $("#d-orient-note").textContent = "";
     segSet($("#d-orient"), cur ? cur.orient || "wide" : "wide");
@@ -704,7 +706,7 @@
   $("#d-save").onclick = function () {
     var name = $("#d-name").value.trim();
     if (!name) { toast("Give the design a name"); $("#d-name").focus(); return; }
-    var spaces = chipVals($("#d-spaces")); if (!spaces.length) { toast("Pick at least one room"); return; }
+    var spaces = chipVals($("#d-spaces")).concat(cur ? (cur.spaces || []).filter(function (x) { return !DESIGN_ROOMS.some(function (r) { return r[0] === x; }); }) : []);   // keeps rooms no longer offered (e.g. clinic) on older designs if (!spaces.length) { toast("Pick at least one room"); return; }
     var isNew = !cur;
     if (isNew && !srcImg) { toast("Add a photo of the design"); return; }
     var tagCount = $("#d-tags").value.split(",").filter(function (s) { return s.trim(); }).length;
@@ -1061,7 +1063,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: ROOMS, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>
