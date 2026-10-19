@@ -30,7 +30,7 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
 - Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked
   (template v1 in `assets/watermark.js`: diagonal "WallBliss Studio" + corner badge with logo and code).
 - Code is suggested (next free WB-0000) and can be changed; duplicates are blocked.
-- Tags are mandatory (3+), hidden from customers, used by search. With the AI key, Claude fills in
+- Tags are mandatory (2+), hidden from customers, used by search. With the AI key, Claude fills in
   name, tags, rooms, style and multilingual search words (usually 5–10 s per photo, with a live timer;
   gives up after 45 s). "Fill in myself" skips it for one photo, "Fill all in myself" for all.
 - Style: pick from the list (Traditional, Devotional, 3D, Artistic, …) or type your own; typed styles

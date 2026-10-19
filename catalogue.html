@@ -717,7 +717,7 @@
   function slMessage() {
     var a = WB.shortlist.all(), size = document.getElementById("sl-size").value.trim(), area = document.getElementById("sl-area").value.trim();
     var lines = ["Hi WallBliss" + (WB.lead.name ? ", this is " + WB.lead.name : "") + ". My shortlist:"];
-    a.forEach(function (c) { lines.push("• " + c + (BY[c] ? " " + BY[c].name : "")); });
+    a.forEach(function (c) { lines.push("• " + c + (BY[c] ? " (" + BY[c].name + ")" : "")); });
     if (size) lines.push("Wall size: " + size);
     if (area) lines.push("Area: " + area);
     lines.push("Please share a price and preview.");
@@ -744,7 +744,7 @@
   drawer.addEventListener("click", function (e) { if (e.target === drawer) drawer.close(); });
   ["sl-size", "sl-area"].forEach(function (id) { document.getElementById(id).addEventListener("input", function () { document.getElementById("sl-send").href = WB.waLink(slMessage()); }); });
   document.getElementById("sl-copy").onclick = function () {
-    var txt = WB.shortlist.all().join(", ");
+    var txt = WB.shortlist.all().map(function (c) { return c + (BY[c] ? " (" + BY[c].name + ")" : ""); }).join(", ");
     if (!txt) return toast("Your shortlist is empty");
     var p = navigator.clipboard && navigator.clipboard.writeText(txt);
     if (p) p.then(function () { toast("Copied " + txt); }, function () { toast(txt); }); else toast(txt);

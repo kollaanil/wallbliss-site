@@ -4,13 +4,13 @@
    final code → saved (images kept in this browser's IndexedDB) and published automatically.
    AI: Claude (vision) called straight from this browser with the team's own API key, stored on
    this device only (Settings → AI tagging key). Without a key, or if you tap "Fill in myself",
-   you type the details yourself. Tags are mandatory (3+) and never shown to customers. */
+   you type the details yourself. Tags are mandatory (2+) and never shown to customers. */
 (function () {
   "use strict";
   var A = window.WBAdmin; if (!A) return;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var esc = A.esc, MAX = 10, MIN_TAGS = 3, AI_MODEL = "claude-haiku-5-5";
+  var esc = A.esc, MAX = 10, MIN_TAGS = 2, AI_MODEL = "claude-haiku-5-5";
   var AIKEY = "wb_ai_key";
   function aiKey() { try { return localStorage.getItem(AIKEY) || ""; } catch (e) { return ""; } }
   function setAiKey(k) { try { k ? localStorage.setItem(AIKEY, k) : localStorage.removeItem(AIKEY); } catch (e) {} }
