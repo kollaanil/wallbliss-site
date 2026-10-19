@@ -579,8 +579,8 @@ window.WB_PUBLISHED = {
    "w": 1125,
    "h": 2000,
    "ratio": 0.5625,
-   "before": "assets/uploads/projects/shiva-in-cosmos-gzvn-before-1rt73wh.jpg",
-   "after": "assets/uploads/projects/shiva-in-cosmos-gzvn-after-dsrdnr.jpg"
+   "before": "assets/uploads/projects/shiva-in-cosmos-gzvn-before-baxxci.jpg",
+   "after": "assets/uploads/projects/shiva-in-cosmos-gzvn-after-1fmo4te.jpg"
   },
   {
    "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
@@ -699,6 +699,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-18T18:05:45.000Z",
- "by": "Claude"
+ "updated": "2026-10-19T12:48:42.570Z",
+ "by": "Manasa"
 };
