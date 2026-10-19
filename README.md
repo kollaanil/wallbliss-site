@@ -35,7 +35,7 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
   gives up after 45 s). "Fill in myself" skips it for one photo, "Fill all in myself" for all.
 - Style: pick from the list (Traditional, Devotional, 3D, Artistic, …) or type your own; typed styles
   become catalogue filters and search words. There is no colour field.
-- **Saving publishes automatically** (new designs, edits, deletes, Live/Hidden switch). Several quick
+- **Saving publishes automatically** for designs, projects, reviews and FAQs (new, edit, delete, show/hide, order). Only Settings changes wait for the Publish button. Several quick
   changes go in one commit. If the device has no publishing key yet, it asks for it once.
   The first real upload retires the sample designs.
 
@@ -90,6 +90,9 @@ There is no visitor-numbers page in the admin; use GA4 for views, searches and W
    Authorised JavaScript origins: `https://kollaanil.github.io` (later also `https://www.wallbliss.in`).
 3. Copy the Client ID into `assets/admin-config.js` → `googleClientId`.
 Allowed emails are listed in the same file.
+
+After one sign-in the admin stays signed in on that device for 30 days (tap the avatar → Sign out to end it).
+Google One Tap offers "Continue as …" with the account already in the browser; the normal button stays as a fallback.
 
 ## Domain: www.wallbliss.in
 

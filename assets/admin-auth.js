@@ -24,7 +24,11 @@
     try {
       var info = decode(res.credential), email = String(info.email || "").toLowerCase(), name = (cfg.allowed || {})[email];
       if (!info.email_verified || !name) { msg.hidden = false; msg.textContent = "No access for " + email + ". Use the WallBliss team account."; return; }
-      try { sessionStorage.setItem("wb_admin_email", email); } catch (e) {}
+      try {
+        sessionStorage.setItem("wb_admin_email", email);
+        localStorage.setItem("wb_admin_session", JSON.stringify({ email: email, exp: Date.now() + 30 * 864e5 }));   // stay signed in on this device for 30 days
+        localStorage.removeItem("wb_admin_signedout");
+      } catch (e) {}
       A.enter(name);
     } catch (e) { msg.hidden = false; msg.textContent = "Sign-in failed. Please try again."; }
   }
@@ -34,8 +38,13 @@
   var s = document.createElement("script");
   s.src = "https://accounts.google.com/gsi/client"; s.async = true;
   s.onload = function () {
-    google.accounts.id.initialize({ client_id: cfg.googleClientId, callback: onCred, auto_select: false, ux_mode: "popup" });
+    /* One Tap: "Continue as …" with the Google account already in this browser. After a deliberate
+       "Sign out" it still offers the account, but never signs in by itself. */
+    var out = false; try { out = !!localStorage.getItem("wb_admin_signedout"); } catch (e) {}
+    google.accounts.id.initialize({ client_id: cfg.googleClientId, callback: onCred, auto_select: !out, ux_mode: "popup",
+      cancel_on_tap_outside: false, itp_support: true, use_fedcm_for_prompt: true, context: "signin" });
     google.accounts.id.renderButton(document.getElementById("g-btn"), { theme: "outline", size: "large", shape: "pill", text: "signin_with", width: 260 });
+    if (!document.getElementById("login").hidden) google.accounts.id.prompt();     // the normal button above stays as the fallback
   };
   s.onerror = function () { var m = document.getElementById("g-msg"); m.hidden = false; m.textContent = "Couldn't reach Google. Check the internet connection."; };
   document.head.appendChild(s);
