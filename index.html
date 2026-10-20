@@ -339,9 +339,9 @@
       </div>
       <div class="stories reveal">
         <a class="story" href="catalogue.html#living"><div class="pic"><picture><source type="image/webp" sizes="(max-width: 860px) 92vw, 640px" srcset="assets/img/story-kamadhenu-sm.webp 480w, assets/img/story-kamadhenu.webp 900w"><img src="assets/img/story-kamadhenu-sm.jpg" srcset="assets/img/story-kamadhenu-sm.jpg 480w, assets/img/story-kamadhenu.jpg 900w" sizes="(max-width: 860px) 92vw, 640px" width="900" height="675" alt="Kamadhenu and calf by a waterfall, printed as a framed scene on a living room wall" loading="lazy" decoding="async"></picture></div><h3>The wall guests ask about</h3><p>Warli dancers, misty hills or monsoon leaves. The living room wall your family gathers in front of.</p><span class="go">Living room ideas →</span></a>
-        <a class="story" href="catalogue.html#kids" data-code="WB-0124"><div class="pic"><canvas></canvas></div><h3>A room to dream in</h3><p>Planets, rainbows or a jungle full of friends, chosen by your child. Wait till you see their face the first morning.</p><span class="go">Kids' room ideas →</span></a>
+        <a class="story" href="catalogue.html#kids" data-code="WB-0124" data-real="code:WB-0160 room:kids"><div class="pic"><canvas></canvas></div><h3>A room to dream in</h3><p>Planets, rainbows or a jungle full of friends, chosen by your child. Wait till you see their face the first morning.</p><span class="go">Kids' room ideas →</span></a>
         <a class="story" href="catalogue.html#hotel"><div class="pic"><picture><source type="image/webp" sizes="(max-width: 520px) 128px, 200px" srcset="assets/img/story-surya-sm.webp 480w, assets/img/story-surya.webp 900w"><img src="assets/img/story-surya-sm.jpg" srcset="assets/img/story-surya-sm.jpg 480w, assets/img/story-surya.jpg 900w" sizes="(max-width: 520px) 128px, 200px" width="900" height="675" alt="Surya on his chariot with seven horses, printed in gold tones on a white wall" loading="lazy" decoding="async"></picture></div><h3>A lobby everyone notices</h3><p>Apartment lobbies, clubhouses and corridors: a wall residents and visitors stop to look at.</p><span class="go">Lobby and common area ideas →</span></a>
-        <a class="story" href="catalogue.html#office" data-code="WB-0120"><div class="pic"><canvas></canvas></div><h3>A place people remember</h3><p>For corporate offices, cafés and clinics: a wall your team and customers photograph, share and come back for.</p><span class="go">Ideas for businesses →</span></a>
+        <a class="story" href="catalogue.html#office" data-code="WB-0120" data-real="code:WB-0176 room:office"><div class="pic"><canvas></canvas></div><h3>A place people remember</h3><p>For corporate offices, cafés and clinics: a wall your team and customers photograph, share and come back for.</p><span class="go">Ideas for businesses →</span></a>
       </div>
     </div>
   </section>
@@ -416,13 +416,13 @@
         <h2>Start with the room you're dreaming about</h2>
       </div>
       <div class="spaces reveal" id="spaces-grid">
-        <a class="space" href="catalogue.html#living" data-code="WB-0107"><canvas></canvas><span>Living room <small>→</small></span></a>
-        <a class="space" href="catalogue.html#bedroom" data-code="WB-0123"><canvas></canvas><span>Bedroom <small>→</small></span></a>
-        <a class="space" href="catalogue.html#kids" data-code="WB-0130"><canvas></canvas><span>Kids' room <small>→</small></span></a>
-        <a class="space" href="https://wa.me/917676701113" data-wa="Hi WallBliss, I'd like my own photo / logo printed on a wall." data-code="WB-0111"><canvas></canvas><span>Your photo or logo <small>→</small></span></a>
-        <a class="space" href="catalogue.html#office" data-code="WB-0119"><canvas></canvas><span>Office / corporate <small>→</small></span></a>
-        <a class="space" href="catalogue.html#cafe" data-code="WB-0109"><canvas></canvas><span>Café &amp; restaurant <small>→</small></span></a>
-        <a class="space" href="catalogue.html#hotel" data-code="WB-0105"><canvas></canvas><span>Hotel lobby <small>→</small></span></a>
+        <a class="space" href="catalogue.html#living" data-real="room:living"><canvas></canvas><span>Living room <small>→</small></span></a>
+        <a class="space" href="catalogue.html#bedroom" data-real="room:bedroom"><canvas></canvas><span>Bedroom <small>→</small></span></a>
+        <a class="space" href="catalogue.html#kids" data-real="room:kids"><canvas></canvas><span>Kids' room <small>→</small></span></a>
+        <a class="space" href="https://wa.me/917676701113" data-wa="Hi WallBliss, I'd like my own photo / logo printed on a wall." data-real="custom"><canvas></canvas><span>Your photo or logo <small>→</small></span></a>
+        <a class="space" href="catalogue.html#office" data-real="room:office"><canvas></canvas><span>Office / corporate <small>→</small></span></a>
+        <a class="space" href="catalogue.html#cafe" data-real="room:cafe"><canvas></canvas><span>Café &amp; restaurant <small>→</small></span></a>
+        <a class="space" href="catalogue.html#hotel" data-real="room:hotel"><canvas></canvas><span>Hotel lobby <small>→</small></span></a>
       </div>
       <p class="b2b">Planning something bigger? We print brand walls, reception murals and signage for offices, hotels, hospitals, schools and restaurants. Architects and interior designers, <a data-wa="Hi WallBliss, I'm an architect / interior designer and would like to discuss a project." href="https://wa.me/917676701113">let's work together</a>.</p>
     </div>
@@ -542,9 +542,32 @@
   })();
 
 
-  /* stories and room tiles */
-  document.querySelectorAll(".story[data-code]").forEach(function (a) { WBArt.room(a.querySelector("canvas"), D[a.dataset.code], { wall: WALL }); });
-  document.querySelectorAll("#spaces-grid .space").forEach(function (a) { WBArt.draw(a.querySelector("canvas"), D[a.dataset.code]); });
+  /* stories and room tiles: real pictures only.
+     data-real lists choices in order: "code:WB-0176" = that design, "room:kids" = newest live design for
+     the room, "custom" = newest project printed from the customer's own picture. Nothing found → plain tile. */
+  function newest(list) { return list.sort(function (a, b) { return (b.added || b.month || "").localeCompare(a.added || a.month || "") || String(b.code || "").localeCompare(String(a.code || "")); })[0] || null; }
+  function realFor(spec) {
+    var live = (window.WB_DESIGNS || []).filter(function (d) { return d.img && !d.hidden; }), parts = String(spec || "").split(/\s+/);
+    for (var i = 0; i < parts.length; i++) {
+      var m = /^(code|room):(.+)$/.exec(parts[i]), hit = null;
+      if (parts[i] === "custom") {
+        var pr = newest((window.WB_PROJECTS || []).filter(function (p) { return p.after && !p.hidden && !/^WB-/.test(p.design || ""); }));
+        if (pr) hit = { img: pr.after, name: pr.title, tag: "Your photo", href: null };
+      } else if (m && m[1] === "code") hit = live.filter(function (d) { return d.code === m[2]; })[0];
+      else if (m) hit = newest(live.filter(function (d) { return (d.spaces || []).indexOf(m[2]) > -1; }));
+      if (hit) return hit;
+    }
+    return null;
+  }
+  document.querySelectorAll("[data-real]").forEach(function (a) {
+    var d = realFor(a.dataset.real), pic = a.querySelector(".pic") || a; if (!d) return;
+    var u = String(d.img).replace(/"/g, "&quot;"), box = document.createElement("span");
+    box.className = "fitbox";
+    box.innerHTML = '<img class="fit-bg" src="' + u + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async">';
+    var c = pic.querySelector("canvas"); if (c) c.replaceWith(box); else pic.insertBefore(box, pic.firstChild);
+    if (a.classList.contains("story")) { var t = document.createElement("span"); t.className = "pic-tag"; t.textContent = d.tag || d.code; pic.appendChild(t); }
+    if (d.code && a.getAttribute("href") && a.getAttribute("href").indexOf("catalogue.html") === 0 && a.classList.contains("story")) a.href = "catalogue.html#" + d.code;
+  });
 
   /* up-close clips: load and play only while on screen */
   (function () {
@@ -592,7 +615,6 @@
   }
   if (WB.config.googleReviewsUrl) document.getElementById("reviews").hidden = false;
   var resize; addEventListener("resize", function () { clearTimeout(resize); resize = setTimeout(function () {
-    document.querySelectorAll(".story[data-code]").forEach(function (a) { WBArt.room(a.querySelector("canvas"), D[a.dataset.code], { wall: WALL }); });
   }, 200); });
 })();
 </script>

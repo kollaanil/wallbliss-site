@@ -963,46 +963,7 @@ window.WB_PUBLISHED = {
    "pop": 5
   }
  ],
- "edits": {
-  "WB-0135": {
-   "hidden": true
-  },
-  "WB-0105": {
-   "hidden": true,
-   "spaces": [
-    "cafe",
-    "hotel"
-   ]
-  },
-  "WB-0120": {
-   "hidden": true
-  },
-  "WB-0107": {
-   "hidden": true
-  },
-  "WB-0119": {
-   "hidden": true,
-   "spaces": [
-    "cafe",
-    "kids"
-   ]
-  },
-  "WB-0130": {
-   "hidden": true
-  },
-  "WB-0123": {
-   "hidden": true
-  },
-  "WB-0109": {
-   "hidden": true
-  },
-  "WB-0111": {
-   "hidden": true
-  },
-  "WB-0124": {
-   "hidden": true
-  }
- },
+ "edits": {},
  "projects": [
   {
    "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
@@ -1163,8 +1124,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:39:58.102Z",
- "by": "Manasa",
+ "updated": "2026-10-20T13:47:26.000Z",
+ "by": "Claude",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
