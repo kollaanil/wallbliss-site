@@ -1077,7 +1077,12 @@ window.WB_PUBLISHED = {
  ],
  "reviews": [],
  "settings": {
-  "samplesRetired": true
+  "samplesRetired": true,
+  "themes": [
+   {
+    "name": "Srinivasa Kalyanam"
+   }
+  ]
  },
  "faqs": [
   {
@@ -1171,7 +1176,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:20:04.729Z",
+ "updated": "2026-10-20T13:25:41.835Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1329,6 +1334,10 @@ window.WB_PUBLISHED = {
   "d:WB-0177": {
    "sig": "12mx72w",
    "card": "d/WB-0177/card-12mx72w.jpg"
+  },
+  "t:srinivasa-kalyanam": {
+   "sig": "1an6fd8",
+   "card": "t/srinivasa-kalyanam/card-1an6fd8.jpg"
   }
  }
 };
