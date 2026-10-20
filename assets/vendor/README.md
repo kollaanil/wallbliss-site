@@ -1,1 +1,1 @@
-heic2any 0.0.4 (MIT, https://github.com/alexcorvi/heic2any): converts iPhone HEIC photos to JPG in the admin when the browser cannot open them.
+heic-to 1.6.0 (LGPL-3.0, libheif; https://github.com/hoppergee/heic-to): converts iPhone HEIC/HEIF photos, including 10-bit HDR and Live Photo stills, to JPG in the admin when the browser cannot open them.

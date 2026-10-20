@@ -42,6 +42,10 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
 **AI tagging key (once per device):** console.anthropic.com → API keys → create key; set a monthly
 spend limit under Billing. Paste it in admin → Settings → AI tagging key. Stored on that device only.
 
+**Change rooms for many designs at once:** Designs → **Select** → tap designs (or search, then **Select all shown**) → **Rooms** →
+tap a room once to add it, twice to remove it → **Apply**. Rooms you don't touch stay as they are; a design always keeps at least one room.
+An **Undo** button shows for 8 seconds.
+
 ## Adding a project (admin → Projects → + New project)
 
 1. Add the before and after photos. They are kept whole (never cropped), only scaled to 2000 px on the longest side.
