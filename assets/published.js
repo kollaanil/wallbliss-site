@@ -982,6 +982,68 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0179",
+   "name": "Corp Global Client Mapping",
+   "img": "assets/uploads/designs/wb-0179-19c3po.jpg",
+   "tags": [
+    "work",
+    "station",
+    "wall",
+    "world",
+    "map",
+    "corporate"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [
+    "geometric"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0180",
+   "name": "Corp Client Logo Collage",
+   "img": "assets/uploads/designs/wb-0180-2gb7z1.jpg",
+   "tags": [
+    "studio",
+    "wall",
+    "client",
+    "logos",
+    "corporate"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0181",
+   "name": "Corp Cabin Backdrop",
+   "img": "assets/uploads/designs/wb-0181-1qqqkfn.jpg",
+   "tags": [
+    "cabin",
+    "wall",
+    "buildings",
+    "corporate"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1167,7 +1229,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:57:34.554Z",
+ "updated": "2026-10-20T13:59:32.691Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1333,6 +1395,18 @@ window.WB_PUBLISHED = {
   "d:WB-0178": {
    "sig": "41earm",
    "card": "d/WB-0178/card-41earm.jpg"
+  },
+  "d:WB-0179": {
+   "sig": "1kuhxo",
+   "card": "d/WB-0179/card-1kuhxo.jpg"
+  },
+  "d:WB-0180": {
+   "sig": "1nfwmgl",
+   "card": "d/WB-0180/card-1nfwmgl.jpg"
+  },
+  "d:WB-0181": {
+   "sig": "1gva3id",
+   "card": "d/WB-0181/card-1gva3id.jpg"
   }
  }
 };
