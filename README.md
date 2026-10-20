@@ -63,6 +63,24 @@ updates in 1–2 minutes, including the FAQ data Google reads for search results
 - The list written in `index.html` is only a fallback for the rare visitor whose browser blocks scripts. Keep it roughly in step if you change an answer a lot.
 - Two editors can change different questions at the same time; Publish keeps both changes.
 
+## Sharing designs and themes on WhatsApp
+
+- Every live design has a share link, `wallbliss.in/d/WB-0157/`, and every saved theme has one, `wallbliss.in/t/srinivasa-kalyanam/`.
+  WhatsApp shows the mural picture, the name and a short write-up for them. Opening one goes straight to that design or theme in the catalogue.
+- Themes: admin → Designs → **Theme links** → type the name (and search words if the name alone doesn't find them) → **Add theme**.
+  **Copy for WhatsApp** copies the ready message and link.
+- In the catalogue, **Share these designs** (after a search) and **Share** (on a design) open the phone's share sheet.
+- Publish makes the pages and picture cards by itself, only for new or changed designs and themes (`og` in published.js remembers them).
+  The cards for the homepage, catalogue and projects pages are in `assets/img/share/`.
+
+## Notifications and loading (assets/ui.js)
+
+One shared file for both, so every page behaves the same:
+- `WB.notify(text)`: bottom-right, stacked, fades after 3 s. `WB.notify(text, { type: "error" })` stays until tapped.
+- Loading: nothing under 0.4 s; `WB.busy(button)` for short waits; `WB.waiting(el, kind)` for longer ones (spinner, rotating message
+  after 3 s, seconds counter, optional Skip, real steps like "Uploading 3 of 7", "Taking a little longer than usual…" after 20 s).
+- The rotating messages are in `WB.LOAD_LINES` at the top of `assets/ui.js`: edit the wording there.
+
 ## Search
 
 `assets/search.js` + `assets/search-lexicon.js`: runs in the visitor's browser. Understands English,

@@ -1107,6 +1107,152 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T03:57:34.214Z",
- "by": "Manasa"
+ "updated": "2026-10-20T07:02:17.255Z",
+ "by": "Claude",
+ "og": {
+  "d:WB-0137": {
+   "sig": "1uva2wb",
+   "card": "d/WB-0137/card-1uva2wb.jpg"
+  },
+  "d:WB-0138": {
+   "sig": "110hyfn",
+   "card": "d/WB-0138/card-110hyfn.jpg"
+  },
+  "d:WB-0139": {
+   "sig": "1fkikxj",
+   "card": "d/WB-0139/card-1fkikxj.jpg"
+  },
+  "d:WB-0140": {
+   "sig": "rdl5lw",
+   "card": "d/WB-0140/card-rdl5lw.jpg"
+  },
+  "d:WB-0141": {
+   "sig": "6f07ze",
+   "card": "d/WB-0141/card-6f07ze.jpg"
+  },
+  "d:WB-0142": {
+   "sig": "eifhhn",
+   "card": "d/WB-0142/card-eifhhn.jpg"
+  },
+  "d:WB-0143": {
+   "sig": "1ffitmk",
+   "card": "d/WB-0143/card-1ffitmk.jpg"
+  },
+  "d:WB-0144": {
+   "sig": "u6myc2",
+   "card": "d/WB-0144/card-u6myc2.jpg"
+  },
+  "d:WB-0145": {
+   "sig": "1q7gkcs",
+   "card": "d/WB-0145/card-1q7gkcs.jpg"
+  },
+  "d:WB-0146": {
+   "sig": "1q4ddrh",
+   "card": "d/WB-0146/card-1q4ddrh.jpg"
+  },
+  "d:WB-0147": {
+   "sig": "15jh8o",
+   "card": "d/WB-0147/card-15jh8o.jpg"
+  },
+  "d:WB-0148": {
+   "sig": "fk7ov1",
+   "card": "d/WB-0148/card-fk7ov1.jpg"
+  },
+  "d:WB-0149": {
+   "sig": "lzpxbi",
+   "card": "d/WB-0149/card-lzpxbi.jpg"
+  },
+  "d:WB-0150": {
+   "sig": "a9dw8i",
+   "card": "d/WB-0150/card-a9dw8i.jpg"
+  },
+  "d:WB-0152": {
+   "sig": "coir88",
+   "card": "d/WB-0152/card-coir88.jpg"
+  },
+  "d:WB-0153": {
+   "sig": "13nfg3o",
+   "card": "d/WB-0153/card-13nfg3o.jpg"
+  },
+  "d:WB-0154": {
+   "sig": "5iyxt9",
+   "card": "d/WB-0154/card-5iyxt9.jpg"
+  },
+  "d:WB-0155": {
+   "sig": "11oudus",
+   "card": "d/WB-0155/card-11oudus.jpg"
+  },
+  "d:WB-0156": {
+   "sig": "107ukif",
+   "card": "d/WB-0156/card-107ukif.jpg"
+  },
+  "d:WB-0157": {
+   "sig": "1uadicy",
+   "card": "d/WB-0157/card-1uadicy.jpg"
+  },
+  "d:WB-0158": {
+   "sig": "1ux4jma",
+   "card": "d/WB-0158/card-1ux4jma.jpg"
+  },
+  "d:WB-0159": {
+   "sig": "sjpe68",
+   "card": "d/WB-0159/card-sjpe68.jpg"
+  },
+  "d:WB-0160": {
+   "sig": "4xilz6",
+   "card": "d/WB-0160/card-4xilz6.jpg"
+  },
+  "d:WB-0161": {
+   "sig": "l3nn2w",
+   "card": "d/WB-0161/card-l3nn2w.jpg"
+  },
+  "d:WB-0162": {
+   "sig": "jhbjen",
+   "card": "d/WB-0162/card-jhbjen.jpg"
+  },
+  "d:WB-0163": {
+   "sig": "pm6ofe",
+   "card": "d/WB-0163/card-pm6ofe.jpg"
+  },
+  "d:WB-0164": {
+   "sig": "r0joja",
+   "card": "d/WB-0164/card-r0joja.jpg"
+  },
+  "d:WB-0165": {
+   "sig": "161mnfx",
+   "card": "d/WB-0165/card-161mnfx.jpg"
+  },
+  "d:WB-0166": {
+   "sig": "crah4s",
+   "card": "d/WB-0166/card-crah4s.jpg"
+  },
+  "d:WB-0167": {
+   "sig": "b0qzwf",
+   "card": "d/WB-0167/card-b0qzwf.jpg"
+  },
+  "d:WB-0168": {
+   "sig": "i3ryvl",
+   "card": "d/WB-0168/card-i3ryvl.jpg"
+  },
+  "d:WB-0169": {
+   "sig": "t7i91c",
+   "card": "d/WB-0169/card-t7i91c.jpg"
+  },
+  "d:WB-0170": {
+   "sig": "1v4p9fa",
+   "card": "d/WB-0170/card-1v4p9fa.jpg"
+  },
+  "d:WB-0171": {
+   "sig": "x4pk5x",
+   "card": "d/WB-0171/card-x4pk5x.jpg"
+  },
+  "d:WB-0173": {
+   "sig": "w2gz4b",
+   "card": "d/WB-0173/card-w2gz4b.jpg"
+  },
+  "d:WB-0174": {
+   "sig": "ooq1xp",
+   "card": "d/WB-0174/card-ooq1xp.jpg"
+  }
+ }
 };

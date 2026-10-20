@@ -37,7 +37,6 @@
       s.onerror = function () { heicLib = null; rej(new Error("Couldn't load the iPhone photo converter. Check the internet and try again.")); };
       document.head.appendChild(s);
     });
-    if (A && A.toast) A.toast("Converting iPhone photo…");
     return heicLib.then(function (h) { return h({ blob: f, toType: "image/jpeg", quality: 0.92 }); })
       .then(function (b) { return Array.isArray(b) ? b[0] : b; })
       .catch(function (e) {
@@ -63,16 +62,15 @@
   st.textContent =
     ".u-items{display:grid;gap:16px}.u-item{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:12px;display:grid;gap:12px}" +
     ".u-top{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;align-items:start}.u-thumb{width:112px;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--wall);display:grid;place-items:center;cursor:zoom-in}" +
-    ".u-thumb canvas{width:100%;height:100%;object-fit:contain;display:block}.u-st{font-size:.8rem;color:var(--muted);display:flex;gap:6px;align-items:center}.u-st.ai::before{content:'';width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);border-right-color:transparent;animation:uspin .8s linear infinite}" +
-    "@keyframes uspin{to{transform:rotate(1turn)}}.u-st.bad{color:#B42318}.u-st.ok{color:#1B6B4A}.u-row{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px}.u-f{display:grid;gap:0}.u-f input{width:100%}" +
+    ".u-thumb canvas{width:100%;height:100%;object-fit:contain;display:block}.u-st{font-size:.8rem;color:var(--muted);display:flex;gap:6px;align-items:center}" +
+    ".u-st.bad{color:#B42318}.u-st.ok{color:#1B6B4A}.u-row{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px}.u-f{display:grid;gap:0}.u-f input{width:100%}" +
     ".u-item input[type=text]{min-height:42px}.u-code.bad{border-color:#B42318!important}.u-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}" +
     ".u-tag{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 6px 0 12px;border-radius:999px;background:var(--ink);color:#fff;font:500 .84rem var(--font-body)}" +
     ".u-tag button{border:0;background:rgba(255,255,255,.18);color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:.9rem;line-height:1}" +
     ".u-add{flex:1;min-width:120px;border:1px dashed var(--line-strong)!important;border-radius:999px!important;min-height:32px!important;padding:4px 12px!important;font-size:.86rem!important}" +
     ".u-lbl{font-size:.78rem;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}.u-lbl small{font-weight:500;color:var(--faint)}" +
     ".u-item details summary{cursor:pointer;font-size:.84rem;color:var(--accent);font-weight:700}.u-item textarea{width:100%;min-height:70px;font:.86rem var(--font-body);padding:8px 10px;border-radius:10px;border:1px solid var(--line-strong)}" +
-    ".u-wait{display:grid;gap:10px;align-content:start}.u-wait .u-st{display:block;font-size:.9rem;color:var(--ink)}.u-wait .u-st::before{display:inline-block;vertical-align:-1px;margin-right:6px}.u-wait p{margin:0;font-size:.8rem;color:var(--muted)}.u-skip{justify-self:start;border:1px solid var(--line-strong);background:#fff;border-radius:999px;padding:8px 14px;font:600 .84rem var(--font-body);color:var(--ink);cursor:pointer}" +
-    ".u-bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}.u-bar i{display:block;height:100%;background:var(--accent);transition:width 1s linear}" +
+    ".u-wait{display:grid;gap:10px;align-content:start}.u-wait .u-st{display:block;font-size:.9rem;color:var(--ink)}.u-wait p{margin:0;font-size:.8rem;color:var(--muted)}.u-skip{justify-self:start;border:1px solid var(--line-strong);background:#fff;border-radius:999px;padding:8px 14px;font:600 .84rem var(--font-body);color:var(--ink);cursor:pointer}" +
     ".u-own{margin-top:8px;max-width:300px;border:1px dashed var(--line-strong)!important;border-radius:999px!important;min-height:34px!important;padding:4px 12px!important;font-size:.86rem!important;width:100%}" +
     ".u-skipall{border:0;background:none;color:var(--accent);font:700 .84rem var(--font-body);cursor:pointer;padding:0;text-decoration:underline}" +
     ".u-rm{border:0;background:none;color:#B42318;font:600 .82rem var(--font-body);cursor:pointer;justify-self:end}" +
@@ -207,9 +205,9 @@
   setInterval(function () {
     items.forEach(function (it) {
       if (it.state !== "ai" || !it.aiStart || !it.el) return;
-      var sec = Math.round((Date.now() - it.aiStart) / 1000), st = $(".u-sec", it.el), bar = $(".u-bar i", it.el);
-      if (st) st.textContent = sec + " s";
-      if (bar) bar.style.width = Math.min(96, sec / 10 * 90) + "%";
+      var s = (Date.now() - it.aiStart) / 1000, st = $(".u-sec", it.el), m = $(".u-line", it.el), line = WB.loadLine("aiDesign", s);
+      if (st) st.textContent = Math.round(s) + " s";
+      if (m && m.textContent !== line) { m.textContent = line; m.classList.remove("in"); void m.offsetWidth; m.classList.add("in"); }
     });
   }, 1000);
   function clean(list, allowed) {
@@ -282,8 +280,8 @@
     if (!it.el) { it.el = document.createElement("div"); it.el.className = "u-item"; $("#u-items").appendChild(it.el); }
     if (it.state === "ai" && it.base) {                      // Claude is working: show progress, not a half-filled form
       it.el.innerHTML = '<div class="u-top"><button type="button" class="u-thumb" aria-label="See larger"><canvas></canvas></button><div class="u-wait">' +
-        '<p class="u-st ai">✨ Claude is filling in the name, tags, rooms and style… <b class="u-sec">' + Math.round((Date.now() - it.aiStart) / 1000) + ' s</b></p>' +
-        '<div class="u-bar"><i style="width:4%"></i></div><p>Usually 5–10 seconds. ' + esc(it.file.name) + '</p>' +
+        '<p class="u-st ai"><i class="wb-spin" aria-hidden="true"></i> <span class="u-line wb-msg">' + WB.loadLine("aiDesign", (Date.now() - it.aiStart) / 1000) + '</span> <b class="u-sec wb-sec"></b></p>' +
+        '<p>✨ Claude is filling in the name, tags, rooms and style. Usually 5–10 seconds. ' + esc(it.file.name) + '</p>' +
         '<button type="button" class="u-skip">Fill in myself</button></div></div>';
       paint(it);
       $(".u-thumb", it.el).onclick = function () { var c = watermarked(it); zoom.innerHTML = ""; zoom.appendChild(c); zoom.showModal(); };
@@ -293,7 +291,7 @@
     var focus = document.activeElement && it.el.contains(document.activeElement) ? document.activeElement.getAttribute("data-f") : null;
     it.el.innerHTML =
       '<div class="u-top"><button type="button" class="u-thumb" aria-label="See larger"><canvas></canvas></button><div style="display:grid;gap:8px;min-width:0">' +
-      '<p class="u-st ' + (it.state || "") + '">' + esc(it.status) + '</p>' +
+      '<p class="u-st ' + (it.state || "") + '">' + (it.state === "ai" ? '<i class="wb-spin" aria-hidden="true"></i> ' : "") + esc(it.state === "ai" && !it.base && isHeic(it.file) ? WB.LOAD_LINES.heic[1] : it.status) + '</p>' +
       '<small class="muted" style="font-size:.74rem;overflow-wrap:anywhere">' + (it.srcW ? it.srcW + "×" + it.srcH + " → " + (it.base ? it.base.width + "×" + it.base.height : "") + " px · " : "") + esc(it.file.name) + '</small><small class="muted" style="font-size:.74rem">Tap the picture to check the watermark.</small></div></div>' +
       '<div class="u-row"><label class="u-f"><span class="u-lbl">Code</span><input type="text" class="u-code' + (codeProblem(it) ? " bad" : "") + '" data-f="code" value="' + esc(it.code) + '" aria-label="Design code" autocapitalize="characters"></label><label class="u-f"><span class="u-lbl">Name</span><input type="text" data-f="name" value="' + esc(it.name) + '" placeholder="e.g. Surya Chariot" maxlength="40" aria-label="Design name"></label></div>' +
       '<div><p class="u-lbl">Tags <small>hidden from customers · used by search · ' + it.tags.length + '/' + MIN_TAGS + '+</small></p><div class="u-tags">' +
@@ -362,7 +360,7 @@
       if (!A.save()) throw new Error("Could not save the draft on this device");
       dlg.close(); A.renderDesigns();
       A.autoPublish("Saved " + list.length + (list.length > 1 ? " designs" : " design") + (first ? " (sample designs will be hidden)" : ""));
-    }).catch(function (e) { A.toast(e.message); btn.disabled = false; update(); });
+    }).catch(function (e) { A.toast(e.message, "error"); btn.disabled = false; update(); });
   };
 
   /* ---------- AI key in Settings ---------- */

@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
 <link rel="stylesheet" href="assets/styles-v2.css">
+<script src="assets/ui.js"></script>
 <style>
   /* Admin layout: a quiet working tool on the same warm linen as the site.
      Phone: content + bottom tab bar (Anil and Manasa will mostly use it on site, on a phone).
@@ -173,6 +174,15 @@
   .checklist .st.wait { background: var(--marigold); }
   .meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
   .meter i { display: block; height: 100%; background: var(--marigold); border-radius: 4px; }
+  .themes { padding: 14px 16px; margin: 4px 0 14px; }
+  .themes summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; list-style: none; }
+  .themes summary::-webkit-details-marker { display: none; }
+  .themes summary small { flex-basis: 100%; font-size: .82rem; }
+  .th-add { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } .th-add input { flex: 1 1 180px; min-height: 40px; }
+  .th-hint { font-size: .82rem; margin: 6px 0 0; min-height: 1em; }
+  .th-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 0; }
+  .th-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .th-list b { color: var(--ink); } .th-list small { color: var(--muted); flex: 1 1 160px; overflow-wrap: anywhere; }
   .own-style { margin-top: 8px; width: 100%; max-width: 320px; min-height: 38px; border: 1px dashed var(--line-strong) !important; border-radius: 999px !important; padding: 6px 14px !important; font-size: .88rem !important; }
   .rv { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
   .fq-list { list-style: none; margin: 0; padding: 0; counter-reset: fq; }
@@ -208,8 +218,8 @@
   .acct { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; text-align: left; font: 500 .95rem var(--font-body); color: var(--ink); min-height: 56px; }
   .acct:hover { border-color: var(--accent); }
   .acct small { display: block; color: var(--faint); font-size: .8rem; }
-  .toast { position: fixed; left: 50%; bottom: calc(var(--tabbar) + 24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: #1A1714; color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: .9rem; z-index: 90; max-width: calc(100vw - 32px); }
-  @media (min-width: 861px) { .toast { bottom: 28px; } }
+  :root { --notes-bottom: calc(var(--tabbar) + 76px); }
+  @media (min-width: 861px) { :root { --notes-bottom: 84px; } }
 </style>
 </head>
 <body class="admin">
@@ -259,6 +269,12 @@
           <input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs">
           <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button><button class="fchip" type="button" data-df="sample">Homepage artwork</button></div>
         </div>
+        <details class="card themes" id="th-card">
+          <summary><b>Theme links</b> <span class="muted" id="th-count"></span><small class="muted">Share a whole theme (e.g. Srinivasa Kalyanam) in one tap</small></summary>
+          <div class="th-add"><input type="text" id="th-name" placeholder="Theme name, e.g. Srinivasa Kalyanam" maxlength="40" aria-label="Theme name"><input type="text" id="th-q" placeholder="Search words (optional)" maxlength="60" aria-label="Search words"><button class="btn btn-ghost btn-xs" type="button" id="th-addbtn">Add theme</button></div>
+          <p class="muted th-hint" id="th-preview"></p>
+          <ul class="th-list" id="th-list"></ul>
+        </details>
         <p class="muted" id="d-count" style="font-size:.88rem"></p>
         <div class="d-grid" id="d-grid"></div>
       </section>
@@ -465,6 +481,8 @@
 <script src="assets/site-data.js"></script>
 <script src="assets/art.js"></script>
 <script src="assets/admin-config.js"></script>
+<script src="assets/search-lexicon.js"></script>
+<script src="assets/search.js"></script>
 <script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -475,7 +493,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   var db = WB.db.load();
-  function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data."); return false; } return true; }
+  function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data.", "error"); return false; } return true; }
 
   var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
   /* rooms offered when adding or editing a design (projects keep the full list above) */
@@ -494,10 +512,7 @@
   $("#areas").innerHTML = AREAS.map(function (a) { return '<option value="' + a + '">'; }).join("");
 
   /* ---------- toast ---------- */
-  var tt; function toast(msg) {
-    var t = $(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" }));
-    t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(function () { t.hidden = true; }, 2600);
-  }
+  function toast(msg, type) { WB.notify(msg, type ? { type: type } : null); }        /* shared notifications: assets/ui.js */
 
   /* ---------- sign in: pick a name; publishing is protected by the key in publish.js ---------- */
   var user = null;
@@ -561,6 +576,7 @@
   $$("[data-df]").forEach(function (b) { b.onclick = function () { dFilter = b.dataset.df; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); renderDesigns(); }; });
   $("#d-q").addEventListener("input", function () { renderDesigns(); });
   function renderDesigns() {
+    renderThemes();
     var q = $("#d-q").value.trim().toLowerCase(), all = designs();
     var list = all.filter(function (d) {
       if (dFilter === "live" && d.hidden) return false;
@@ -585,6 +601,54 @@
     if (own) Object.assign(own, patch); else db.edits[code] = Object.assign(db.edits[code] || {}, patch);
     save();
   }
+  /* =====================================================================
+     THEME LINKS: one link per theme, shown with a picture card in WhatsApp
+     (the page and card are made by Publish: see publish.js "share pages")
+     ===================================================================== */
+  var SITE = "https://www.wallbliss.in/";
+  function slugify(v) { return String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "theme"; }
+  /* the designs a theme shows: the same search the catalogue runs */
+  function themeDesigns(q, list) {
+    list = (list || designs()).filter(function (d) { return !d.hidden && d.img; }).map(function (d) { return Object.assign({}, d); });
+    if (!window.WBSearch || !String(q || "").trim()) return [];
+    WBSearch.index(list, {});
+    var r = WBSearch.run(q, list, { typing: true });
+    if (!r || !/^(all|partial|related)$/.test(r.mode)) return [];
+    return r.results.slice().sort(function (a, b) { return b.s - a.s || (b.d.pop || 0) - (a.d.pop || 0); }).map(function (x) { return x.d; });
+  }
+  function themeText(t) { return "Here are our " + t.name + " designs 👇\n" + SITE + "t/" + slugify(t.name) + "/"; }
+  function renderThemes() {
+    var list = (db.settings.themes || []);
+    $("#th-count").textContent = list.length ? "(" + list.length + ")" : "";
+    $("#th-list").innerHTML = list.map(function (t, i) {
+      var n = themeDesigns(t.q || t.name).length;
+      return '<li><b>' + esc(t.name) + '</b><small>' + n + (n === 1 ? " design" : " designs") + " · wallbliss.in/t/" + slugify(t.name) + '/</small>' +
+        '<button class="btn btn-ghost btn-xs" type="button" data-thcopy="' + i + '">Copy for WhatsApp</button><button class="linkbtn danger" type="button" data-thdel="' + i + '" style="font-size:.82rem">Delete</button></li>';
+    }).join("") || '<li class="muted" style="font-size:.86rem">No themes yet. Add one above, e.g. Srinivasa Kalyanam.</li>';
+    $$("[data-thcopy]").forEach(function (b) { b.onclick = function () {
+      var txt = themeText(list[+b.dataset.thcopy]), p = navigator.clipboard && navigator.clipboard.writeText(txt);
+      if (p) p.then(function () { toast("Copied. Paste it in WhatsApp"); }, function () { toast(txt); }); else toast(txt);
+    }; });
+    $$("[data-thdel]").forEach(function (b) { b.onclick = function () {
+      if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete"; }, 2500); return; }
+      list.splice(+b.dataset.thdel, 1); db.settings.themes = list; save(); renderThemes(); autoPublish("Theme deleted");
+    }; });
+  }
+  function themePreview() {
+    var q = $("#th-q").value.trim() || $("#th-name").value.trim(), n = q ? themeDesigns(q).length : 0;
+    $("#th-preview").textContent = q ? (n ? n + (n === 1 ? " design matches" : " designs match") + " “" + q + "”." : "No designs match “" + q + "” yet. Try other words.") : "";
+  }
+  $("#th-name").addEventListener("input", themePreview); $("#th-q").addEventListener("input", themePreview);
+  $("#th-addbtn").onclick = function () {
+    var name = niceName($("#th-name").value), q = $("#th-q").value.trim();
+    if (!name) { toast("Type the theme name"); $("#th-name").focus(); return; }
+    if (!themeDesigns(q || name).length) { toast("No designs match yet. Try other search words"); return; }
+    var list = db.settings.themes || [];
+    if (list.some(function (t) { return slugify(t.name) === slugify(name); })) { toast("That theme is already there"); return; }
+    list.push(q ? { name: name, q: q } : { name: name }); db.settings.themes = list; save();
+    $("#th-name").value = ""; $("#th-q").value = ""; themePreview(); renderThemes(); autoPublish("Theme added");
+  };
+
   /* design changes go live straight away: no separate Publish tap to forget */
   function autoPublish(what) {
     if (WB.publishing && WB.publishing.auto) { toast(what + ". Publishing to the website…"); WB.publishing.auto(); }
@@ -663,7 +727,7 @@
     var ar = img.naturalWidth / img.naturalHeight;
     return { colours: picks, orient: ar > 1.2 ? "wide" : ar < .85 ? "tall" : "square", ar: ar };
   }
-  function loadFile(file, cb) {
+  function loadFile(file, cb, drop) {
     if (!file) return;
     var H = window.WBHeic, heic = H && H.is(file);
     if (!heic && !/^image\//.test(file.type)) { toast("Please choose a photo (JPG, PNG, WebP or iPhone photo)"); return; }
@@ -675,13 +739,18 @@
         rd.readAsDataURL(blob);
       });
     }
-    open(file).catch(function (e) { if (!heic) throw e; return H.toJpeg(file).then(open); })   /* Chrome etc. can't show iPhone HEIC photos: convert first */
-      .then(cb).catch(function (e) { toast(e.message); });
+    var box = drop && drop.querySelector("div"), before = box ? box.innerHTML : "", w = null;
+    function back() { if (w) { w.stop(); box.innerHTML = before; w = null; } }
+    open(file).catch(function (e) {                                  /* Chrome etc. can't show iPhone HEIC photos: convert first */
+      if (!heic) throw e;
+      if (box) w = WB.waiting(box, "heic");
+      return H.toJpeg(file).then(open);
+    }).then(function (im) { back(); cb(im); }).catch(function (e) { back(); toast(e.message, "error"); });
   }
   function wireDrop(drop, input, cb) {
-    input.addEventListener("change", function () { loadFile(input.files[0], cb); input.value = ""; });
+    input.addEventListener("change", function () { loadFile(input.files[0], cb, drop); input.value = ""; });
     ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
-    ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("over"); if (t === "drop") loadFile(e.dataTransfer.files[0], cb); }); });
+    ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("over"); if (t === "drop") loadFile(e.dataTransfer.files[0], cb, drop); }); });
   }
   wireDrop($("#d-drop"), $("#d-file"), function (im) {
     srcImg = im; $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
@@ -899,10 +968,12 @@
     var useAI = !!(window.WBAI && WBAI.key()), id = ++storyReq;
     if (!useAI || !opts.t.length) setOpts(templateOptions());
     if (!useAI) { note("Pick a title and a story below, then edit if you like. (Add the AI key in Settings for suggestions written from your photos.)"); return; }
-    note("✨ Writing suggestions from your photos…"); $("#p-more").disabled = true; $("#p-ttl-opts").classList.add("loading"); $("#p-sum-opts").classList.add("loading");
-    askStory().then(function (r) { if (id !== storyReq) return; setOpts(r); note("✨ Written from your photos. Pick one, then edit if you like."); })
-      .catch(function () { if (id !== storyReq) return; note("Couldn't reach the AI just now, so here are ready-made suggestions. Pick one, then edit if you like."); })
-      .then(function () { if (id !== storyReq) return; $("#p-more").disabled = false; $("#p-ttl-opts").classList.remove("loading"); $("#p-sum-opts").classList.remove("loading"); });
+    $("#p-more").disabled = true; $("#p-ttl-opts").classList.add("loading"); $("#p-sum-opts").classList.add("loading");
+    function idle() { w.stop(); $("#p-more").disabled = false; $("#p-ttl-opts").classList.remove("loading"); $("#p-sum-opts").classList.remove("loading"); }
+    var w = WB.waiting($("#p-story-note"), "story", { skipLabel: "Use ready-made", skip: function () { storyReq++; idle(); note("Here are ready-made suggestions. Pick one, then edit if you like."); } });
+    var timeout = new Promise(function (res, rej) { setTimeout(function () { rej(new Error("slow")); }, 45000); });
+    Promise.race([askStory(), timeout]).then(function (r) { if (id !== storyReq) return; idle(); setOpts(r); note("✨ Written from your photos. Pick one, then edit if you like."); })
+      .catch(function () { if (id !== storyReq) return; idle(); note("Couldn't reach the AI just now, so here are ready-made suggestions. Pick one, then edit if you like."); });
   }
   function autoStory() { if (!opts.t.length) suggest(false); else paintOpts(); }
   ["#p-ttl-opts", "#p-sum-opts"].forEach(function (id) {
@@ -939,7 +1010,7 @@
       if (!save()) { if (P != null) db.projects[P] = prev; else db.projects.shift(); btn.disabled = false; return; }
       btn.disabled = false; $("#p-dlg").close(); renderProjects();
       autoPublish(p.hidden ? "Saved (hidden from the website)" : "Saved");
-    }).catch(function () { btn.disabled = false; toast("Could not save the photos on this device"); });
+    }).catch(function () { btn.disabled = false; toast("Could not save the photos on this device", "error"); });
   };
   $("#p-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete project"; }, 2500); return; }
@@ -1077,7 +1148,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, themeDesigns: themeDesigns, slugify: slugify, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>
