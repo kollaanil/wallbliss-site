@@ -296,7 +296,7 @@
         <div class="toolbar">
           <input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs">
           <button class="btn btn-ghost btn-xs" type="button" id="d-select" aria-pressed="false">Select</button>
-          <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button><button class="fchip" type="button" data-df="sample">Homepage artwork</button></div>
+          <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button></div>
         </div>
         <details class="card themes" id="th-card">
           <summary><b>Theme links</b> <span class="muted" id="th-count"></span><small class="muted">Share a whole theme (e.g. Srinivasa Kalyanam) in one tap</small></summary>
@@ -632,7 +632,7 @@
       return !q || (d.name + " " + d.code + " " + (d.tags || []).join(" ")).toLowerCase().indexOf(q) > -1;
     }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); });
     var samples = all.filter(function (d) { return !d.img; }).length;
-    $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + (samples ? " · " + samples + " homepage artworks (used on the home page only, never in the catalogue)" : "");
+    $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + "";
     $("#d-grid").innerHTML = '<button class="d-add" type="button" id="d-add-tile"><span>+</span>Add a design</button>' + list.map(function (d) {
       return '<div class="d-card' + (d.hidden ? " off" : "") + '"><button class="pic" type="button" data-edit="' + d.code + '" aria-label="Edit ' + esc(d.name) + '">' + thumb(d) + '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="pill sample">Sample</span>') + '</button>' +
         '<div class="body"><b>' + esc(d.name) + '</b><span class="stats">' + (d.spaces || []).slice(0, 2).map(function (s) { return lbl(DESIGN_ROOMS.concat(ROOMS), s); }).join(", ") + '</span>' +

@@ -604,3 +604,4 @@ img.fade.in { opacity: 1; }
 .fitbox img.fit { object-fit: contain; }
 .fitbox img.fit-bg { object-fit: cover; filter: blur(14px) saturate(1.1) brightness(.92); transform: scale(1.18); opacity: .85; }
 .pic-tag { position: absolute; left: 8px; bottom: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(255,253,249,.94); color: var(--ink); font: 700 .72rem var(--font-body); }
+.space .fitbox { position: absolute; inset: 0; }
