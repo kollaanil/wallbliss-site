@@ -561,3 +561,38 @@ th.us { color: var(--accent); }
 .bac-slide:not(.on) .cmp-line, .bac-slide:not(.on) .cmp-l { opacity: 0; }
 .bac-slide:not(.on) { cursor: pointer; }
 .bac.single .bac-slide .cmp-line, .bac.single .bac-slide .cmp-l { opacity: 1; }
+
+
+/* ===================== Shared UI (assets/ui.js): notifications + loading ===================== */
+:root { --notes-bottom: 24px; }
+.wb-notes { position: fixed; right: 16px; bottom: calc(var(--notes-bottom) + env(safe-area-inset-bottom, 0px)); z-index: 95;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px; width: min(380px, calc(100vw - 32px)); pointer-events: none; }
+.wb-note { pointer-events: auto; display: flex; align-items: flex-start; gap: 10px; max-width: 100%; padding: 11px 14px; border-radius: 12px;
+  background: #1A1714; color: #fff; font: 600 .9rem/1.35 var(--font-body, system-ui); box-shadow: 0 14px 30px -12px rgba(26, 23, 20, .45);
+  animation: wbNoteIn .28s var(--ease-out, ease-out) both; cursor: pointer; }
+.wb-note.err { background: #8E2A1B; }
+.wb-note .x { font-weight: 400; opacity: .8; margin-left: auto; }
+.wb-note.out { animation: wbNoteOut .3s ease forwards; }
+@keyframes wbNoteIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes wbNoteOut { to { opacity: 0; transform: translateX(16px); } }
+@media (max-width: 640px) { .wb-notes { right: 12px; left: 12px; width: auto; align-items: stretch; } body.has-wa-bar { --notes-bottom: 88px; } }
+
+.wb-spin { display: inline-block; width: 18px; height: 18px; flex: none; border-radius: 50%; border: 2.5px solid currentColor; border-right-color: transparent;
+  color: var(--accent, #0F6B6E); vertical-align: -4px; animation: wbSpin .8s linear infinite; }
+button .wb-spin, .btn .wb-spin { color: currentColor; width: 16px; height: 16px; border-width: 2px; }
+@keyframes wbSpin { to { transform: rotate(1turn); } }
+.wb-wait { display: grid; gap: 8px; }
+.wb-wait-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.wb-msg.in { animation: wbFade .45s ease both; }
+@keyframes wbFade { from { opacity: 0; } to { opacity: 1; } }
+.wb-sec { font-variant-numeric: tabular-nums; opacity: .65; font-size: .85em; }
+.wb-skip { margin-left: auto; border: 1px solid currentColor; background: transparent; color: inherit; border-radius: 999px; padding: 6px 12px; font: 600 .8rem var(--font-body, system-ui); cursor: pointer; opacity: .85; }
+.wb-bar { display: block; height: 3px; border-radius: 2px; background: rgba(127, 127, 127, .25); overflow: hidden; }
+.wb-bar i { display: block; height: 100%; width: 0; background: var(--accent, #0F6B6E); transition: width .4s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .wb-spin { animation: wbPulse 1.2s ease-in-out infinite; border-right-color: currentColor; }
+  @keyframes wbPulse { 50% { opacity: .35; } }
+  .wb-note, .wb-note.out, .wb-msg.in { animation-duration: .01s; }
+}
+img.fade { opacity: 0; transition: opacity .45s ease; }
+img.fade.in { opacity: 1; }

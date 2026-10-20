@@ -17,10 +17,12 @@
 <meta name="theme-color" content="#FBF6EE">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="WallBliss Studio">
-<meta property="og:title" content="Wall Design Catalogue | Murals for Every Room | WallBliss Studio">
-<meta property="og:description" content="Browse wall designs for homes, offices, cafés, hotels and apartment common areas. Search, filter, shortlist and send your picks on WhatsApp for a quote.">
+<meta property="og:title" content="Find your wall design · WallBliss">
+<meta property="og:description" content="Devotional, traditional, nature, kids and more. Tap any design to see it on your wall, then send it to us on WhatsApp.">
 <meta property="og:url" content="https://www.wallbliss.in/catalogue.html">
-<meta property="og:image" content="https://www.wallbliss.in/og-image.jpg">
+<meta property="og:image" content="https://www.wallbliss.in/assets/img/share/catalogue.jpg?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="geo.region" content="IN-KA">
@@ -31,6 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
 <link rel="stylesheet" href="assets/styles-v2.css">
+<script src="assets/ui.js"></script>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -148,6 +151,8 @@
   .fgroup .chips { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px; }
   .sheet footer { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--surface); }
   .status { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-block: 14px; flex-wrap: wrap; font-size: .92rem; color: var(--muted); }
+  .status-r { display: flex; align-items: center; gap: 14px; }
+  .share-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong, rgba(70,45,20,.2)); background: #fff; color: var(--ink); border-radius: 999px; padding: 7px 14px; font: 700 .84rem var(--font-body); cursor: pointer; }
   .status-l { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .linkbtn { background: none; border: 0; color: var(--link); font: 600 .92rem var(--font-body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; padding-bottom: 56px; }
@@ -207,7 +212,7 @@
   .sl-item canvas, .sl-item img { width: 64px; height: 48px; border-radius: 4px; object-fit: cover; display: block; }
   .sl-item .fitbox { width: 64px; height: 48px; border-radius: 4px; }
   .drawer footer { padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); display: grid; gap: 10px; background: var(--surface-2); }
-  .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: #1A1714; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: .9rem; z-index: 60; }
+  @media (max-width: 640px) { :root { --notes-bottom: 88px; } }
 </style>
 
 <main id="main">
@@ -240,7 +245,7 @@
   </div>
 
   <div class="wrap">
-    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><button class="linkbtn" id="clear" type="button" hidden>Clear all</button></div>
+    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button></span></div>
     <p class="search-note" id="search-note" hidden></p>
     <div class="grid" id="grid">
     </div>
@@ -281,6 +286,7 @@
       <div class="actions">
         <a class="btn btn-wa" id="d-wa" data-where="design" href="https://wa.me/917676701113">Get a quote on WhatsApp</a>
         <button class="btn btn-ghost" type="button" id="d-heart">Add to shortlist</button>
+        <button class="btn btn-ghost" type="button" id="d-share">Share</button>
       </div>
       <div style="display:grid;gap:8px"><b style="color:var(--ink);font-size:.9rem">Similar designs</b><div class="similar" id="d-similar"></div></div>
       <p class="note" id="d-sample" style="margin:0">Sample artwork shown. Before printing, we send you a preview of the final design sized to your wall.</p>
@@ -394,7 +400,7 @@
   }, { rootMargin: "200px" }) : null;
   function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function visual(d) {
-    return d.img ? '<span class="fitbox"><img class="fit-bg" src="' + d.img + '" alt="" aria-hidden="true" loading="lazy"><img class="fit" src="' + d.img + '" alt="' + esc(d.name) + ' wall design" loading="lazy"></span>'
+    return d.img ? '<span class="fitbox"><img class="fit-bg" src="' + d.img + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + d.img + '" alt="' + esc(d.name) + ' wall design" loading="lazy"></span>'
       : '<canvas data-code="' + d.code + '" aria-hidden="true"></canvas>';
   }
   function paint(c) { if (c.tagName === "CANVAS") WBArt.draw(c, BY[c.dataset.code]); }
@@ -476,6 +482,7 @@
     var active = n || state.q;
     document.getElementById("status").textContent = lastCount + (lastCount === 1 ? " design" : " designs");
     document.getElementById("clear").hidden = !active;
+    document.getElementById("q-share").hidden = !(state.q && lastCount);
     document.getElementById("q-clear").hidden = !q.value;
   }
 
@@ -656,6 +663,31 @@
   }
   ["m-w", "m-h"].forEach(function (id) { document.getElementById(id).addEventListener("input", waMsg); });
   function heartBtn() { var b = document.getElementById("d-heart"), on = WB.shortlist.has(cur.code); b.textContent = on ? "♥ In your shortlist" : "Add to shortlist"; }
+  /* ---------- share: a theme search or one design, with a picture preview in WhatsApp ---------- */
+  var SITE = "https://www.wallbliss.in/";
+  function pubOg() { return (window.WB_PUBLISHED && WB_PUBLISHED.og) || {}; }
+  function slugify(v) { return String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "theme"; }
+  function norm(v) { return String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  function themeFor(q) {
+    var t = ((window.WB_PUBLISHED && WB_PUBLISHED.settings && WB_PUBLISHED.settings.themes) || []).filter(function (t) { return norm(t.q || t.name) === norm(q) || norm(t.name) === norm(q); })[0];
+    return t && pubOg()["t:" + slugify(t.name)] ? t : null;
+  }
+  function shareOut(title, text, url, what) {
+    WB.track("share", what);
+    if (navigator.share) { navigator.share({ title: title, text: text, url: url }).catch(function () {}); return; }
+    window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + url), "_blank", "noopener");
+  }
+  document.getElementById("q-share").onclick = function () {
+    var qv = q.value.trim(); if (!qv) return;
+    var t = themeFor(qv), name = t ? t.name : qv.replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    var url = t ? SITE + "t/" + slugify(t.name) + "/" : SITE + "catalogue.html?q=" + encodeURIComponent(qv);
+    shareOut(name + " wall murals · WallBliss", "Here are our " + name + " designs 👇", url, { q: qv });
+  };
+  document.getElementById("d-share").onclick = function () {
+    if (!cur) return;
+    var url = pubOg()["d:" + cur.code] ? SITE + "d/" + cur.code + "/" : SITE + "catalogue.html#" + cur.code;
+    shareOut(cur.name + " · " + cur.code, "Have a look at this wall design: " + cur.name + " (" + cur.code + ") 👇", url, { code: cur.code });
+  };
   document.getElementById("d-heart").onclick = function () { var on = WB.shortlist.toggle(cur.code); heartBtn(); toast(on ? "Added to shortlist" : "Removed from shortlist"); syncHearts(); };
   function similar() {
     var box = document.getElementById("d-similar"); box.innerHTML = "";
@@ -715,10 +747,7 @@
   };
   document.addEventListener("wb:shortlist", syncHearts);
 
-  var tt; function toast(msg) {
-    var t = document.querySelector(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" }));
-    t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(function () { t.hidden = true; }, 1800);
-  }
+  function toast(msg) { WB.notify(msg); }        /* shared notifications: assets/ui.js */
 
   /* ---------- deep links: #kids, #pooja … pre-filter; #WB-0116 opens a design ---------- */
   var h = decodeURIComponent((location.hash || "").slice(1));

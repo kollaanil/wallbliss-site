@@ -11,8 +11,8 @@
   var slides = (window.WB_PROJECTS || []).filter(function (p) { return p.before && p.after && !p.hidden && !p.noHome; })
     .sort(function (a, b) { return (b.month || "").localeCompare(a.month || ""); })
     .map(function (p) {
-      return { before: '<img src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy" decoding="async">',
-        after: '<img src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">',
+      return { before: '<img class="fade" src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy" decoding="async">',
+        after: '<img class="fade" src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">',
         title: p.title, meta: [p.locality, p.space, p.time].filter(Boolean).join(" · "), href: "projects.html#" + p.slug, ratio: +p.ratio || 0 };
     });
   function pic(n, alt) {

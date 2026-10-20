@@ -17,7 +17,7 @@
     ".pub{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:12px;" +
     "padding:8px 8px 8px 18px;border-radius:999px;background:rgba(36,27,20,.94);color:#fff;font:500 .92rem/1.2 var(--font-body,system-ui);box-shadow:0 18px 40px -12px rgba(36,27,20,.5);max-width:calc(100vw - 24px)}" +
     ".pub[hidden]{display:none}.pub .dot{width:8px;height:8px;border-radius:50%;background:#E9A23B;flex:none}.pub.ok .dot{background:#3DD6A0}" +
-    ".pub button{border:0;border-radius:999px;padding:10px 16px;font:700 .9rem var(--font-body,system-ui);cursor:pointer;background:#fff;color:#241B14;white-space:nowrap}" +
+    ".pub .msg{min-width:0}.pub .wb-spin{color:#3DD6A0}.pub .wb-bar{background:rgba(255,255,255,.18)}.pub .wb-bar i{background:#3DD6A0}.pub button{border:0;border-radius:999px;padding:10px 16px;font:700 .9rem var(--font-body,system-ui);cursor:pointer;background:#fff;color:#241B14;white-space:nowrap}" +
     ".pub button.ghost{background:transparent;color:#fff;opacity:.8;padding:10px 8px}.pub button:disabled{opacity:.6;cursor:wait}" +
     ".pubk{border:0;border-radius:24px;padding:0;max-width:520px;width:calc(100vw - 32px);box-shadow:0 40px 80px -24px rgba(36,27,20,.4)}" +
     ".pubk::backdrop{background:rgba(36,27,20,.45)}.pubk form{display:grid;gap:14px;padding:24px}.pubk h2{margin:0;font-family:var(--font-display,Georgia);font-size:1.4rem}" +
@@ -30,6 +30,10 @@
   bar.innerHTML = '<span class="dot"></span><span class="msg">Unpublished changes</span><button type="button" class="ghost" data-act="discard">Undo all</button><button type="button" data-act="publish">Publish</button>';
   document.body.appendChild(bar);
   var msg = bar.querySelector(".msg"), pubBtn = bar.querySelector('[data-act="publish"]');
+  /* status text: plain (say) or the shared waiting line with rotating messages (work) — see assets/ui.js */
+  var waitLine = null;
+  function say(t) { if (waitLine) { waitLine.stop(); waitLine = null; } msg.textContent = t; }
+  function work(step) { if (!waitLine) waitLine = WB.waiting ? WB.waiting(msg, "publish") : null; if (waitLine) waitLine.step(step || null); else msg.textContent = step || "Publishing…"; }
 
   var dlg = document.createElement("dialog");
   dlg.className = "pubk";
@@ -66,7 +70,7 @@
   function refresh() {
     if (busy) return;
     var app = document.getElementById("app"); if (!app || app.hidden) { bar.hidden = true; return; }
-    if (dirty()) { bar.hidden = false; bar.classList.remove("ok"); msg.textContent = "Unpublished changes"; bar.querySelector('[data-act="discard"]').hidden = false; pubBtn.hidden = false; }
+    if (dirty()) { bar.hidden = false; bar.classList.remove("ok"); say("Unpublished changes"); bar.querySelector('[data-act="discard"]').hidden = false; pubBtn.hidden = false; }
     else if (Date.now() - lastOk < 12000) { bar.hidden = false; bar.classList.add("ok"); bar.querySelector('[data-act="discard"]').hidden = true; pubBtn.hidden = true; }
     else bar.hidden = true;
   }
@@ -156,9 +160,10 @@
 
   function publish(k, attempt) {
     attempt = attempt || 1;
-    busy = true; pubBtn.disabled = true; msg.textContent = "Checking for changes from the team…"; bar.classList.remove("ok");
-    var note = "";
+    busy = true; pubBtn.disabled = true; work(); bar.classList.remove("ok");
+    var note = "", liveOg = {};
     return liveData(k).then(function (live) {
+      liveOg = live.og || {};
       var base = WB.db.base(), draft = WB.db.load();
       if ((live.updated || null) !== (base.updated || null)) {
         var m = merge(base, draft, live);
@@ -167,10 +172,10 @@
           (m.clashes.length ? " You both changed " + m.clashes.slice(0, 3).join(", ") + (m.clashes.length > 3 ? "…" : "") + "; your version was used." : "");
       }
       return go();
-    }).catch(function (e) { done(); pubBtn.disabled = false; msg.textContent = "Not published"; if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
+    }).catch(function (e) { done(); pubBtn.disabled = false; say("Not published"); if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
 
     function go() {
-    msg.textContent = "Publishing…";
+    work();
     var draft = WB.db.load(), files = [], usedRefs = [];
     /* images saved by the uploader live in this browser's image store ("idb:…"); fetch them first */
     var refs = [];
@@ -179,34 +184,42 @@
     var R = window.WBImages;
     return Promise.all(refs.map(function (r) { usedRefs.push(r[0][r[1]]); return R.resolve(r[0][r[1]]).then(function (u) { if (!u) throw new Error("A photo for " + (r[0].code || r[0].title || "an item") + " is missing on this device. Upload it again."); r[0][r[1]] = u; }); }))
       .then(function () { return build(); })
-      .catch(function (e) { done(); pubBtn.disabled = false; msg.textContent = "Not published"; alertMsg(e.message); });
+      .catch(function (e) { done(); pubBtn.disabled = false; say("Not published"); alertMsg(e.message); });
     function build() {
     function take(dataUrl, path) {
       var m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(dataUrl || ""); if (!m) return dataUrl;
       var ext = m[1] === "jpeg" ? "jpg" : m[1], p = path + "-" + hash(m[2]) + "." + ext;
       files.push({ path: p, content: m[2], encoding: "base64" }); return p;
     }
-    var out = JSON.parse(JSON.stringify(draft));
-    out.designs.forEach(function (d) { d.img = take(d.img, "assets/uploads/designs/" + slug(d.code)); });
+    var out = JSON.parse(JSON.stringify(draft)), srcImg = {};
+    out.designs.forEach(function (d) { srcImg[d.code] = d.img; d.img = take(d.img, "assets/uploads/designs/" + slug(d.code)); });
     out.projects.forEach(function (p) { var s = slug(p.slug || p.title); p.before = take(p.before, "assets/uploads/projects/" + s + "-before"); p.after = take(p.after, "assets/uploads/projects/" + s + "-after"); });
     var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, faqs: out.faqs || [], updated: new Date().toISOString(),
       by: ((document.getElementById("who-nm") || {}).textContent || "").trim() };
-    files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
-
+    var gone = [];
+    return sharePages(out, srcImg, liveOg).then(function (sh) {
+      files = files.concat(sh.files); gone = sh.gone; data.og = sh.og;
+      files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
+      return push();
+    });
+    function push() {
     var headSha, treeSha;
     return gh("/repos/" + OWNER + "/" + REPO + "/git/ref/heads/" + BRANCH, null, k)
       .then(function (ref) { headSha = ref.object.sha; return gh("/repos/" + OWNER + "/" + REPO + "/git/commits/" + headSha, null, k); })
       .then(function (c) {
         treeSha = c.tree.sha;
-        msg.textContent = "Uploading " + files.length + (files.length === 1 ? " file…" : " files…");
         return files.reduce(function (p, f) {
           return p.then(function (acc) {
+            if (files.length > 1) { work("Uploading " + (/\.(jpe?g|png|webp)$/.test(f.path) ? "photo" : "file") + " " + (acc.length + 1) + " of " + files.length + "…"); if (waitLine) waitLine.progress(acc.length, files.length); }
             return gh("/repos/" + OWNER + "/" + REPO + "/git/blobs", { method: "POST", body: { content: f.content, encoding: f.encoding } }, k)
               .then(function (b) { acc.push({ path: f.path, mode: "100644", type: "blob", sha: b.sha }); return acc; });
           });
         }, Promise.resolve([]));
       })
-      .then(function (tree) { return gh("/repos/" + OWNER + "/" + REPO + "/git/trees", { method: "POST", body: { base_tree: treeSha, tree: tree } }, k); })
+      .then(function (tree) {
+        if (waitLine) { waitLine.progress(1, 1); work(null); }
+        gone.forEach(function (p) { tree.push({ path: p, mode: "100644", type: "blob", sha: null }); });   // old preview cards
+        return gh("/repos/" + OWNER + "/" + REPO + "/git/trees", { method: "POST", body: { base_tree: treeSha, tree: tree } }, k); })
       .then(function (t) {
         var who = (document.getElementById("who-nm") || {}).textContent || "admin";
         return gh("/repos/" + OWNER + "/" + REPO + "/git/commits", { method: "POST", body: { message: "Publish from admin (" + who + ")", tree: t.sha, parents: [headSha] } }, k);
@@ -219,22 +232,160 @@
         WB.db.setBase(data);
         if (window.WBAdmin && WBAdmin.reload) WBAdmin.reload();      // the open admin screens now use the published photo paths
         done(); lastOk = Date.now() + (note ? 8000 : 0); pubBtn.disabled = false;
-        bar.hidden = false; bar.classList.add("ok"); msg.textContent = "Published. The website updates in 1–2 minutes." + note;
+        bar.hidden = false; bar.classList.add("ok"); say("Published. The website updates in 1–2 minutes." + note);
         bar.querySelector('[data-act="discard"]').hidden = true; pubBtn.hidden = true;
       })
       .catch(function (e) {
         /* someone (or this device a moment ago) published while this was uploading: start again on top of it */
         if (/fast forward|Reference cannot be updated|409/.test(e.message) && attempt < 4) {
-          msg.textContent = "The website just changed. Trying again…";
+          work("The website just changed. Trying again…");
           setTimeout(function () { publish(k, attempt + 1); }, 1500 * attempt); return;          // stays "busy" meanwhile, so nothing else starts
         }
-        done(); pubBtn.disabled = false; msg.textContent = "Not published"; bar.classList.remove("ok");
+        done(); pubBtn.disabled = false; say("Not published"); bar.classList.remove("ok");
         if (/key/.test(e.message)) askKey(e.message); else alertMsg(/fast forward/.test(e.message) ? "The website was busy with another update. Tap Publish again." : e.message);
       });
     }
     }
+    }
   }
-  function alertMsg(t) { var tEl = document.querySelector(".toast") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "toast", role: "status" })); tEl.textContent = t; tEl.hidden = false; setTimeout(function () { tEl.hidden = true; }, 6000); }
+
+  /* ---------- share pages: a small page + picture card per design and per theme ----------
+     So a link shared on WhatsApp shows the mural and a short write-up, not a bare address.
+     wallbliss.in/d/WB-0157/  → that design      wallbliss.in/t/srinivasa-kalyanam/ → that theme
+     Only new or changed ones are made; "og" in published.js remembers what exists. */
+  var SITE = "https://www.wallbliss.in/";
+  function escH(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function pageHTML(o) {
+    return '<!doctype html>\n<html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      "<title>" + escH(o.title) + " | WallBliss Studio</title>\n" +
+      '<meta name="description" content="' + escH(o.desc) + '">\n<meta name="robots" content="noindex, follow">\n' +
+      '<meta property="og:type" content="website">\n<meta property="og:site_name" content="WallBliss Studio">\n<meta property="og:locale" content="en_IN">\n' +
+      '<meta property="og:title" content="' + escH(o.title) + '">\n<meta property="og:description" content="' + escH(o.desc) + '">\n' +
+      '<meta property="og:url" content="' + SITE + o.path + '">\n<meta property="og:image" content="' + SITE + o.card + '">\n' +
+      '<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta property="og:image:alt" content="' + escH(o.title) + '">\n' +
+      '<meta name="twitter:card" content="summary_large_image">\n' +
+      '<link rel="canonical" href="' + SITE + 'catalogue.html">\n<meta http-equiv="refresh" content="0; url=' + escH(o.go) + '">\n' +
+      '<script>location.replace(' + JSON.stringify(o.go) + ');</script>\n</head><body style="font-family:system-ui;background:#FBF6EE;color:#241B14;padding:24px">' +
+      '<p><a href="' + escH(o.go) + '">' + escH(o.title) + " · WallBliss Studio</a></p></body></html>\n";
+  }
+  function loadImg(src) {
+    return new Promise(function (res) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = function () { res(null); }; im.src = src; });
+  }
+  var logoP = null;
+  function logo() { return logoP || (logoP = loadImg("assets/img/mark.png")); }
+  function fontsReady() {
+    try { return Promise.all([document.fonts.load('700 40px "Playfair Display"'), document.fonts.load('700 24px "DM Sans"')]).catch(function () {}); } catch (e) { return Promise.resolve(); }
+  }
+  function blurFill(x, im, W, H) {                    // soft backdrop: tiny copy scaled up (works in every browser)
+    var t = document.createElement("canvas"), tw = 24, th = Math.max(1, Math.round(24 * H / W)); t.width = tw; t.height = th;
+    var c = t.getContext("2d"), s = Math.max(tw / im.naturalWidth, th / im.naturalHeight);
+    c.drawImage(im, (tw - im.naturalWidth * s) / 2, (th - im.naturalHeight * s) / 2, im.naturalWidth * s, im.naturalHeight * s);
+    x.imageSmoothingQuality = "high"; x.drawImage(t, 0, 0, W, H);
+  }
+  function fit(im, bx, by, bw, bh) { var s = Math.min(bw / im.naturalWidth, bh / im.naturalHeight), w = im.naturalWidth * s, h = im.naturalHeight * s; return [bx + (bw - w) / 2, by + (bh - h) / 2, w, h]; }
+  function rr(x, X, Y, w, h, r) { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); }
+  function badge(x, lg, W, H) {                        // "WallBliss Studio · wallbliss.in" pill, bottom left
+    x.font = '700 22px "DM Sans", system-ui, sans-serif';
+    var label = "WallBliss Studio · wallbliss.in", tw = x.measureText(label).width, w = tw + (lg ? 78 : 36), X = 28, Y = H - 28 - 52;
+    x.save(); x.shadowColor = "rgba(0,0,0,.25)"; x.shadowBlur = 16; x.fillStyle = "rgba(255,253,249,.96)"; rr(x, X, Y, w, 52, 26); x.fill(); x.restore();
+    if (lg) x.drawImage(lg, X + 14, Y + 9, 50, 34);
+    x.fillStyle = "#241B14"; x.textBaseline = "middle"; x.fillText(label, X + (lg ? 70 : 18), Y + 27);
+  }
+  function chip(x, text, W) {
+    x.font = '700 24px "DM Sans", system-ui, sans-serif';
+    var w = x.measureText(text).width + 32, X = W - 28 - w, Y = 28;
+    x.fillStyle = "rgba(36,27,20,.82)"; rr(x, X, Y, w, 46, 23); x.fill();
+    x.fillStyle = "#fff"; x.textBaseline = "middle"; x.fillText(text, X + 16, Y + 24);
+  }
+  function designCard(src, code) {
+    return Promise.all([loadImg(src), logo(), fontsReady()]).then(function (r) {
+      var im = r[0], lg = r[1]; if (!im) return null;
+      var W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
+      x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, W, H); blurFill(x, im, W, H);
+      x.fillStyle = "rgba(36,27,20,.18)"; x.fillRect(0, 0, W, H);
+      var b = fit(im, 40, 34, W - 80, H - 68);
+      x.save(); x.shadowColor = "rgba(0,0,0,.35)"; x.shadowBlur = 30; x.shadowOffsetY = 10; x.fillStyle = "#fff"; x.fillRect(b[0], b[1], b[2], b[3]); x.restore();
+      x.drawImage(im, b[0], b[1], b[2], b[3]);
+      badge(x, lg, W, H); chip(x, code, W);
+      return c.toDataURL("image/jpeg", 0.82).split(",")[1];
+    });
+  }
+  function themeCard(srcs, name) {
+    return Promise.all([Promise.all(srcs.slice(0, 4).map(loadImg)), logo(), fontsReady()]).then(function (r) {
+      var ims = r[0].filter(Boolean), lg = r[1]; if (!ims.length) return null;
+      var W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
+      x.fillStyle = "#FBF6EE"; x.fillRect(0, 0, W, H);
+      /* lay the designs out whole, each at its own shape: one row, or two rows when they are wide */
+      var gap = 14, top = 30, boxH = 430, boxW = W - 60, ars = ims.map(function (im) { return im.naturalWidth / im.naturalHeight; });
+      function rowsFor(groups) {
+        var rh = (boxH - gap * (groups.length - 1)) / groups.length, out = [], area = 0;
+        groups.forEach(function (g) {
+          var sum = g.reduce(function (a, i) { return a + ars[i]; }, 0), h = Math.min(rh, (boxW - gap * (g.length - 1)) / sum);
+          out.push({ g: g, h: h, w: sum * h + gap * (g.length - 1) }); area += sum * h * h;
+        });
+        return { rows: out, area: area };
+      }
+      var idx = ims.map(function (im, i) { return i; }), one = rowsFor([idx]), best = one;
+      if (ims.length >= 3) { var half = Math.ceil(ims.length / 2), two = rowsFor([idx.slice(0, half), idx.slice(half)]); if (two.area > one.area) best = two; }
+      var totalH = best.rows.reduce(function (a, r) { return a + r.h; }, 0) + gap * (best.rows.length - 1), Y = top + (boxH - totalH) / 2;
+      best.rows.forEach(function (r) {
+        var X = (W - r.w) / 2;
+        r.g.forEach(function (i) {
+          var im = ims[i], tw = ars[i] * r.h;
+          x.save(); x.shadowColor = "rgba(36,27,20,.35)"; x.shadowBlur = 24; x.shadowOffsetY = 10; x.fillStyle = "#fff"; rr(x, X, Y, tw, r.h, 12); x.fill(); x.restore();
+          x.save(); rr(x, X, Y, tw, r.h, 12); x.clip(); x.drawImage(im, X, Y, tw, r.h); x.restore();
+          X += tw + gap;
+        });
+        Y += r.h + gap;
+      });
+      x.fillStyle = "#241B14"; x.textBaseline = "alphabetic"; x.font = '700 50px "Playfair Display", Georgia, serif';
+      var title = name; while (x.measureText(title).width > W - 420 && title.length > 4) title = title.slice(0, -2) + "…";
+      x.fillText(title, 34, H - 64);
+      x.font = '500 24px "DM Sans", system-ui, sans-serif'; x.fillStyle = "#6B5E53";
+      x.fillText(srcs.length + " " + (srcs.length === 1 ? "design" : "designs") + " · printed straight onto your wall", 36, H - 26);
+      if (lg) x.drawImage(lg, W - 30 - 120, H - 30 - 81, 120, 81);
+      return c.toDataURL("image/jpeg", 0.82).split(",")[1];
+    });
+  }
+
+  function sharePages(out, srcImg, liveOg) {
+    var og = JSON.parse(JSON.stringify(liveOg || {})), add = [], gone = [], jobs = [];
+    var live = out.designs.filter(function (d) { return !d.hidden && d.img; });
+    var A = window.WBAdmin;
+    function want(key, sig, path, title, desc, go, make) {
+      var cur = og[key]; if (cur && cur.sig === sig) return;
+      jobs.push(function () {
+        return make().then(function (b64) {
+          if (!b64) return;
+          var card = path + "card-" + sig + ".jpg";
+          if (cur && cur.card && cur.card !== card) gone.push(cur.card);
+          add.push({ path: card, content: b64, encoding: "base64" });
+          add.push({ path: path + "index.html", content: pageHTML({ path: path, card: card, title: title, desc: desc, go: go }), encoding: "utf-8" });
+          og[key] = { sig: sig, card: card };
+        }).catch(function () {});
+      });
+    }
+    live.forEach(function (d) {
+      var path = "d/" + d.code + "/";
+      var nm = A && A.niceName ? A.niceName(d.name) : d.name;
+      want("d:" + d.code, hash(d.code + "|" + nm + "|" + d.img + "|v1"), path, nm + " · " + d.code,
+        "A WallBliss mural, printed straight onto your wall. Tap to see it full size and get a price on WhatsApp.",
+        "/catalogue.html?src=share#" + d.code, function () { return designCard(srcImg[d.code] || d.img, d.code); });
+    });
+    var themes = (out.settings && out.settings.themes) || [];
+    themes.forEach(function (t) {
+      if (!A || !A.themeDesigns) return;
+      var q = t.q || t.name, list = A.themeDesigns(q, live), slugT = A.slugify(t.name), path = "t/" + slugT + "/";
+      if (!list.length) return;
+      var n = list.length;
+      want("t:" + slugT, hash(t.name + "|" + q + "|" + list.map(function (d) { return d.code + d.img; }).join(",") + "|v1"), path, t.name + " wall murals · WallBliss",
+        n + (n === 1 ? " design" : " designs") + " to choose from, printed straight onto your wall. Tap to browse and get a price on WhatsApp.",
+        "/catalogue.html?src=share&q=" + encodeURIComponent(q), function () { return themeCard(list.map(function (d) { return srcImg[d.code] || d.img; }), t.name); });
+    });
+    if (jobs.length) work("Making WhatsApp preview cards…");
+    return jobs.reduce(function (p, j) { return p.then(j); }, Promise.resolve()).then(function () { return { files: add, gone: gone, og: og }; });
+  }
+  function alertMsg(t) { WB.notify(t, { type: "error" }); }                 // errors stay until tapped
 
   function askKey(err) {
     var e = dlg.querySelector("#pubk-err"); e.hidden = !err; e.textContent = err || "";
