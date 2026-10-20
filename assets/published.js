@@ -1029,11 +1029,12 @@ window.WB_PUBLISHED = {
   },
   {
    "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
-   "title": "Kerala's tradition, reimagined in a client's living room",
+   "title": "A living room that finally tells their story",
    "locality": "Mullathanur",
    "space": "Living room",
+   "segment": "residential",
    "size": "5 ft by 6 ft",
-   "design": "Customer's own picture",
+   "design": "WB-0178",
    "time": "3",
    "month": "2026-10",
    "summary": "A plain 5 ft by 6 ft wall in this living room in South Bangalore now carries Kerala's traditional nettipattam printed straight onto the wall in 3 hours. It's now the first thing everyone sees when they walk in.",
@@ -1044,8 +1045,8 @@ window.WB_PUBLISHED = {
    "w": 941,
    "h": 1672,
    "ratio": 0.5628,
-   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-before-1g4wnxt.jpg",
-   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-after-gdk9mf.jpg"
+   "before": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-before-1lu3ps.jpg",
+   "after": "assets/uploads/projects/kerala-s-tradition-reimagined-in-a-clien-after-2fthrk.jpg"
   }
  ],
  "reviews": [],
@@ -1145,7 +1146,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:50:46.005Z",
+ "updated": "2026-10-20T13:51:27.125Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
