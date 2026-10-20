@@ -1078,11 +1078,7 @@ window.WB_PUBLISHED = {
  "reviews": [],
  "settings": {
   "samplesRetired": true,
-  "themes": [
-   {
-    "name": "Srinivasa Kalyanam"
-   }
-  ]
+  "themes": []
  },
  "faqs": [
   {
@@ -1176,7 +1172,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:25:41.835Z",
+ "updated": "2026-10-20T13:25:51.452Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
