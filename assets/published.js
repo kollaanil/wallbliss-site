@@ -1009,6 +1009,7 @@ window.WB_PUBLISHED = {
    "title": "The wall every guest wants a photo with",
    "locality": "Lal Bagh",
    "space": "Café & restaurant",
+   "segment": "corporate",
    "size": "7 ft by 5 ft",
    "design": "WB-0138",
    "time": "4 hours",
@@ -1021,8 +1022,8 @@ window.WB_PUBLISHED = {
    "w": 1500,
    "h": 2000,
    "ratio": 0.75,
-   "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-1lpxsfm.jpg",
-   "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-f7kozc.jpg"
+   "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-18pu81f.jpg",
+   "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-1m7scrh.jpg"
   },
   {
    "slug": "shiva-in-cosmos-gzvn",
@@ -1162,7 +1163,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:26:55.485Z",
+ "updated": "2026-10-20T13:39:58.102Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
