@@ -303,7 +303,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": true
   },
   {
    "code": "WB-0149",
@@ -328,7 +329,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": true
   },
   {
    "code": "WB-0150",
@@ -1107,7 +1109,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:09:16.120Z",
+ "updated": "2026-10-20T13:09:40.812Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
