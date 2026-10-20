@@ -94,6 +94,24 @@
   @media (max-width: 480px) { .d-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
   .d-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; min-width: 0; }
   .d-card.off { opacity: .55; }
+  /* select several designs */
+  .sel-help { font-size: .86rem; color: var(--muted); margin: -4px 0 10px; }
+  .selecting .d-card .row, .selecting .d-add { display: none; }
+  .selecting .d-card .pic::after { content: ""; position: absolute; right: 8px; top: 8px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #fff; background: rgba(36,27,20,.35); box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+  .selecting .d-card.sel { outline: 3px solid var(--accent); outline-offset: -3px; opacity: 1; }
+  .selecting .d-card.sel .pic::after { background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L19 7'/%3E%3C/svg%3E") center/16px no-repeat; }
+  .bulk { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 14px; padding: 8px 8px 8px 18px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; box-shadow: 0 18px 40px -12px rgba(36,27,20,.5); }
+  .bulk[hidden] { display: none; }
+  .bulk span { white-space: nowrap; }
+  @media (max-width: 860px) { .bulk { bottom: calc(var(--tabbar) + 14px + env(safe-area-inset-bottom, 0px)); } }
+  .b-rooms { display: grid; gap: 8px; }
+  .b-room { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 48px; padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: #fff; font: 600 .95rem var(--font-body); color: var(--ink); cursor: pointer; text-align: left; }
+  .b-room small { color: var(--muted); font-weight: 500; }
+  .b-room[data-state="add"] { border-color: #1B6B4A; background: #EAF5EE; }
+  .b-room[data-state="add"] b::before { content: "+ "; color: #1B6B4A; }
+  .b-room[data-state="remove"] { border-color: #B42318; background: #FDECEA; }
+  .b-room[data-state="remove"] b::before { content: "− "; color: #B42318; }
+  .b-room[data-state="remove"] b { text-decoration: line-through; }
   .d-card .pic { position: relative; aspect-ratio: 4 / 3; background: var(--wall); border: 0; padding: 0; cursor: pointer; display: block; width: 100%; }
   .d-card .pic canvas, .d-card .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
   /* real design photos are always shown whole: the picture is fitted inside the frame, and a soft,
@@ -260,13 +278,14 @@
       <div class="preview-note" id="preview-note"><span aria-hidden="true">✍️</span><span><b>How saving works.</b> Designs, projects, reviews and FAQs go on the website as soon as you save (it updates in 1–2 minutes). Only Settings changes wait for the <b>Publish</b> button at the bottom. Visitor numbers (views, searches, WhatsApp taps) are in Google Analytics.</span><button class="linkbtn" type="button" id="pn-x" style="margin-left:auto;padding:0;color:#6B4A12" aria-label="Hide this note">Hide</button></div>
 
       <!-- ===== DESIGNS ===== -->
-      <section data-pane="designs" hidden>
+      <section data-pane="designs" id="d-section" hidden>
         <div class="view-head">
           <div><h1>Designs</h1><p>Everything in the website catalogue. Saving puts your changes on the website by itself.</p></div>
           <button class="btn btn-wa" type="button" id="d-new" style="background:var(--ink);box-shadow:none">+ Add design</button>
         </div>
         <div class="toolbar">
           <input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs">
+          <button class="btn btn-ghost btn-xs" type="button" id="d-select" aria-pressed="false">Select</button>
           <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button><button class="fchip" type="button" data-df="sample">Homepage artwork</button></div>
         </div>
         <details class="card themes" id="th-card">
@@ -276,7 +295,9 @@
           <ul class="th-list" id="th-list"></ul>
         </details>
         <p class="muted" id="d-count" style="font-size:.88rem"></p>
+        <p class="sel-help" id="sel-help" hidden>Tap designs to select them. <button class="linkbtn" type="button" id="sel-all">Select all shown</button> · <button class="linkbtn" type="button" id="sel-none">Clear</button></p>
         <div class="d-grid" id="d-grid"></div>
+        <div class="bulk" id="bulk" hidden><span id="bulk-n">0 selected</span><button class="btn btn-wa" type="button" id="bulk-rooms" style="background:#fff;color:var(--ink);box-shadow:none">Rooms</button></div>
       </section>
 
       <!-- ===== PROJECTS ===== -->
@@ -463,6 +484,19 @@
   </div>
 </dialog>
 
+<!-- ================= BULK ROOMS SHEET ================= -->
+<dialog class="sheet" id="b-dlg" aria-labelledby="b-title">
+  <div class="sheet-in">
+    <header><h2 id="b-title">Rooms for selected designs</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <p class="muted" style="margin:0 0 12px;font-size:.9rem">Tap a room once to <b style="color:#1B6B4A">add</b> it, again to <b style="color:#B42318">remove</b> it, again to leave it as it is. Rooms you don't touch stay as they are on each design.</p>
+      <div class="b-rooms" id="b-rooms"></div>
+      <p class="muted" id="b-note" style="font-size:.84rem;margin-top:12px"></p>
+    </div>
+    <footer><span class="grow"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="b-apply" style="background:var(--ink);box-shadow:none" disabled>Apply</button></footer>
+  </div>
+</dialog>
+
 <!-- ================= FAQ SHEET ================= -->
 <dialog class="sheet" id="f-dlg" aria-labelledby="f-title">
   <div class="sheet-in">
@@ -593,8 +627,75 @@
     }).join("");
     paintThumbs($("#d-grid"));
     $("#d-add-tile").onclick = function () { if (window.WBUpload) WBUpload.open(); else openDesign(null); };
-    $$("[data-edit]", $("#d-grid")).forEach(function (b) { b.onclick = function () { openDesign(b.dataset.edit); }; });
+    shown = list.map(function (d) { return d.code; });
+    $("#d-section").classList.toggle("selecting", selecting);
+    if (selecting) $$(".d-card", $("#d-grid")).forEach(function (c) { var code = c.querySelector("[data-edit]").dataset.edit; c.classList.toggle("sel", !!picked[code]); });
+    $$("[data-edit]", $("#d-grid")).forEach(function (b) { b.onclick = function () { if (selecting) togglePick(b.dataset.edit); else openDesign(b.dataset.edit); }; });
+    bulkBar();
     $$("[data-live]", $("#d-grid")).forEach(function (c) { c.onchange = function () { setDesign(c.dataset.code || c.dataset.live, { hidden: !c.checked }); renderDesigns(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
+  }
+  /* ---------- select several designs and change their rooms in one go ---------- */
+  var selecting = false, picked = {}, shown = [];
+  function pickedCodes() { return Object.keys(picked).filter(function (c) { return picked[c]; }); }
+  function bulkBar() {
+    var n = pickedCodes().length;
+    $("#bulk").hidden = !selecting || !n; $("#bulk-n").textContent = n + " selected";
+    $("#sel-help").hidden = !selecting;
+    $("#d-select").textContent = selecting ? "Done" : "Select"; $("#d-select").setAttribute("aria-pressed", selecting);
+  }
+  function togglePick(code) {
+    picked[code] = !picked[code];
+    $$(".d-card", $("#d-grid")).forEach(function (c) { if (c.querySelector("[data-edit]").dataset.edit === code) c.classList.toggle("sel", picked[code]); });
+    bulkBar();
+  }
+  $("#d-select").onclick = function () { selecting = !selecting; if (!selecting) picked = {}; renderDesigns(); };
+  $("#sel-all").onclick = function () { shown.forEach(function (c) { picked[c] = true; }); renderDesigns(); };
+  $("#sel-none").onclick = function () { picked = {}; renderDesigns(); };
+  $("#bulk-rooms").onclick = function () {
+    var codes = pickedCodes(), m = byCode();
+    $("#b-title").textContent = "Rooms for " + codes.length + (codes.length === 1 ? " design" : " designs");
+    $("#b-rooms").innerHTML = DESIGN_ROOMS.map(function (r) {
+      var has = codes.filter(function (c) { return m[c] && (m[c].spaces || []).indexOf(r[0]) > -1; }).length;
+      return '<button type="button" class="b-room" data-room="' + r[0] + '" data-state=""><b>' + r[1] + '</b><small>' + (has === codes.length ? "all have it" : has ? has + " of " + codes.length + " have it" : "none have it") + "</small></button>";
+    }).join("");
+    bulkNote(); openDlg($("#b-dlg"));
+  };
+  $("#b-rooms").addEventListener("click", function (e) {
+    var b = e.target.closest(".b-room"); if (!b) return;
+    b.dataset.state = { "": "add", add: "remove", remove: "" }[b.dataset.state || ""]; bulkNote();
+  });
+  function bulkChoice() {
+    var add = [], rem = [];
+    $$(".b-room", $("#b-rooms")).forEach(function (b) { if (b.dataset.state === "add") add.push(b.dataset.room); if (b.dataset.state === "remove") rem.push(b.dataset.room); });
+    return { add: add, rem: rem };
+  }
+  function bulkNote() {
+    var c = bulkChoice(), n = pickedCodes().length, lab = function (v) { return lbl(DESIGN_ROOMS, v); };
+    $("#b-note").textContent = (c.add.length ? "Add " + c.add.map(lab).join(", ") + ". " : "") + (c.rem.length ? "Remove " + c.rem.map(lab).join(", ") + "." : "");
+    $("#b-apply").disabled = !c.add.length && !c.rem.length;
+    $("#b-apply").textContent = "Apply to " + n + (n === 1 ? " design" : " designs");
+  }
+  $("#b-apply").onclick = function () {
+    var c = bulkChoice(), m = byCode(), before = {}, changed = 0, kept = 0;
+    pickedCodes().forEach(function (code) {
+      var d = m[code]; if (!d) return;
+      var cur = (d.spaces || []).slice(), next = cur.filter(function (x) { return c.rem.indexOf(x) < 0; });
+      c.add.forEach(function (x) { if (next.indexOf(x) < 0) next.push(x); });
+      if (!next.length) { kept++; return; }                       // a design always keeps at least one room
+      if (next.join() === cur.join()) return;
+      before[code] = cur; patchDesign(code, { spaces: next }); changed++;
+    });
+    $("#b-dlg").close();
+    if (!changed) { toast(kept ? "Nothing changed: a design must keep at least one room" : "Nothing changed"); return; }
+    save(); selecting = false; picked = {}; renderDesigns();
+    autoPublish("Updated " + changed + (changed === 1 ? " design" : " designs") + (kept ? " (" + kept + " kept, as they'd have no room left)" : ""));
+    WB.notify("Changed your mind?", { ms: 8000, action: { label: "Undo", fn: function () {
+      Object.keys(before).forEach(function (code) { patchDesign(code, { spaces: before[code] }); }); save(); renderDesigns(); autoPublish("Undone");
+    } } });
+  };
+  function patchDesign(code, patch) {
+    var own = db.designs.filter(function (d) { return d.code === code; })[0];
+    if (own) Object.assign(own, patch); else db.edits[code] = Object.assign(db.edits[code] || {}, patch);
   }
   function setDesign(code, patch) {
     var own = db.designs.filter(function (d) { return d.code === code; })[0];

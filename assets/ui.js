@@ -2,6 +2,7 @@
    Styles live in styles-v2.css (search "Shared UI").
 
    NOTIFICATIONS  WB.notify("Saved")                    → bottom-right, stacked, fades after 3 s
+                  WB.notify("Updated", { ms: 8000, action: { label: "Undo", fn } }) → with a button
                   WB.notify("Not published", { type: "error" }) → stays until tapped
 
    LOADING (the standard)
@@ -45,8 +46,9 @@
     opts = opts || {}; if (!document.body) return { close: function () {} };
     var err = opts.type === "error", n = document.createElement("div");
     n.className = "wb-note" + (err ? " err" : ""); n.setAttribute("role", err ? "alert" : "status");
-    n.innerHTML = "<span></span>" + (err ? '<b class="x" aria-hidden="true">×</b>' : "");
+    n.innerHTML = "<span></span>" + (opts.action ? '<button type="button" class="act"></button>' : "") + (err ? '<b class="x" aria-hidden="true">×</b>' : "");
     n.firstChild.textContent = msg;
+    if (opts.action) { var ab = n.querySelector(".act"); ab.textContent = opts.action.label; ab.onclick = function (e) { e.stopPropagation(); close(); opts.action.fn(); }; }
     var h = holder(); h.appendChild(n);
     while (h.children.length > 4) h.removeChild(h.firstChild);              // never a wall of messages
     var gone = false;

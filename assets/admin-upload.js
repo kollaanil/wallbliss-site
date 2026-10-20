@@ -26,22 +26,22 @@
     get: function (k) { return IDB.open().then(function (db) { return new Promise(function (res) { var r = db.transaction("img").objectStore("img").get(k); r.onsuccess = function () { res(r.result || null); }; r.onerror = function () { res(null); }; }); }); },
     del: function (k) { return IDB.open().then(function (db) { db.transaction("img", "readwrite").objectStore("img").delete(k); }); }
   };
-  /* iPhone photos (HEIC). Safari opens them itself; in Chrome and other browsers they are converted
-     to JPG right here on this device (the converter, ~1.3 MB, loads only the first time it's needed). */
+  /* iPhone photos (HEIC), including 10-bit HDR photos and Live Photo stills. Safari opens most of them
+     itself; otherwise they are converted to JPG here on this device (heic-to, ~3 MB, loaded only when needed). */
   var heicLib = null;
   function isHeic(f) { return /hei[cf]/i.test((f && f.type) || "") || /\.hei[cf]$/i.test((f && f.name) || ""); }
   function heicToJpeg(f) {
     heicLib = heicLib || new Promise(function (res, rej) {
-      var s = document.createElement("script"); s.src = "assets/vendor/heic2any.min.js";
-      s.onload = function () { res(window.heic2any); };
+      var s = document.createElement("script"); s.src = "assets/vendor/heic-to.js";
+      s.onload = function () { res(window.HeicTo); };
       s.onerror = function () { heicLib = null; rej(new Error("Couldn't load the iPhone photo converter. Check the internet and try again.")); };
       document.head.appendChild(s);
     });
-    return heicLib.then(function (h) { return h({ blob: f, toType: "image/jpeg", quality: 0.92 }); })
-      .then(function (b) { return Array.isArray(b) ? b[0] : b; })
+    var slow = new Promise(function (res, rej) { setTimeout(function () { rej(new Error("slow")); }, 60000); });
+    return heicLib.then(function (H) { return Promise.race([H({ blob: f, type: "image/jpeg", quality: 0.92 }), slow]); })
       .catch(function (e) {
         if (e instanceof Error && /converter/.test(e.message)) throw e;
-        throw new Error("Couldn't convert “" + f.name + "”. Share it from Photos as JPG (or set iPhone Settings → Camera → Formats → Most Compatible) and try again.");
+        throw new Error("Couldn't convert “" + f.name + "”. In Photos, tap Share → Options → Most Compatible (or save it as JPG) and try again.");
       });
   }
   window.WBHeic = { is: isHeic, toJpeg: heicToJpeg };
