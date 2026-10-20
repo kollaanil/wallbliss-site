@@ -987,6 +987,27 @@ window.WB_PUBLISHED = {
  "edits": {},
  "projects": [
   {
+   "slug": "where-the-team-now-walks-in-inspired-zm6p",
+   "title": "Where the team now walks in inspired",
+   "locality": "Horahalli",
+   "space": "Office",
+   "segment": "corporate",
+   "size": "4 ft by 6 ft",
+   "design": "Customer's own picture",
+   "time": "3 hours",
+   "month": "2026-07",
+   "summary": "This wall in Dayanand Sagar University is waiting for a story. We printed a picture chosen by the management right onto it in 3 hours, and the whole reception changed. Students and college admin walk in and get inspired.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 720,
+   "h": 1280,
+   "ratio": 0.5625,
+   "before": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-before-zasix1.jpg",
+   "after": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-after-wg18nt.jpg"
+  },
+  {
    "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
    "title": "The wall every guest wants a photo with",
    "locality": "Lal Bagh",
@@ -1146,7 +1167,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:51:27.125Z",
+ "updated": "2026-10-20T13:57:34.554Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
