@@ -24,10 +24,17 @@
   }
 
   /* high-quality downscale: halve repeatedly, then one final smooth step */
-  function resize(img, long) {
-    var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+  /* box (optional) = the part of the picture to keep, e.g. after trimming plain borders.
+     Big print files (e.g. 12000 × 8000 px JPEGs) are first drawn at most 4096 px long: phones,
+     iPhones above all, refuse canvases over ~16 million pixels and would silently give a blank image. */
+  function resize(img, long, box) {
+    var bx = box ? box.x : 0, by = box ? box.y : 0, w = box ? box.w : (img.naturalWidth || img.width), h = box ? box.h : (img.naturalHeight || img.height);
     var s = Math.min(1, long / Math.max(w, h)), tw = Math.round(w * s), th = Math.round(h * s);
-    var src = img, cw = w, ch = h;
+    var first = Math.min(1, 4096 / Math.max(w, h), Math.sqrt(16e6 / (w * h)));
+    var src = document.createElement("canvas"); src.width = Math.max(tw, Math.round(w * first)); src.height = Math.max(th, Math.round(h * first));
+    var fx = src.getContext("2d"); fx.imageSmoothingEnabled = true; fx.imageSmoothingQuality = "high";
+    fx.drawImage(img, bx, by, w, h, 0, 0, src.width, src.height);
+    var cw = src.width, ch = src.height;
     while (cw / 2 >= tw * 1.05) {
       var c = document.createElement("canvas"); c.width = Math.round(cw / 2); c.height = Math.round(ch / 2);
       var x = c.getContext("2d"); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high";

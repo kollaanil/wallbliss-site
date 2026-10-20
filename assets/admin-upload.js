@@ -221,7 +221,7 @@
 
   /* ---------- items ---------- */
   function addFiles(files) {
-    files = Array.prototype.slice.call(files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|webp)$/i.test(f.name); });
+    files = Array.prototype.slice.call(files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|jfif|png|webp)$/i.test(f.name); });
     var room = MAX - items.length;
     if (files.length > room) A.toast("Up to " + MAX + " photos at a time. Taking the first " + room + ".");
     files.slice(0, room).forEach(function (f) {
@@ -229,9 +229,10 @@
       var it = { file: f, code: nextFree(used), name: "", tags: [], search: [], spaces: [], styles: [], orient: "wide", status: "Preparing…", state: "ai" };
       items.push(it); renderItem(it);
       load(f).then(function (img) {
-        var box = trimBox(img), src = crop(img, box);
+        if (!img.naturalWidth) throw new Error("Can't open “" + f.name + "”. If it's a very large print file, save a copy at about 4000 px and try again.");
+        var box = trimBox(img);
         it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
-        it.base = WBImage.resize(src, WBImage.LONG);
+        it.base = WBImage.resize(img, WBImage.LONG, box);                 // trim + shrink in one step (safe for huge print files)
         it.orient = shape(it.base);
         it.tags = fileWords(f.name);
         it.status = aiKey() ? "Claude is filling in the details…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
