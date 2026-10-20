@@ -164,11 +164,16 @@
   .ghost .hint { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,.6); color: #fff; font-size: .76rem; padding: 4px 8px; border-radius: 6px; pointer-events: none; }
   .range-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: center; font-size: .86rem; color: var(--ink-2); }
   .range-row input { width: 100%; accent-color: var(--accent); }
-  .p-share { margin-bottom: 14px; }
-  .p-links { display: grid; }
-  .p-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
-  .p-link span { display: grid; gap: 2px; min-width: 0; } .p-link small { color: var(--muted); }
-  .p-link code { font: 500 .8rem ui-monospace, monospace; color: var(--accent); overflow-wrap: anywhere; }
+  /* one strip of copy-link buttons (mock approved 20 Oct) */
+  .share-strip { display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap; margin: 2px 0 10px; }
+  .ss-lbl { font: 700 .74rem var(--font-body); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .ss-btns { display: flex; gap: 8px; flex-wrap: nowrap; }
+  .ss-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink); font: 700 .86rem var(--font-body); cursor: pointer; white-space: nowrap; transition: background .2s, color .2s, border-color .2s; }
+  .ss-btn svg { width: 15px; height: 15px; flex: none; }
+  .ss-btn small { font-weight: 500; color: var(--muted); }
+  .ss-btn.ok { background: var(--accent); border-color: var(--accent); color: #fff; } .ss-btn.ok small { color: rgba(255,255,255,.75); }
+  .ss-btn:disabled { opacity: .45; cursor: default; }
+  @media (max-width: 560px) { .ss-lbl { flex-basis: 100%; } .ss-btn { padding: 0 11px; font-size: .84rem; } }
   .proj-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
   .proj-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; }
   .proj-card .ba { border-radius: 0; box-shadow: none; aspect-ratio: 4 / 3; }
@@ -311,11 +316,7 @@
           <div><h1>Projects</h1><p>Finished walls with before and after photos. Each one becomes a card with a slider on the Projects page.</p></div>
           <button class="btn btn-wa" type="button" id="p-new" style="background:var(--ink);box-shadow:none">+ New project</button>
         </div>
-        <div class="card p-share">
-          <h2>Share projects with customers</h2>
-          <p class="sub" style="margin-top:0">Tap <b>Copy</b> to copy a ready WhatsApp message with the link. In WhatsApp it shows a picture and a short write-up.</p>
-          <div class="p-links" id="p-links"></div>
-        </div>
+        <div class="share-strip"><span class="ss-lbl">Copy link to share</span><div class="ss-btns" id="p-links"></div></div>
         <div class="toolbar"><div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-pf="all" aria-pressed="true">All</button><button class="fchip" type="button" data-pf="residential" aria-pressed="false">Residential</button><button class="fchip" type="button" data-pf="corporate" aria-pressed="false">Corporate / institution</button></div></div>
         <div class="proj-list" id="p-list"></div>
       </section>
@@ -932,20 +933,25 @@
   var pFilter = "all", segTouched = false;
   var P_LINKS = [
     ["residential", "Homes", "Here are some homes we've printed in Bengaluru 👇"],
-    ["corporate", "Corporate & institutions", "Here are some offices and commercial spaces we've printed in Bengaluru 👇"],
+    ["corporate", "Corporate", "Here are some offices and commercial spaces we've printed in Bengaluru 👇"],
     ["all", "All projects", "Here are some walls we've printed in Bengaluru 👇"]
   ];
+  var LINK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
+  var TICK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"/></svg>';
   function projLink(seg) { return "https://www.wallbliss.in/" + (seg === "all" ? "projects.html" : "p/" + seg + "/"); }
   function renderProjLinks() {
     var live = db.projects.filter(function (p) { return !p.hidden; });
     $("#p-links").innerHTML = P_LINKS.map(function (l) {
       var n = l[0] === "all" ? live.length : live.filter(function (p) { return WB.projectSegment(p) === l[0]; }).length;
-      return '<div class="p-link"><span><b>' + l[1] + '</b> <small>' + n + (n === 1 ? " project" : " projects") + '</small><code>' + projLink(l[0]).replace("https://", "") + '</code></span>' +
-        '<button class="btn btn-ghost btn-xs" type="button" data-plink="' + l[0] + '"' + (n ? "" : " disabled") + '>Copy</button></div>';
+      var name = l[0] === "all" && matchMedia("(max-width: 560px)").matches ? "All" : l[1];
+      return '<button class="ss-btn" type="button" data-plink="' + l[0] + '" title="Copies the WhatsApp message and ' + projLink(l[0]).replace("https://", "") + '"' + (n ? "" : " disabled") + ">" + LINK_ICON + name + " <small>" + n + "</small></button>";
     }).join("");
     $$("[data-plink]").forEach(function (b) { b.onclick = function () {
-      var l = P_LINKS.filter(function (x) { return x[0] === b.dataset.plink; })[0], txt = l[2] + "\n" + projLink(l[0]);
-      var done = function () { b.textContent = "Copied ✓"; setTimeout(function () { b.textContent = "Copy"; }, 2000); toast("Copied. Paste it in WhatsApp"); };
+      var l = P_LINKS.filter(function (x) { return x[0] === b.dataset.plink; })[0], txt = l[2] + "\n" + projLink(l[0]), html = b.innerHTML;
+      var done = function () {
+        b.classList.add("ok"); b.innerHTML = TICK_ICON + "Copied <small>" + l[1] + "</small>"; toast("Copied. Paste it in WhatsApp");
+        setTimeout(function () { b.classList.remove("ok"); b.innerHTML = html; }, 2000);
+      };
       var pr = navigator.clipboard && navigator.clipboard.writeText(txt);
       if (pr) pr.then(done, function () { toast(txt); }); else toast(txt);
     }; });
@@ -955,6 +961,11 @@
   $("#p-space").addEventListener("change", function () { if (!segTouched) segSet($("#p-seg"), WB.projectSegment({ space: this.value })); });
   function renderProjects() {
     renderProjLinks();
+    var phone = matchMedia("(max-width: 560px)").matches;
+    $$("[data-pf]").forEach(function (c) {
+      var k = c.dataset.pf, n = k === "all" ? db.projects.length : db.projects.filter(function (p) { return WB.projectSegment(p) === k; }).length;
+      c.textContent = (k === "all" ? "All" : k === "residential" ? "Residential" : phone ? "Corporate" : "Corporate / institution") + " · " + n;
+    });
     var list = db.projects, shownP = list.map(function (p, i) { return [p, i]; }).filter(function (x) { return pFilter === "all" || WB.projectSegment(x[0]) === pFilter; });
     $("#p-list").innerHTML = list.length && !shownP.length ? '<p class="muted">No ' + (pFilter === "residential" ? "residential" : "corporate / institution") + ' projects yet.</p>' : list.length ? shownP.map(function (x) {
       var p = x[0], i = x[1];
