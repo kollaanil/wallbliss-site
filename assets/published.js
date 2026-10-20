@@ -961,6 +961,27 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0178",
+   "name": "Kerala Netipattam",
+   "img": "assets/uploads/designs/wb-0178-mfyist.jpg",
+   "tags": [
+    "kerala",
+    "netipattam",
+    "traditional"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1124,8 +1145,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:47:26.000Z",
- "by": "Claude",
+ "updated": "2026-10-20T13:50:15.874Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -1286,6 +1307,10 @@ window.WB_PUBLISHED = {
   "t:srinivasa-kalyanam": {
    "sig": "1an6fd8",
    "card": "t/srinivasa-kalyanam/card-1an6fd8.jpg"
+  },
+  "d:WB-0178": {
+   "sig": "41earm",
+   "card": "d/WB-0178/card-41earm.jpg"
   }
  }
 };
