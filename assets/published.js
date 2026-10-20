@@ -917,6 +917,68 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0175",
+   "name": "Corporate Conference Room Mural",
+   "img": "assets/uploads/designs/wb-0175-1yxnmr9.jpg",
+   "tags": [
+    "corporate",
+    "team work",
+    "team",
+    "commercial"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [
+    "geometric"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0176",
+   "name": "Corporate Team Work Wall Mural",
+   "img": "assets/uploads/designs/wb-0176-1w4yv41.jpg",
+   "tags": [
+    "team work",
+    "teamwork",
+    "team",
+    "corporate",
+    "commercial"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [
+    "geometric"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0177",
+   "name": "Corporate AI Wall Art",
+   "img": "assets/uploads/designs/wb-0177-1e6eloo.jpg",
+   "tags": [
+    "corporate",
+    "ai",
+    "teamwork",
+    "commercial"
+   ],
+   "search": [],
+   "spaces": [
+    "office"
+   ],
+   "styles": [],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {
@@ -1109,7 +1171,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:09:40.812Z",
+ "updated": "2026-10-20T13:20:04.729Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1255,6 +1317,18 @@ window.WB_PUBLISHED = {
   "d:WB-0174": {
    "sig": "ooq1xp",
    "card": "d/WB-0174/card-ooq1xp.jpg"
+  },
+  "d:WB-0175": {
+   "sig": "7q7666",
+   "card": "d/WB-0175/card-7q7666.jpg"
+  },
+  "d:WB-0176": {
+   "sig": "emiz0f",
+   "card": "d/WB-0176/card-emiz0f.jpg"
+  },
+  "d:WB-0177": {
+   "sig": "12mx72w",
+   "card": "d/WB-0177/card-12mx72w.jpg"
   }
  }
 };
