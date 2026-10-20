@@ -377,7 +377,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "wide",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": true
   },
   {
    "code": "WB-0152",
@@ -1106,6 +1107,6 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-19T13:38:56.973Z",
+ "updated": "2026-10-20T03:57:34.214Z",
  "by": "Manasa"
 };
