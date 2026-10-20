@@ -972,7 +972,7 @@ window.WB_PUBLISHED = {
   },
   {
    "slug": "shiva-in-cosmos-gzvn",
-   "title": "Shiva in cosmos",
+   "title": "A living room that finally tells their story",
    "locality": "RR Nagar",
    "space": "Living room",
    "size": "7 ft by 5 ft",
@@ -984,11 +984,11 @@ window.WB_PUBLISHED = {
    "consent": true,
    "hidden": false,
    "noHome": false,
-   "w": 1125,
-   "h": 2000,
+   "w": 1080,
+   "h": 1920,
    "ratio": 0.5625,
-   "before": "assets/uploads/projects/shiva-in-cosmos-gzvn-before-baxxci.jpg",
-   "after": "assets/uploads/projects/shiva-in-cosmos-gzvn-after-1fmo4te.jpg"
+   "before": "assets/uploads/projects/shiva-in-cosmos-gzvn-before-obnrz7.jpg",
+   "after": "assets/uploads/projects/shiva-in-cosmos-gzvn-after-zsevob.jpg"
   },
   {
    "slug": "kerala-s-tradition-reimagined-in-a-client-s-living-room-o39q",
@@ -1107,8 +1107,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T07:02:17.255Z",
- "by": "Claude",
+ "updated": "2026-10-20T13:09:16.120Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
