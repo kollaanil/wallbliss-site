@@ -57,6 +57,13 @@
   if (Array.isArray(RAW.faqs) || isAdmin) window.WB_FAQS = db.faqs.filter(function (f) { return f.show !== false && f.q && f.a; });
   if (db.reviews.length) window.WB_REVIEWS = db.reviews.filter(function (r) { return r.show; }).concat(window.WB_REVIEWS || []);
 
+  /* projects are either homes or corporate / institutions; older projects are sorted by their space */
+  WB.SEGMENTS = { residential: "Homes", corporate: "Corporate & institutions" };
+  WB.projectSegment = function (p) {
+    if (p && (p.segment === "residential" || p.segment === "corporate")) return p.segment;
+    return /office|caf|restaurant|hotel|lobby|hospital|clinic|school|college|shop|store|showroom|gym|commercial|corporate/i.test((p && p.space) || "") ? "corporate" : "residential";
+  };
+
   /* FAQ answers are plain text: a blank line starts a new paragraph, [words](link) makes a link */
   var LINK = /\[([^\]]+)\]\(((?:https?:\/\/|mailto:|tel:|#|\/|[\w-]+\.html)[^)\s]*)\)/g;
   function escH(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }

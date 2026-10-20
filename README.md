@@ -85,6 +85,13 @@ One shared file for both, so every page behaves the same:
   after 3 s, seconds counter, optional Skip, real steps like "Uploading 3 of 7", "Taking a little longer than usual…" after 20 s).
 - The rotating messages are in `WB.LOAD_LINES` at the top of `assets/ui.js`: edit the wording there.
 
+## Project types: homes vs corporate / institutions
+
+- Each project is **Residential** or **Corporate / institution** (set from the space, change it in the project form).
+- Projects page filters: `projects.html?type=residential` and `?type=corporate`.
+- Admin → Projects → **Share projects with customers**: **Copy** puts a ready WhatsApp message on the clipboard with
+  `wallbliss.in/p/residential/` or `wallbliss.in/p/corporate/` (those links show a picture and write-up in WhatsApp).
+
 ## Search
 
 `assets/search.js` + `assets/search-lexicon.js`: runs in the visitor's browser. Understands English,

@@ -164,6 +164,11 @@
   .ghost .hint { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,.6); color: #fff; font-size: .76rem; padding: 4px 8px; border-radius: 6px; pointer-events: none; }
   .range-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: center; font-size: .86rem; color: var(--ink-2); }
   .range-row input { width: 100%; accent-color: var(--accent); }
+  .p-share { margin-bottom: 14px; }
+  .p-links { display: grid; }
+  .p-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .p-link span { display: grid; gap: 2px; min-width: 0; } .p-link small { color: var(--muted); }
+  .p-link code { font: 500 .8rem ui-monospace, monospace; color: var(--accent); overflow-wrap: anywhere; }
   .proj-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
   .proj-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; }
   .proj-card .ba { border-radius: 0; box-shadow: none; aspect-ratio: 4 / 3; }
@@ -306,6 +311,12 @@
           <div><h1>Projects</h1><p>Finished walls with before and after photos. Each one becomes a card with a slider on the Projects page.</p></div>
           <button class="btn btn-wa" type="button" id="p-new" style="background:var(--ink);box-shadow:none">+ New project</button>
         </div>
+        <div class="card p-share">
+          <h2>Share projects with customers</h2>
+          <p class="sub" style="margin-top:0">Tap <b>Copy</b> to copy a ready WhatsApp message with the link. In WhatsApp it shows a picture and a short write-up.</p>
+          <div class="p-links" id="p-links"></div>
+        </div>
+        <div class="toolbar"><div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-pf="all" aria-pressed="true">All</button><button class="fchip" type="button" data-pf="residential" aria-pressed="false">Residential</button><button class="fchip" type="button" data-pf="corporate" aria-pressed="false">Corporate / institution</button></div></div>
         <div class="proj-list" id="p-list"></div>
       </section>
 
@@ -443,6 +454,7 @@
         <div class="grid-2" style="gap:12px">
           <div class="field"><label for="p-loc">Locality</label><input type="text" id="p-loc" list="areas" placeholder="e.g. HSR Layout"><datalist id="areas"></datalist></div>
           <div class="field"><label for="p-space">Space</label><select id="p-space"></select></div>
+          <div class="field" style="grid-column:1/-1"><span class="lbl">Type of client</span><div class="seg" role="group" id="p-seg" aria-label="Type of client"><button type="button" data-v="residential" aria-pressed="true">Residential</button><button type="button" data-v="corporate" aria-pressed="false">Corporate / institution</button></div><small id="p-seg-note">Set from the space; tap to change.</small></div>
           <div class="field"><label for="p-size">Wall size</label><input type="text" id="p-size" placeholder="e.g. 10 ft × 8 ft"></div>
           <div class="field"><label for="p-time">Time on site</label><input type="text" id="p-time" placeholder="e.g. 3 hours"></div>
           <div class="field"><label for="p-design">Design</label><select id="p-design"></select></div>
@@ -916,10 +928,37 @@
      PROJECTS
      ===================================================================== */
   var P = null, step = 1, bImg = null, aImg = null;
+  /* ---------- residential / corporate: filter here, and links to share with customers ---------- */
+  var pFilter = "all", segTouched = false;
+  var P_LINKS = [
+    ["residential", "Homes", "Here are some homes we've printed in Bengaluru 👇"],
+    ["corporate", "Corporate & institutions", "Here are some offices and commercial spaces we've printed in Bengaluru 👇"],
+    ["all", "All projects", "Here are some walls we've printed in Bengaluru 👇"]
+  ];
+  function projLink(seg) { return "https://www.wallbliss.in/" + (seg === "all" ? "projects.html" : "p/" + seg + "/"); }
+  function renderProjLinks() {
+    var live = db.projects.filter(function (p) { return !p.hidden; });
+    $("#p-links").innerHTML = P_LINKS.map(function (l) {
+      var n = l[0] === "all" ? live.length : live.filter(function (p) { return WB.projectSegment(p) === l[0]; }).length;
+      return '<div class="p-link"><span><b>' + l[1] + '</b> <small>' + n + (n === 1 ? " project" : " projects") + '</small><code>' + projLink(l[0]).replace("https://", "") + '</code></span>' +
+        '<button class="btn btn-ghost btn-xs" type="button" data-plink="' + l[0] + '"' + (n ? "" : " disabled") + '>Copy</button></div>';
+    }).join("");
+    $$("[data-plink]").forEach(function (b) { b.onclick = function () {
+      var l = P_LINKS.filter(function (x) { return x[0] === b.dataset.plink; })[0], txt = l[2] + "\n" + projLink(l[0]);
+      var done = function () { b.textContent = "Copied ✓"; setTimeout(function () { b.textContent = "Copy"; }, 2000); toast("Copied. Paste it in WhatsApp"); };
+      var pr = navigator.clipboard && navigator.clipboard.writeText(txt);
+      if (pr) pr.then(done, function () { toast(txt); }); else toast(txt);
+    }; });
+  }
+  $$("[data-pf]").forEach(function (b) { b.onclick = function () { pFilter = b.dataset.pf; $$("[data-pf]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); renderProjects(); }; });
+  $("#p-seg").addEventListener("click", function () { segTouched = true; $("#p-seg-note").textContent = ""; });
+  $("#p-space").addEventListener("change", function () { if (!segTouched) segSet($("#p-seg"), WB.projectSegment({ space: this.value })); });
   function renderProjects() {
-    var list = db.projects;
-    $("#p-list").innerHTML = list.length ? list.map(function (p, i) {
-      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
+    renderProjLinks();
+    var list = db.projects, shownP = list.map(function (p, i) { return [p, i]; }).filter(function (x) { return pFilter === "all" || WB.projectSegment(x[0]) === pFilter; });
+    $("#p-list").innerHTML = list.length && !shownP.length ? '<p class="muted">No ' + (pFilter === "residential" ? "residential" : "corporate / institution") + ' projects yet.</p>' : list.length ? shownP.map(function (x) {
+      var p = x[0], i = x[1];
+      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + (WB.projectSegment(p) === "corporate" ? "Corporate / institution" : "Residential") + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
         '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
     }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
     wireBA($("#p-list"));
@@ -948,7 +987,8 @@
     $("#p-title").textContent = P != null ? "Edit project" : "New project";
     $("#p-space").innerHTML = ROOMS.map(function (r) { return "<option>" + r[1] + "</option>"; }).join("");
     $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
-    $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room"; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
+    $("#p-ttl").value = p.title || ""; $("#p-loc").value = p.locality || ""; $("#p-space").value = p.space || "Living room";
+    segSet($("#p-seg"), WB.projectSegment(p.space ? p : { space: $("#p-space").value })); segTouched = !!p.segment; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
     $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
     opts = { t: [], s: [] }; tplShift = Math.floor(Math.random() * 3); storyReq++; chosen = { "#p-ttl": !!p.title, "#p-sum": !!p.summary }; $("#p-ttl-opts").innerHTML = $("#p-sum-opts").innerHTML = "";
     $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
@@ -1099,7 +1139,7 @@
       setStep(4); return;
     }
     var o = outPair(), t = $("#p-ttl").value.trim();
-    var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, size: $("#p-size").value.trim(),
+    var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, segment: segVal($("#p-seg")) || WB.projectSegment({ space: $("#p-space").value }), size: $("#p-size").value.trim(),
       design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), consent: true, hidden: !$("#p-live").checked, noHome: !$("#p-home").checked,
       w: o.w, h: o.h, ratio: Math.round(o.w / o.h * 10000) / 10000 };
     if (P != null) p.slug = db.projects[P].slug;

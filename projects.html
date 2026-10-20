@@ -88,6 +88,11 @@
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
 <style>
+  .seg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg-chips .fchip { flex: none; scroll-snap-align: start; font: 500 .88rem var(--font-body); min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .seg-chips .fchip:hover { border-color: var(--accent); }
+  .seg-chips .fchip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
   .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
   .proj { display: grid; gap: 0; overflow: hidden; }
   .proj .pics { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--line); }
@@ -110,6 +115,7 @@
       <p class="eyebrow">Projects</p>
       <h1 style="font-size:var(--step-4)">Walls we've printed in Bengaluru</h1>
       <p class="lede">Every wall here belongs to a real Bengaluru family or business. See the before, the after, and the design they chose.</p>
+      <div class="chips seg-chips" id="seg-chips" role="group" aria-label="Show projects for"></div>
       <div class="areas" id="loc-chips"></div>
       <p data-google-reviews hidden><a class="btn btn-ghost btn-sm" data-g-read href="#" target="_blank" rel="noopener"><span class="g-star" aria-hidden="true">★</span> Read our reviews on Google</a></p>
     </div>
@@ -155,10 +161,30 @@
 
 <script>
 (function () {
-  var P = (window.WB_PROJECTS || []).slice().sort(function (a, b) { return (b.month || "").localeCompare(a.month || ""); });
-  document.getElementById("proj-empty").hidden = P.length > 0;
-  var grid = document.getElementById("proj-grid"); grid.innerHTML = "";
+  var ALL = (window.WB_PROJECTS || []).slice().sort(function (a, b) { return (b.month || "").localeCompare(a.month || ""); });
+  document.getElementById("proj-empty").hidden = ALL.length > 0;
+  var grid = document.getElementById("proj-grid");
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  /* homes / corporate & institutions: ?type=residential or ?type=corporate (links shared from the admin) */
+  var type = new URLSearchParams(location.search).get("type"); if (!WB.SEGMENTS[type]) type = "";
+  var segBox = document.getElementById("seg-chips");
+  function chipsHTML() {
+    if (!ALL.length) return "";
+    return [["", "All"]].concat(Object.keys(WB.SEGMENTS).map(function (k) { return [k, WB.SEGMENTS[k]]; })).map(function (o) {
+      var n = o[0] ? ALL.filter(function (p) { return WB.projectSegment(p) === o[0]; }).length : ALL.length;
+      return '<button type="button" class="fchip" data-type="' + o[0] + '" aria-pressed="' + (o[0] === type) + '">' + o[1] + " · " + n + "</button>";
+    }).join("");
+  }
+  segBox.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-type]"); if (!b) return;
+    type = b.dataset.type; try { history.replaceState(null, "", type ? "?type=" + type : location.pathname); } catch (x) {}
+    if (WB.track) WB.track("filter", { key: "project_type", val: type || "all", via: "chip" });
+    render();
+  });
+  function render() {
+  segBox.innerHTML = chipsHTML();
+  var P = ALL.filter(function (p) { return !type || WB.projectSegment(p) === type; });
+  grid.innerHTML = P.length || !ALL.length ? "" : '<p class="muted">No ' + (type === "corporate" ? "corporate or institution" : "home") + ' projects here yet. <a href="projects.html">See all projects</a> or ask us on WhatsApp for photos.</p>';
   P.forEach(function (p) {
     var el = document.createElement("article"); el.className = "panel proj"; el.id = p.slug;
     var pics = p.before && p.after
@@ -174,8 +200,10 @@
   });
   WB.wireBA(grid);
   var locs = {}; P.forEach(function (p) { locs[p.locality] = (locs[p.locality] || 0) + 1; });
-  var chips = document.getElementById("loc-chips");
+  var chips = document.getElementById("loc-chips"); chips.innerHTML = "";
   Object.keys(locs).sort().forEach(function (l) { var s = document.createElement("span"); s.className = "chip"; s.textContent = l + " · " + locs[l]; chips.appendChild(s); });
+  }
+  render();
 })();
 </script>
 
