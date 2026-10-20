@@ -8,8 +8,7 @@ window.WB_PUBLISHED = {
    "name": "Kamadhenu colored marble",
    "spaces": [
     "living",
-    "pooja",
-    "office"
+    "pooja"
    ],
    "styles": [
     "devotional"
@@ -35,7 +34,6 @@ window.WB_PUBLISHED = {
    "spaces": [
     "living",
     "pooja",
-    "office",
     "cafe",
     "hotel"
    ],
@@ -144,7 +142,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "office",
     "cafe",
     "hotel",
     "clinic",
@@ -294,8 +291,7 @@ window.WB_PUBLISHED = {
    "spaces": [
     "living",
     "cafe",
-    "hotel",
-    "office"
+    "hotel"
    ],
    "styles": [
     "artistic",
@@ -319,7 +315,6 @@ window.WB_PUBLISHED = {
    "spaces": [
     "living",
     "hotel",
-    "office",
     "cafe",
     "clinic"
    ],
@@ -345,7 +340,6 @@ window.WB_PUBLISHED = {
    "spaces": [
     "living",
     "hotel",
-    "office",
     "cafe",
     "clinic"
    ],
@@ -396,7 +390,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "office",
     "hotel"
    ],
    "styles": [
@@ -492,7 +485,6 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "office",
     "hotel",
     "pooja",
     "living",
@@ -520,7 +512,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "office",
     "hotel"
    ],
    "styles": [
@@ -568,8 +559,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "hotel",
-    "office"
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -614,8 +604,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "hotel",
-    "office"
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -729,8 +718,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "pooja",
-    "office"
+    "pooja"
    ],
    "styles": [
     "traditional",
@@ -778,7 +766,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "office",
     "cafe",
     "hotel"
    ],
@@ -806,7 +793,6 @@ window.WB_PUBLISHED = {
     "cafe",
     "living",
     "hotel",
-    "office",
     "pooja"
    ],
    "styles": [
@@ -832,8 +818,7 @@ window.WB_PUBLISHED = {
    "spaces": [
     "living",
     "pooja",
-    "hotel",
-    "office"
+    "hotel"
    ],
    "styles": [
     "texture3d",
@@ -858,7 +843,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "office",
     "hotel"
    ],
    "styles": [
@@ -882,8 +866,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "pooja",
-    "office"
+    "pooja"
    ],
    "styles": [
     "traditional",
@@ -907,8 +890,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "hotel",
-    "office"
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -986,7 +968,11 @@ window.WB_PUBLISHED = {
    "hidden": true
   },
   "WB-0105": {
-   "hidden": true
+   "hidden": true,
+   "spaces": [
+    "cafe",
+    "hotel"
+   ]
   },
   "WB-0120": {
    "hidden": true
@@ -995,7 +981,11 @@ window.WB_PUBLISHED = {
    "hidden": true
   },
   "WB-0119": {
-   "hidden": true
+   "hidden": true,
+   "spaces": [
+    "cafe",
+    "kids"
+   ]
   },
   "WB-0130": {
    "hidden": true
@@ -1172,7 +1162,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T13:25:51.452Z",
+ "updated": "2026-10-20T13:26:55.485Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
