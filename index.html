@@ -339,9 +339,9 @@
       </div>
       <div class="stories reveal">
         <a class="story" href="catalogue.html#living"><div class="pic"><picture><source type="image/webp" sizes="(max-width: 860px) 92vw, 640px" srcset="assets/img/story-kamadhenu-sm.webp 480w, assets/img/story-kamadhenu.webp 900w"><img src="assets/img/story-kamadhenu-sm.jpg" srcset="assets/img/story-kamadhenu-sm.jpg 480w, assets/img/story-kamadhenu.jpg 900w" sizes="(max-width: 860px) 92vw, 640px" width="900" height="675" alt="Kamadhenu and calf by a waterfall, printed as a framed scene on a living room wall" loading="lazy" decoding="async"></picture></div><h3>The wall guests ask about</h3><p>Warli dancers, misty hills or monsoon leaves. The living room wall your family gathers in front of.</p><span class="go">Living room ideas →</span></a>
-        <a class="story" href="catalogue.html#kids" data-code="WB-0124"><div class="pic"><canvas></canvas></div><h3>A room to dream in</h3><p>Planets, rainbows or a jungle full of friends, chosen by your child. Wait till you see their face the first morning.</p><span class="go">Kids' room ideas →</span></a>
+        <a class="story" href="catalogue.html#kids" data-code="WB-0124" data-real="code:WB-0160"><div class="pic"><canvas></canvas></div><h3>A room to dream in</h3><p>Planets, rainbows or a jungle full of friends, chosen by your child. Wait till you see their face the first morning.</p><span class="go">Kids' room ideas →</span></a>
         <a class="story" href="catalogue.html#hotel"><div class="pic"><picture><source type="image/webp" sizes="(max-width: 520px) 128px, 200px" srcset="assets/img/story-surya-sm.webp 480w, assets/img/story-surya.webp 900w"><img src="assets/img/story-surya-sm.jpg" srcset="assets/img/story-surya-sm.jpg 480w, assets/img/story-surya.jpg 900w" sizes="(max-width: 520px) 128px, 200px" width="900" height="675" alt="Surya on his chariot with seven horses, printed in gold tones on a white wall" loading="lazy" decoding="async"></picture></div><h3>A lobby everyone notices</h3><p>Apartment lobbies, clubhouses and corridors: a wall residents and visitors stop to look at.</p><span class="go">Lobby and common area ideas →</span></a>
-        <a class="story" href="catalogue.html#office" data-code="WB-0120"><div class="pic"><canvas></canvas></div><h3>A place people remember</h3><p>For corporate offices, cafés and clinics: a wall your team and customers photograph, share and come back for.</p><span class="go">Ideas for businesses →</span></a>
+        <a class="story" href="catalogue.html#office" data-code="WB-0120" data-real="code:WB-0176"><div class="pic"><canvas></canvas></div><h3>A place people remember</h3><p>For corporate offices, cafés and clinics: a wall your team and customers photograph, share and come back for.</p><span class="go">Ideas for businesses →</span></a>
       </div>
     </div>
   </section>
@@ -543,7 +543,23 @@
 
 
   /* stories and room tiles */
-  document.querySelectorAll(".story[data-code]").forEach(function (a) { WBArt.room(a.querySelector("canvas"), D[a.dataset.code], { wall: WALL }); });
+  /* story tiles show a real design when there is one: data-real="code:WB-0176" (a chosen design) or
+     "room:kids" (the newest live design for that room); the drawn sample is only the fallback */
+  function realFor(spec) {
+    var m = /^(code|room):(.+)$/.exec(spec || ""); if (!m) return null;
+    var live = (window.WB_DESIGNS || []).filter(function (d) { return d.img && !d.hidden; });
+    if (m[1] === "code") return live.filter(function (d) { return d.code === m[2]; })[0] || null;
+    return live.filter(function (d) { return (d.spaces || []).indexOf(m[2]) > -1; })
+      .sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); })[0] || null;
+  }
+  document.querySelectorAll(".story[data-real]").forEach(function (a) {
+    var d = realFor(a.dataset.real); if (!d) return;
+    var u = String(d.img).replace(/"/g, "&quot;");
+    a.querySelector(".pic").innerHTML = '<span class="fitbox"><img class="fit-bg" src="' + u + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async"></span><span class="pic-tag">' + d.code + "</span>";
+    a.href = "catalogue.html#" + d.code;
+  });
+  function drawStories() { document.querySelectorAll(".story[data-code]").forEach(function (a) { var c = a.querySelector(".pic canvas"); if (c) WBArt.room(c, D[a.dataset.code], { wall: WALL }); }); }
+  drawStories();
   document.querySelectorAll("#spaces-grid .space").forEach(function (a) { WBArt.draw(a.querySelector("canvas"), D[a.dataset.code]); });
 
   /* up-close clips: load and play only while on screen */
@@ -592,7 +608,7 @@
   }
   if (WB.config.googleReviewsUrl) document.getElementById("reviews").hidden = false;
   var resize; addEventListener("resize", function () { clearTimeout(resize); resize = setTimeout(function () {
-    document.querySelectorAll(".story[data-code]").forEach(function (a) { WBArt.room(a.querySelector("canvas"), D[a.dataset.code], { wall: WALL }); });
+    drawStories();
   }, 200); });
 })();
 </script>
