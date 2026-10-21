@@ -565,7 +565,6 @@
     box.className = "fitbox";
     box.innerHTML = '<img class="fit-bg" src="' + u + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async">';
     var c = pic.querySelector("canvas"); if (c) c.replaceWith(box); else pic.insertBefore(box, pic.firstChild);
-    if (a.classList.contains("story")) { var t = document.createElement("span"); t.className = "pic-tag"; t.textContent = d.tag || d.code; pic.appendChild(t); }
     if (d.code && a.getAttribute("href") && a.getAttribute("href").indexOf("catalogue.html") === 0 && a.classList.contains("story")) a.href = "catalogue.html#" + d.code;
   });
 
