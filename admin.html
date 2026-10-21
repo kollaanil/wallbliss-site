@@ -158,6 +158,11 @@
   .steps-nav span { flex: 1; height: 4px; border-radius: 2px; background: var(--line-strong); }
   .steps-nav span.on { background: var(--accent); }
   .ba-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .crop-stage { position: relative; justify-self: center; overflow: hidden; border-radius: 10px; touch-action: none; line-height: 0; max-width: 100%; }
+  .crop-stage img { display: block; max-width: 100%; max-height: 380px; width: auto; height: auto; user-select: none; -webkit-user-select: none; pointer-events: none; }
+  .crop-box { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(30,20,10,.55); border-radius: 4px; cursor: grab; }
+  .crop-box::after { content: "✥"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); color: #fff; font-size: 22px; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+  .crop-box:active { cursor: grabbing; }
   @media (max-width: 480px) { .ba-pair { grid-template-columns: 1fr; } }
   .ghost { position: relative; touch-action: none; cursor: grab; border-radius: 12px; overflow: hidden; background: #000; }
   .ghost canvas { display: block; width: 100%; height: auto; }
@@ -471,10 +476,16 @@
     <div class="body">
       <!-- step 1 -->
       <div data-step="1" style="display:grid;gap:14px">
-        <p class="muted">Add the photo from before printing and the finished wall. Take both from the same spot if you can. Photos are kept whole: nothing is cropped.</p>
+        <p class="muted">Add the photo from before printing and the finished wall. Take both from the same spot if you can. The after photo is kept whole. If the before photo is a different shape, you choose what to keep so both match.</p>
         <div class="ba-pair">
           <div class="field"><span class="lbl">Before</span><div class="drop" id="p-drop-b"><input type="file" id="p-file-b" accept="image/*" aria-label="Before photo"><div><b>Before photo</b>Tap to choose from Photos, Files or the camera</div></div></div>
           <div class="field"><span class="lbl">After</span><div class="drop" id="p-drop-a"><input type="file" id="p-file-a" accept="image/*" aria-label="After photo"><div><b>After photo</b>Tap to choose from Photos, Files or the camera</div></div></div>
+        </div>
+        <div class="field crop" id="p-crop" hidden>
+          <span class="lbl">Match the before photo to the after photo</span>
+          <p class="muted" style="margin:0;font-size:.86rem">Both photos must be the same shape. Drag the frame to choose what to keep; zoom in to keep less.</p>
+          <div class="crop-stage" id="p-crop-stage"><img id="p-crop-img" alt="Before photo"><div class="crop-box" id="p-crop-box"></div></div>
+          <div class="range-row"><span>Zoom</span><input type="range" id="p-crop-zoom" min="1" max="2.5" step="0.01" value="1" aria-label="Zoom"></div>
         </div>
       </div>
       <!-- step 3 -->
@@ -1033,7 +1044,7 @@
   }
   function openProject(i) {
     P = i == null ? null : i; var p = P != null ? db.projects[P] : {};
-    bImg = aImg = null;
+    bImg = aImg = null; bCrop = null; $("#p-crop").hidden = true;
     $("#p-title").textContent = P != null ? "Edit project" : "New project";
     $("#p-space").innerHTML = ROOMS.map(function (r) { return "<option>" + r[1] + "</option>"; }).join("");
     $("#p-design").innerHTML = '<option value="">Customer\'s own photo / custom</option>' + designs().map(function (d) { return '<option value="' + d.code + '">' + d.code + " · " + esc(d.name) + "</option>"; }).join("");
@@ -1044,19 +1055,48 @@
     $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
     $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
     if (P != null) ["before", "after"].forEach(function (k) {
-      WBImages.resolve(p[k]).then(function (u) { if (!u) return; loadURL(u, function (im) { if (k === "before") bImg = im; else aImg = im; showDrop(k === "before" ? "#p-drop-b" : "#p-drop-a", u); }); });
+      WBImages.resolve(p[k]).then(function (u) { if (!u) return; loadURL(u, function (im) { if (k === "before") bImg = im; else aImg = im; showDrop(k === "before" ? "#p-drop-b" : "#p-drop-a", u); cropSetup(); }); });
     });
     setStep(1); openDlg($("#p-dlg"));
   }
   function loadURL(u, cb) { var im = new Image(); im.onload = function () { cb(im); }; im.src = u; }
   function showDrop(sel, url) { var d = $(sel); d.style.backgroundImage = 'linear-gradient(rgba(255,253,249,.55),rgba(255,253,249,.55)),url("' + url + '")'; d.style.backgroundSize = "cover"; d.style.backgroundPosition = "center"; d.querySelector("b").textContent = "✓ Added · tap to change"; }
-  wireDrop($("#p-drop-b"), $("#p-file-b"), function (im) { bImg = im; showDrop("#p-drop-b", im.src); });
-  wireDrop($("#p-drop-a"), $("#p-file-a"), function (im) { aImg = im; showDrop("#p-drop-a", im.src); });
+  wireDrop($("#p-drop-b"), $("#p-file-b"), function (im) { bImg = im; showDrop("#p-drop-b", im.src); cropSetup(); });
+  wireDrop($("#p-drop-a"), $("#p-file-a"), function (im) { aImg = im; showDrop("#p-drop-a", im.src); cropSetup(); });
+
+  /* ---------- both photos must be the same shape: the after photo sets it, the before photo is trimmed to match ----------
+     bCrop = the part of the before photo to keep (in its own pixels). Shown only when the shapes differ by more than 2%. */
+  var bCrop = null, cropBase = null;
+  function cropSetup() {
+    bCrop = null; $("#p-crop").hidden = true;
+    if (!bImg || !aImg) return;
+    var bw = bImg.naturalWidth, bh = bImg.naturalHeight, ra = aImg.naturalWidth / aImg.naturalHeight;
+    if (Math.abs((bw / bh) / ra - 1) < 0.02) return;
+    cropBase = bw / bh > ra ? { w: bh * ra, h: bh } : { w: bw, h: bw / ra };
+    bCrop = { w: cropBase.w, h: cropBase.h, x: (bw - cropBase.w) / 2, y: (bh - cropBase.h) / 2 };
+    $("#p-crop-zoom").value = 1; $("#p-crop-img").src = bImg.src; $("#p-crop").hidden = false;
+    if ($("#p-crop-img").complete) cropDraw(); else $("#p-crop-img").onload = cropDraw;
+  }
+  function cropClamp() { var bw = bImg.naturalWidth, bh = bImg.naturalHeight; bCrop.x = Math.max(0, Math.min(bw - bCrop.w, bCrop.x)); bCrop.y = Math.max(0, Math.min(bh - bCrop.h, bCrop.y)); }
+  function cropDraw() {
+    if (!bCrop) return; var bw = bImg.naturalWidth, bh = bImg.naturalHeight, b = $("#p-crop-box").style;
+    b.left = bCrop.x / bw * 100 + "%"; b.top = bCrop.y / bh * 100 + "%"; b.width = bCrop.w / bw * 100 + "%"; b.height = bCrop.h / bh * 100 + "%";
+  }
+  $("#p-crop-zoom").addEventListener("input", function () {
+    if (!bCrop) return; var z = +this.value, cx = bCrop.x + bCrop.w / 2, cy = bCrop.y + bCrop.h / 2;
+    bCrop.w = cropBase.w / z; bCrop.h = cropBase.h / z; bCrop.x = cx - bCrop.w / 2; bCrop.y = cy - bCrop.h / 2; cropClamp(); cropDraw();
+  });
+  (function () {
+    var box = $("#p-crop-box"), st = null;
+    box.addEventListener("pointerdown", function (e) { if (!bCrop) return; st = { x: e.clientX, y: e.clientY, cx: bCrop.x, cy: bCrop.y, k: bImg.naturalWidth / $("#p-crop-img").clientWidth }; box.setPointerCapture(e.pointerId); e.preventDefault(); });
+    box.addEventListener("pointermove", function (e) { if (!st) return; bCrop.x = st.cx + (e.clientX - st.x) * st.k; bCrop.y = st.cy + (e.clientY - st.y) * st.k; cropClamp(); cropDraw(); });
+    ["pointerup", "pointercancel"].forEach(function (t) { box.addEventListener(t, function () { st = null; }); });
+  })();
   $("#p-new").onclick = function () { openProject(null); };
 
-  /* Photos are kept whole. The finished wall ("after") sets the shape; it is only scaled down
-     for the web (longest side 2000 px). The "before" photo is fitted inside the same frame without
-     cropping; if its shape differs, the spare edges are filled with the wall colour. */
+  /* The finished wall ("after") sets the shape and is kept whole; it is only scaled down for the web
+     (longest side 2000 px). The "before" photo fills the same frame: if its shape differs, the part
+     chosen in the trim frame (bCrop) is used, so there are no plain bands. */
   var LONG = 2000;
   function outPair() {
     var s = Math.min(1, LONG / Math.max(aImg.naturalWidth, aImg.naturalHeight)),
@@ -1064,7 +1104,9 @@
     var c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
     x.drawImage(aImg, 0, 0, W, H); var a = c.toDataURL("image/jpeg", .86);
     var k = Math.min(W / bImg.naturalWidth, H / bImg.naturalHeight), bw = bImg.naturalWidth * k, bh = bImg.naturalHeight * k;
-    x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, W, H); x.drawImage(bImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
+    x.fillStyle = "#EFE7DA"; x.fillRect(0, 0, W, H);
+    if (bCrop) x.drawImage(bImg, bCrop.x, bCrop.y, bCrop.w, bCrop.h, 0, 0, W, H);
+    else x.drawImage(bImg, (W - bw) / 2, (H - bh) / 2, bw, bh);
     var b = c.toDataURL("image/jpeg", .86);
     return { b: b, a: a, w: W, h: H };
   }
