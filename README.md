@@ -57,6 +57,12 @@ An **Undo** button shows for 8 seconds.
    from what you actually publish (the API itself has no memory).
 3. Save draft, then press **Publish** at the bottom of the admin to put it on the website.
 
+Both photos of a project are always the same shape: the after photo is kept whole, and if the before
+photo is a different shape a trim frame appears under the photos (drag to choose what to keep, zoom to
+keep less). On the homepage every project has the same height; the width follows the photo (portrait
+narrow, landscape wide). The handle sweeps by itself (centre → 25% → 75% → centre) each time a
+project comes to the centre, until someone drags it; the first project shows "Drag to compare".
+
 ## FAQs (admin → FAQs)
 
 The questions on the home page come from the admin, not the code. Edit the wording, add or delete
