@@ -248,6 +248,26 @@
   .acct small { display: block; color: var(--faint); font-size: .8rem; }
   :root { --notes-bottom: calc(var(--tabbar) + 76px); }
   @media (min-width: 861px) { :root { --notes-bottom: 84px; } }
+  /* Homepage pictures */
+  .ht-sec h2 { font: 700 .78rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--accent, #0F6B6E); margin: 0; display: flex; justify-content: space-between; }
+  .ht-sec h2 span { color: var(--muted); letter-spacing: 0; text-transform: none; font-weight: 500; }
+  .ht-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .ht-row:first-of-type { border-top: 0; }
+  .ht-th { display: flex; gap: 4px; flex: none; }
+  .ht-th .fitbox, .ht-th .more, .ht-th .auto { position: relative; display: block; width: 54px; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--wall, #f1ebe2); }
+  .ht-th .more, .ht-th .auto { display: grid; place-items: center; font-size: .76rem; color: var(--muted); }
+  .ht-th .more { width: 40px; }
+  .ht-nm { flex: 1; min-width: 0; font-weight: 600; color: var(--ink); }
+  .ht-nm small { display: block; font-weight: 400; color: var(--muted); font-size: .82rem; }
+  .ht-st { font-size: .8rem; color: var(--muted); text-align: right; white-space: nowrap; }
+  .ht-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+  .ht-pick { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; border: 2px solid transparent; padding: 0; cursor: pointer; background: var(--wall, #f1ebe2); }
+  .ht-pick .fitbox { position: absolute; inset: 0; }
+  .ht-pick[aria-pressed="true"] { border-color: var(--accent, #0F6B6E); }
+  .ht-pick i { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent, #0F6B6E); color: #fff; font: 700 .74rem var(--font-body); display: none; place-items: center; z-index: 2; }
+  .ht-pick[aria-pressed="true"] i { display: grid; }
+  .ht-pick span { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; background: linear-gradient(transparent, rgba(0,0,0,.65)); color: #fff; font-size: .74rem; padding: 12px 6px 4px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 560px) { .ht-st { display: none; } .ht-row .btn { padding-inline: 12px; } }
 </style>
 </head>
 <body class="admin">
@@ -280,6 +300,7 @@
       <button type="button" data-view="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>Projects</button>
       <button type="button" data-view="reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg>Reviews</button>
       <button type="button" data-view="faqs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.9"/><path d="M12 17.2v.1"/></svg>FAQs</button>
+      <button type="button" data-view="homepage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Homepage</button>
       <div class="sep"></div>
       <button type="button" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
     </nav>
@@ -363,6 +384,12 @@
           <p class="sub" style="margin-top:0">Tap a question to edit it. Use the arrows to change the order. Turned-off questions stay here but are hidden from the website.</p>
           <ol class="fq-list" id="fq-list"></ol>
         </div>
+      </section>
+
+      <!-- ===== HOMEPAGE PICTURES ===== -->
+      <section data-pane="homepage" hidden>
+        <div class="view-head"><div><h1>Homepage pictures</h1><p>Pick the picture for every tile. Pick several to rotate: the website shows a different one each day.</p></div></div>
+        <div id="ht-list" style="display:grid;gap:14px"></div>
       </section>
 
       <!-- ===== SETTINGS ===== -->
@@ -510,6 +537,18 @@
   </div>
 </dialog>
 
+<!-- ================= HOMEPAGE PICTURE PICKER ================= -->
+<dialog class="sheet" id="ht-dlg" aria-labelledby="ht-title">
+  <div class="sheet-in">
+    <header><div style="display:grid;gap:4px;flex:1"><h2 id="ht-title">Tile</h2><p class="muted" style="margin:0;font-size:.88rem">Tap to select. 1 = fixed, 2 or more = rotates daily.</p></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <div class="body">
+      <div class="btn-row" id="ht-chips"></div>
+      <div class="ht-grid" id="ht-grid"></div>
+    </div>
+    <footer><span class="grow muted" id="ht-note" style="font-size:.86rem"></span><button class="btn btn-ghost" type="button" id="ht-clear">Automatic</button><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="ht-save" style="background:var(--ink);box-shadow:none">Done</button></footer>
+  </div>
+</dialog>
+
 <!-- ================= FAQ SHEET ================= -->
 <dialog class="sheet" id="f-dlg" aria-labelledby="f-title">
   <div class="sheet-in">
@@ -584,12 +623,12 @@
   };
 
   /* ---------- routing ---------- */
-  var VIEWS = ["designs", "projects", "reviews", "faqs", "settings"];
+  var VIEWS = ["designs", "projects", "reviews", "faqs", "homepage", "settings"];
   function route() {
     var v = (location.hash || "").slice(1).split("?")[0]; if (VIEWS.indexOf(v) < 0) v = "designs";
     $$("[data-pane]").forEach(function (p) { p.hidden = p.dataset.pane !== v; });
     $$(".a-nav [data-view]").forEach(function (b) { b.toggleAttribute("aria-current", b.dataset.view === v); if (b.dataset.view === v) b.setAttribute("aria-current", "page"); });
-    ({ designs: renderDesigns, projects: renderProjects, reviews: renderReviews, faqs: renderFaqs, settings: renderSettings })[v]();
+    ({ designs: renderDesigns, projects: renderProjects, reviews: renderReviews, faqs: renderFaqs, homepage: renderTiles, settings: renderSettings })[v]();
     window.scrollTo(0, 0);
   }
   $$(".a-nav [data-view]").forEach(function (b) { b.onclick = function () { location.hash = b.dataset.view; }; });
@@ -1236,6 +1275,65 @@
      FAQS (home page questions; published with everything else)
      ===================================================================== */
   var F = null;
+  /* ---------- Homepage pictures: db.settings.tiles = { slot: ["WB-0137", "p:<project slug>", …] } ----------
+     index.html reads it (window.WB_TILES). Empty = automatic (the tile's built-in choice). */
+  var TILE_SECS = [
+    ["Every wall has a story", [["story-living", "The wall guests ask about", "Living room · big tile", "living"], ["story-kids", "A room to dream in", "Kids' room", "kids"],
+      ["story-lobby", "A lobby everyone notices", "Lobby and common areas", "hotel"], ["story-business", "A place people remember", "Businesses", "office"]]],
+    ["Ideas by room", [["room-living", "Living room", "", "living"], ["room-bedroom", "Bedroom", "", "bedroom"], ["room-kids", "Kids' room", "", "kids"], ["room-custom", "Your photo or logo", "", "projects"],
+      ["room-office", "Office / corporate", "", "office"], ["room-cafe", "Café & restaurant", "", "cafe"], ["room-hotel", "Hotel lobby", "", "hotel"]]]
+  ];
+  function tileItem(ref) {
+    if (/^p:/.test(ref)) { var p = (db.projects || []).filter(function (x) { return x.slug === ref.slice(2); })[0]; return p && p.after ? { img: p.after, name: p.title || "Project", hidden: p.hidden } : null; }
+    var d = byCode()[ref]; return d && d.img ? d : null;
+  }
+  function tileThumb(it) { return thumb({ img: it.img, code: "" }); }
+  function renderTiles() {
+    var T = (db.settings.tiles = db.settings.tiles || {});
+    $("#ht-list").innerHTML = TILE_SECS.map(function (s) {
+      return '<div class="card ht-sec"><h2>' + esc(s[0]) + '<span>' + s[1].length + ' tiles</span></h2><div>' + s[1].map(function (t) {
+        var items = (T[t[0]] || []).map(tileItem).filter(Boolean), n = items.length;
+        var th = n ? items.slice(0, 3).map(tileThumb).join("") + (n > 3 ? '<span class="more">+' + (n - 3) + '</span>' : "") : '<span class="auto">Auto</span>';
+        return '<div class="ht-row"><span class="ht-th">' + th + '</span><span class="ht-nm">' + esc(t[1]) + '<small>' + (t[2] ? esc(t[2]) : "&nbsp;") + '</small></span>' +
+          '<span class="ht-st">' + (n > 1 ? "↻ Rotates daily · " + n : n ? "Fixed" : "Automatic") + '</span><button type="button" class="btn btn-ghost btn-xs" data-tile="' + t[0] + '">Change</button></div>';
+      }).join("") + '</div></div>';
+    }).join("");
+    $$("[data-tile]").forEach(function (b) { b.onclick = function () { openTile(b.dataset.tile); }; });
+  }
+  var tileSel = [], tileSlot = null, tileFilter = "room";
+  function tileDef(slot) { var f = null; TILE_SECS.forEach(function (s) { s[1].forEach(function (t) { if (t[0] === slot) f = t; }); }); return f; }
+  function openTile(slot) {
+    tileSlot = slot; var t = tileDef(slot);
+    tileSel = ((db.settings.tiles || {})[slot] || []).filter(tileItem);
+    tileFilter = t[3] === "projects" ? "projects" : "room";
+    $("#ht-title").textContent = t[1] + " tile";
+    drawTilePicker(); openDlg($("#ht-dlg"));
+  }
+  function drawTilePicker() {
+    var t = tileDef(tileSlot), roomName = (DESIGN_ROOMS.filter(function (r) { return r[0] === t[3]; })[0] || [0, ""])[1];
+    var chips = (t[3] !== "projects" ? [["room", "Suits " + roomName.toLowerCase()]] : []).concat([["all", "All designs"], ["projects", "Projects (after photos)"]]);
+    $("#ht-chips").innerHTML = chips.map(function (c) { return '<button type="button" class="fchip" data-hf="' + c[0] + '" aria-pressed="' + (c[0] === tileFilter) + '">' + esc(c[1]) + '</button>'; }).join("");
+    $$("[data-hf]").forEach(function (b) { b.onclick = function () { tileFilter = b.dataset.hf; drawTilePicker(); }; });
+    var list;
+    if (tileFilter === "projects") list = (db.projects || []).filter(function (p) { return p.after && !p.hidden && p.slug; }).map(function (p) { return { ref: "p:" + p.slug, img: p.after, name: p.title || "Project" }; });
+    else list = designs().filter(function (d) { return d.img && !d.hidden && (tileFilter === "all" || (d.spaces || []).indexOf(t[3]) > -1); })
+      .sort(function (a, b) { return String(b.code).localeCompare(String(a.code)); }).map(function (d) { return { ref: d.code, img: d.img, name: d.name || d.code }; });
+    $("#ht-grid").innerHTML = list.length ? list.map(function (it) {
+      var k = tileSel.indexOf(it.ref);
+      return '<button type="button" class="ht-pick" data-ref="' + esc(it.ref) + '" aria-pressed="' + (k > -1) + '">' + tileThumb(it) + '<i>' + (k > -1 ? k + 1 : "") + '</i><span>' + esc(it.name) + '</span></button>';
+    }).join("") : '<p class="muted">Nothing here yet.</p>';
+    $$("#ht-grid [data-ref]").forEach(function (b) { b.onclick = function () { var r = b.dataset.ref, k = tileSel.indexOf(r); if (k > -1) tileSel.splice(k, 1); else tileSel.push(r); drawTilePicker(); }; });
+    var n = tileSel.length;
+    $("#ht-note").textContent = n ? n + " selected · " + (n > 1 ? "rotates daily" : "fixed") : "Nothing selected: the tile picks automatically";
+  }
+  $("#ht-clear").onclick = function () { tileSel = []; drawTilePicker(); };
+  $("#ht-save").onclick = function () {
+    var T = (db.settings.tiles = Object.assign({}, db.settings.tiles || {}));
+    if (tileSel.length) T[tileSlot] = tileSel.slice(); else delete T[tileSlot];
+    if (!save()) return;
+    $("#ht-dlg").close(); renderTiles(); autoPublish("Homepage pictures updated");
+  };
+
   function renderFaqs() {
     db.faqs = db.faqs || [];
     var n = db.faqs.length;

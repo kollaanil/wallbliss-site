@@ -58,6 +58,7 @@
     window.WB_DESIGNS = window.WB_DESIGNS_ALL.filter(function (d) { return !d.hidden; });
   }
   if (db.projects.length) window.WB_PROJECTS = db.projects.filter(function (p) { return !p.hidden; }).concat(window.WB_PROJECTS || []);
+  window.WB_TILES = db.settings.tiles || {};          // Admin → Homepage pictures
   if (Array.isArray(RAW.faqs) || isAdmin) window.WB_FAQS = db.faqs.filter(function (f) { return f.show !== false && f.q && f.a; });
   if (db.reviews.length) window.WB_REVIEWS = db.reviews.filter(function (r) { return r.show; }).concat(window.WB_REVIEWS || []);
 
