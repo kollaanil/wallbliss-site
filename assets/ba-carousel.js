@@ -1,7 +1,9 @@
 /* Homepage before/after carousel.
    Slides = projects published from the admin (newest first, "Show in the homepage" on)
    followed by the built-in world-map wall. Swipe or use the arrows to move between walls;
-   drag the round handle to compare before and after. Neighbouring walls peek in on both sides. */
+   drag the round handle to compare before and after. Neighbouring walls peek in on both sides.
+   Every wall sits in the same fixed-height frame: project photos are shown whole (never cropped)
+   over a soft blurred copy of the after photo, so tall phone photos don't make the section jump. */
 (function () {
   var root = document.getElementById("bac"); if (!root) return;
   var track = root.querySelector(".bac-track"), prev = root.querySelector(".bac-prev"), next = root.querySelector(".bac-next"), count = root.querySelector(".bac-count");
@@ -13,7 +15,7 @@
     .map(function (p) {
       return { before: '<img class="fade" src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy" decoding="async">',
         after: '<img class="fade" src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async">',
-        title: p.title, meta: [p.locality, p.space, p.time].filter(Boolean).join(" · "), href: "projects.html#" + p.slug, ratio: +p.ratio || 0 };
+        bg: p.after, title: p.title, meta: [p.locality, p.space, p.time].filter(Boolean).join(" · "), href: "projects.html#" + p.slug };
     });
   function pic(n, alt) {
     return '<picture><source type="image/webp" srcset="assets/img/ba-' + n + '-m.webp 800w, assets/img/ba-' + n + '-l.webp 1120w" sizes="(max-width: 640px) 86vw, 760px">' +
@@ -24,7 +26,7 @@
 
   track.innerHTML = slides.map(function (s, i) {
     return '<figure class="bac-slide" data-i="' + i + '" aria-roledescription="slide" aria-label="' + (i + 1) + " of " + slides.length + '">' +
-      '<div class="cmp' + (s.ratio ? " full" : "") + '" style="--pos:50%' + (s.ratio ? ";aspect-ratio:" + s.ratio : "") + '"><div class="cmp-b">' + s.before + '</div><div class="cmp-a">' + s.after + '</div>' +
+      '<div class="cmp' + (s.bg ? " full" : "") + '" style="--pos:50%">' + (s.bg ? '<div class="cmp-bg" aria-hidden="true"><img src="' + esc(s.bg) + '" alt="" loading="lazy" decoding="async"></div>' : "") + '<div class="cmp-b">' + s.before + '</div><div class="cmp-a">' + s.after + '</div>' +
       '<span class="cmp-l l">Before</span><span class="cmp-l r">After</span>' +
       '<div class="cmp-line"><button type="button" class="cmp-knob" aria-label="Drag to compare before and after" tabindex="-1">⟷</button></div>' +
       '<input class="cmp-range" type="range" min="0" max="100" value="50" aria-label="Compare before and after: ' + esc(s.title) + '"></div>' +
