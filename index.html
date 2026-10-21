@@ -559,12 +559,27 @@
     }
     return null;
   }
+  /* catalogue pictures carry a "WallBliss Studio · WB-xxxx" badge in the bottom-right corner (the watermark).
+     Marketing tiles must not show codes, so the tile draws the picture without that bottom strip
+     (the badge is about 6.5% of the long side tall, see assets/watermark.js). */
+  function hideBadge(img, src) {
+    var im = new Image();
+    im.onload = function () {
+      var W = im.naturalWidth, H = im.naturalHeight, cut = Math.round(Math.max(W, H) * 0.068), h = Math.max(1, H - cut);
+      var cv = document.createElement("canvas"); cv.width = W; cv.height = h; cv.className = "fit fade in";
+      cv.getContext("2d").drawImage(im, 0, 0, W, h, 0, 0, W, h);
+      cv.setAttribute("role", "img"); cv.setAttribute("aria-label", img.alt || "");
+      img.replaceWith(cv);
+    };
+    im.src = src;
+  }
   document.querySelectorAll("[data-real]").forEach(function (a) {
     var d = realFor(a.dataset.real), pic = a.querySelector(".pic") || a; if (!d) return;
     var u = String(d.img).replace(/"/g, "&quot;"), box = document.createElement("span");
     box.className = "fitbox";
     box.innerHTML = '<img class="fit-bg" src="' + u + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async">';
     var c = pic.querySelector("canvas"); if (c) c.replaceWith(box); else pic.insertBefore(box, pic.firstChild);
+    if (d.code) hideBadge(box.querySelector("img.fit"), d.img);
     if (d.code && a.getAttribute("href") && a.getAttribute("href").indexOf("catalogue.html") === 0 && a.classList.contains("story")) a.href = "catalogue.html#" + d.code;
   });
 
