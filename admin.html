@@ -542,7 +542,7 @@
   var db = WB.db.load();
   function save() { if (!WB.db.save(db)) { toast("Storage is full in this browser. Use smaller images or reset preview data.", "error"); return false; } return true; }
 
-  var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
+  var ROOMS = [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["office", "Office"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"], ["clinic", "Hospital & clinic"]];
   /* rooms offered when adding or editing a design (projects keep the full list above) */
   var DESIGN_ROOMS = ROOMS.filter(function (r) { return r[0] !== "clinic"; }).map(function (r) { return r[0] === "office" ? ["office", "Office / corporate"] : r; });
   var STYLES = [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]];
@@ -1037,7 +1037,6 @@
     "Living room": { t: ["The wall the whole family gathers around", "Where every evening now begins with a smile", "A living room that finally tells their story", "The view they come home to every day"], end: "It's now the first thing everyone sees when they walk in." },
     "Bedroom": { t: ["A wall worth waking up to", "Calm, colour and a little magic above the bed", "The last thing they see at night, the first each morning"], end: "The room feels calmer, warmer and completely theirs." },
     "Kids' room": { t: ["A wall that grows up with them", "Where little dreams now have a big home", "Bedtime stories, now on the wall", "A room that sparks wonder every morning"], end: "Now it's the first thing the little one sees every morning." },
-    "Pooja room": { t: ["A sacred corner, now glowing with devotion", "Where every prayer feels a little closer", "A quiet place of peace, made beautiful"], end: "The pooja corner now feels serene the moment you step in." },
     "Office": { t: ["A workspace that tells its story with pride", "Walls that welcome every visitor", "Where the team now walks in inspired"], end: "Visitors notice it the moment they walk in." },
     "Café & restaurant": { t: ["The wall every guest wants a photo with", "Where every table now has a view", "A café wall people come back for"], end: "Guests now stop, smile and reach for their phones." },
     "Hotel lobby": { t: ["A first impression guests remember", "A lobby that welcomes like home", "Where every arrival begins with wonder"], end: "Guests now arrive to a welcome they remember." },

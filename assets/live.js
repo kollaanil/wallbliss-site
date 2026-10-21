@@ -17,6 +17,10 @@
     db.reviews = db.reviews || []; db.settings = db.settings || {};
     /* FAQs came later: a draft or snapshot saved before then starts from the published FAQs */
     if (!Array.isArray(db.faqs)) db.faqs = Array.isArray(RAW.faqs) ? clone(RAW.faqs) : [];
+    /* "Pooja room" was retired as a room (Oct 2026): those designs count as living room */
+    function noPooja(o) { if (!o || !Array.isArray(o.spaces) || o.spaces.indexOf("pooja") < 0) return; o.spaces = o.spaces.filter(function (s) { return s !== "pooja"; }); if (o.spaces.indexOf("living") < 0) o.spaces.unshift("living"); }
+    db.designs.forEach(noPooja); Object.keys(db.edits).forEach(function (k) { noPooja(db.edits[k]); });
+    db.projects.forEach(function (p) { if (p && p.space === "Pooja room") p.space = "Living room"; });
     return db;
   }
   var PUB = norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {})));

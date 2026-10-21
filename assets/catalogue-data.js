@@ -8,7 +8,7 @@
    Fields
    code      unique design code (WB-NNNN)
    name      short display name
-   spaces    living | bedroom | kids | pooja | office | cafe | hotel | clinic
+   spaces    living | bedroom | kids | office | cafe | hotel | clinic
    styles    nature | abstract | geometric | folk | devotional | kids | minimal | texture3d
    colours   green | blue | earth | warm | mono | pastel | dark
    orient    wide | tall | square   (best wall shape)

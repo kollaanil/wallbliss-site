@@ -10,7 +10,7 @@
      slug: "whitefield-living-room-warli",     // unique, lowercase-with-dashes
      title: "Warli mural for a Whitefield living room",
      locality: "Whitefield",                    // Bengaluru area — this is what ranks locally
-     space: "Living room",                      // Living room | Bedroom | Kids room | Pooja room | Office | Café | Hotel | Clinic
+     space: "Living room",                      // Living room | Bedroom | Kids room | Office | Café | Hotel | Clinic
      size: "10′ × 8′ (80 sq ft)",
      design: "WB-0137",                          // catalogue code, or "Custom"
      time: "3 hours on site",

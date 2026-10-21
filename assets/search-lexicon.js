@@ -7,7 +7,7 @@
 window.WB_LEXICON = [
   /* ---------- devotional ---------- */
   "devotional|God & devotional|god,gods,bhagwan,bhagvan,bagwan,bhagavan,bhagawan,devaru,devru,devudu,deva,devata,divine,spiritual,religious,holy,sacred,aradhana,prayer,भगवान,देवता,ईश्वर,ದೇವರು,ದೇವ,దేవుడు,దేవత|krishna,radha,ganesha,lakshmi,shiva,durga,surya,hanuman,rama,balaji,saraswati,buddha,murugan,ayyappa,jesus,islamic,sikh,om,kamadhenu,lotus,mandala",
-  "pooja|Pooja room|pooja,puja,pooja room,puja room,poojaroom,pujaroom,prayer room,mandir,mandir wall,temple,gudi,devara mane,devaramane,devudi gadi,pooja gadi,pooja ghar,puja ghar,पूजा,पूजा घर,मंदिर,ಪೂಜೆ,ದೇವರ ಮನೆ,ದೇವಸ್ಥಾನ,ಗುಡಿ,పూజ,పూజ గది,గుడి,దేవుడి గది|devotional",
+  "pooja|Pooja & devotional|pooja,puja,pooja room,puja room,poojaroom,pujaroom,prayer room,mandir,mandir wall,temple,gudi,devara mane,devaramane,devudi gadi,pooja gadi,pooja ghar,puja ghar,पूजा,पूजा घर,मंदिर,ಪೂಜೆ,ದೇವರ ಮನೆ,ದೇವಸ್ಥಾನ,ಗುಡಿ,పూజ,పూజ గది,గుడి,దేవుడి గది|devotional",
   "krishna|Krishna|krishna,krishnaa,krishan,krisna,krishana,krsna,kanha,kanhaiya,kanaiya,kanna,kannayya,gopal,gopala,bal gopal,balgopal,bala krishna,balakrishna,little krishna,baby krishna,murali,murlidhar,muralidhar,govinda,gokul,shyam,radhe krishna,radha krishna,कृष्ण,कान्हा,गोपाल,ಕೃಷ್ಣ,ಕಣ್ಣ,కృష్ణ,కన్నయ్య|",
   "radha|Radha|radha,radhe,radha rani,राधा,ರಾಧೆ,ರಾಧಾ,రాధ|",
   "ganesha|Ganesha|ganesha,ganesh,ganesa,ganapati,ganapathi,ganpati,ganpathi,vinayaka,vinayak,vinayagar,vighneshwara,vigneshwara,ekdanta,lambodar,गणेश,गणपति,विनायक,ಗಣೇಶ,ಗಣಪತಿ,ವಿನಾಯಕ,వినాయకుడు,వినాయక,గణేశ,గణపతి|",

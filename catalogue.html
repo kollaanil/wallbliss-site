@@ -324,7 +324,7 @@
   var DATA = window.WB_DESIGNS || [], SYN = window.WB_SYNONYMS || {};
   var BY = {}; DATA.forEach(function (d) { BY[d.code] = d; });
   var FACETS = {
-    spaces: { label: "Room", opts: [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["pooja", "Pooja room"], ["office", "Office / corporate"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"]] },
+    spaces: { label: "Room", opts: [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["office", "Office / corporate"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"]] },
     styles: { label: "Style", opts: [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]] }
   };
   /* styles the team typed themselves (e.g. "tanjore") get their own chip */
@@ -334,7 +334,7 @@
   })();
   var ORIENT = { wide: "Wide wall", tall: "Tall wall", square: "Square" };
   var SORTS = [["pop", "Most loved"], ["new", "Newest"], ["name", "Name A–Z"]];
-  var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", pooja: "pooja room puja mandir prayer room", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
+  var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
   var state = { q: "", sort: "pop", f: { spaces: [], styles: [] } };
 
   /* ---------- search: multilingual engine in assets/search.js ---------- */
@@ -749,10 +749,11 @@
 
   function toast(msg) { WB.notify(msg); }        /* shared notifications: assets/ui.js */
 
-  /* ---------- deep links: #kids, #pooja … pre-filter; #WB-0116 opens a design ---------- */
+  /* ---------- deep links: #kids, #living … pre-filter (old #pooja links open devotional designs); #WB-0116 opens a design ---------- */
   var h = decodeURIComponent((location.hash || "").slice(1));
   var qs = new URLSearchParams(location.search);
   if (qs.get("q")) { q.value = qs.get("q"); }
+  if (h === "pooja" && !qs.get("q")) q.value = "devotional";
   if (SPACE_WORDS[h]) state.f.spaces = [h];
   else if (qs.get("room") && SPACE_WORDS[qs.get("room")]) state.f.spaces = [qs.get("room")];
   render(); syncHearts();

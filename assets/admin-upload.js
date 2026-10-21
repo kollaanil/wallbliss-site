@@ -170,7 +170,7 @@
       "Look at this design and reply with ONLY a JSON object, no other text:\n" +
       '{"name": "2-4 word catchy English name", ' +
       '"tags": ["8-14 lowercase English tags, most specific first: deities or people by their common Indian name, animals, objects, scene, art style, mood. No generic words like art, design, wall, image"], ' +
-      '"search_words": ["15-30 words or short phrases customers in India might type to find this: synonyms, Hindi, Kannada and Telugu words written in Roman letters AND in their own script, common misspellings, and intent phrases like \\"pooja room\\" or \\"seven horses vastu\\""], ' +
+      '"search_words": ["15-30 words or short phrases customers in India might type to find this: synonyms, Hindi, Kannada and Telugu words written in Roman letters AND in their own script, common misspellings, and intent phrases like \\"living room wall\\" or \\"seven horses vastu\\""], ' +
       '"spaces": [all that suit it, from ' + JSON.stringify(ids(A.ROOMS)) + '], "styles": [1-3 that fit best, from ' + JSON.stringify(ids(A.STYLES)) + ']}\n' +
       "If the photo shows a finished wall in a room, tag the artwork, not the room. Be accurate: only tag what you can see.";
   }

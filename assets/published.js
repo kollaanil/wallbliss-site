@@ -7,8 +7,7 @@ window.WB_PUBLISHED = {
    "pop": 5,
    "name": "Kamadhenu colored marble",
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "devotional"
@@ -33,7 +32,6 @@ window.WB_PUBLISHED = {
    "name": "Surya bhagawan 7 horses",
    "spaces": [
     "living",
-    "pooja",
     "cafe",
     "hotel"
    ],
@@ -88,8 +86,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "kids",
-    "pooja"
+    "kids"
    ],
    "styles": [
     "traditional",
@@ -112,8 +109,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -195,7 +191,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "pooja",
     "hotel"
    ],
    "styles": [
@@ -219,8 +214,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -413,8 +407,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -487,7 +480,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "hotel",
-    "pooja",
     "living",
     "clinic"
    ],
@@ -535,8 +527,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -627,8 +618,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "hotel",
-    "pooja"
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -672,8 +662,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -695,8 +684,7 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "kids",
-    "pooja"
+    "kids"
    ],
    "styles": [
     "traditional",
@@ -718,8 +706,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
@@ -741,8 +728,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "texture3d",
@@ -793,8 +779,7 @@ window.WB_PUBLISHED = {
    "spaces": [
     "cafe",
     "living",
-    "hotel",
-    "pooja"
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -818,7 +803,6 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "pooja",
     "hotel"
    ],
    "styles": [
@@ -866,8 +850,7 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "living",
-    "pooja"
+    "living"
    ],
    "styles": [
     "traditional",
