@@ -1028,31 +1028,60 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0182",
+   "name": "Srinivasa Kalyanam with Tirumala Hills",
+   "img": "assets/uploads/designs/wb-0182-coym5a.jpg",
+   "tags": [
+    "srinivasa",
+    "kalyanam",
+    "srinivasakalyanam",
+    "tirupati"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0183",
+   "name": "Kamadhenu for Double Height Wall",
+   "img": "assets/uploads/designs/wb-0183-16jr648.jpg",
+   "tags": [
+    "kamadhenu",
+    "doublewall",
+    "doubleceiling",
+    "doubleheight"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "texture3d",
+    "folk"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
  "projects": [
-  {
-   "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
-   "title": "The wall every guest wants a photo with",
-   "locality": "Lal Bagh",
-   "space": "Café & restaurant",
-   "segment": "corporate",
-   "size": "7 ft by 5 ft",
-   "design": "WB-0138",
-   "time": "4 hours",
-   "month": "2026-10",
-   "summary": "A plain 7 ft by 5 ft wall in this café & restaurant in Lal Bagh now carries the “Surya bhagawan 7 horses” design, printed straight onto the wall in 4 hours with no mess. Guests now stop, smile and reach for their phones.",
-   "quote": "",
-   "consent": true,
-   "hidden": false,
-   "noHome": false,
-   "w": 1500,
-   "h": 2000,
-   "ratio": 0.75,
-   "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-18pu81f.jpg",
-   "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-1m7scrh.jpg"
-  },
   {
    "slug": "where-the-team-now-walks-in-inspired-zm6p",
    "title": "Where the team now walks in inspired",
@@ -1073,6 +1102,27 @@ window.WB_PUBLISHED = {
    "ratio": 0.5625,
    "before": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-before-zasix1.jpg",
    "after": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-after-wg18nt.jpg"
+  },
+  {
+   "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
+   "title": "The wall every guest wants a photo with",
+   "locality": "Lal Bagh",
+   "space": "Café & restaurant",
+   "segment": "corporate",
+   "size": "7 ft by 5 ft",
+   "design": "WB-0138",
+   "time": "4 hours",
+   "month": "2026-10",
+   "summary": "A plain 7 ft by 5 ft wall in this café & restaurant in Lal Bagh now carries the “Surya bhagawan 7 horses” design, printed straight onto the wall in 4 hours with no mess. Guests now stop, smile and reach for their phones.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 1500,
+   "h": 2000,
+   "ratio": 0.75,
+   "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-18pu81f.jpg",
+   "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-1m7scrh.jpg"
   },
   {
    "slug": "shiva-in-cosmos-gzvn",
@@ -1213,6 +1263,176 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-20T14:20:42.797Z",
- "by": "Anil"
+ "updated": "2026-10-21T13:44:05.231Z",
+ "by": "Manasa",
+ "og": {
+  "d:WB-0137": {
+   "sig": "1uva2wb",
+   "card": "d/WB-0137/card-1uva2wb.jpg"
+  },
+  "d:WB-0138": {
+   "sig": "110hyfn",
+   "card": "d/WB-0138/card-110hyfn.jpg"
+  },
+  "d:WB-0139": {
+   "sig": "1fkikxj",
+   "card": "d/WB-0139/card-1fkikxj.jpg"
+  },
+  "d:WB-0140": {
+   "sig": "rdl5lw",
+   "card": "d/WB-0140/card-rdl5lw.jpg"
+  },
+  "d:WB-0141": {
+   "sig": "6f07ze",
+   "card": "d/WB-0141/card-6f07ze.jpg"
+  },
+  "d:WB-0142": {
+   "sig": "eifhhn",
+   "card": "d/WB-0142/card-eifhhn.jpg"
+  },
+  "d:WB-0143": {
+   "sig": "1ffitmk",
+   "card": "d/WB-0143/card-1ffitmk.jpg"
+  },
+  "d:WB-0144": {
+   "sig": "u6myc2",
+   "card": "d/WB-0144/card-u6myc2.jpg"
+  },
+  "d:WB-0145": {
+   "sig": "1q7gkcs",
+   "card": "d/WB-0145/card-1q7gkcs.jpg"
+  },
+  "d:WB-0147": {
+   "sig": "15jh8o",
+   "card": "d/WB-0147/card-15jh8o.jpg"
+  },
+  "d:WB-0150": {
+   "sig": "a9dw8i",
+   "card": "d/WB-0150/card-a9dw8i.jpg"
+  },
+  "d:WB-0152": {
+   "sig": "coir88",
+   "card": "d/WB-0152/card-coir88.jpg"
+  },
+  "d:WB-0153": {
+   "sig": "13nfg3o",
+   "card": "d/WB-0153/card-13nfg3o.jpg"
+  },
+  "d:WB-0154": {
+   "sig": "5iyxt9",
+   "card": "d/WB-0154/card-5iyxt9.jpg"
+  },
+  "d:WB-0155": {
+   "sig": "11oudus",
+   "card": "d/WB-0155/card-11oudus.jpg"
+  },
+  "d:WB-0156": {
+   "sig": "107ukif",
+   "card": "d/WB-0156/card-107ukif.jpg"
+  },
+  "d:WB-0157": {
+   "sig": "1uadicy",
+   "card": "d/WB-0157/card-1uadicy.jpg"
+  },
+  "d:WB-0158": {
+   "sig": "1ux4jma",
+   "card": "d/WB-0158/card-1ux4jma.jpg"
+  },
+  "d:WB-0159": {
+   "sig": "sjpe68",
+   "card": "d/WB-0159/card-sjpe68.jpg"
+  },
+  "d:WB-0160": {
+   "sig": "4xilz6",
+   "card": "d/WB-0160/card-4xilz6.jpg"
+  },
+  "d:WB-0161": {
+   "sig": "l3nn2w",
+   "card": "d/WB-0161/card-l3nn2w.jpg"
+  },
+  "d:WB-0162": {
+   "sig": "jhbjen",
+   "card": "d/WB-0162/card-jhbjen.jpg"
+  },
+  "d:WB-0163": {
+   "sig": "pm6ofe",
+   "card": "d/WB-0163/card-pm6ofe.jpg"
+  },
+  "d:WB-0164": {
+   "sig": "r0joja",
+   "card": "d/WB-0164/card-r0joja.jpg"
+  },
+  "d:WB-0165": {
+   "sig": "161mnfx",
+   "card": "d/WB-0165/card-161mnfx.jpg"
+  },
+  "d:WB-0166": {
+   "sig": "crah4s",
+   "card": "d/WB-0166/card-crah4s.jpg"
+  },
+  "d:WB-0167": {
+   "sig": "b0qzwf",
+   "card": "d/WB-0167/card-b0qzwf.jpg"
+  },
+  "d:WB-0168": {
+   "sig": "i3ryvl",
+   "card": "d/WB-0168/card-i3ryvl.jpg"
+  },
+  "d:WB-0169": {
+   "sig": "t7i91c",
+   "card": "d/WB-0169/card-t7i91c.jpg"
+  },
+  "d:WB-0170": {
+   "sig": "1v4p9fa",
+   "card": "d/WB-0170/card-1v4p9fa.jpg"
+  },
+  "d:WB-0171": {
+   "sig": "x4pk5x",
+   "card": "d/WB-0171/card-x4pk5x.jpg"
+  },
+  "d:WB-0173": {
+   "sig": "w2gz4b",
+   "card": "d/WB-0173/card-w2gz4b.jpg"
+  },
+  "d:WB-0174": {
+   "sig": "ooq1xp",
+   "card": "d/WB-0174/card-ooq1xp.jpg"
+  },
+  "d:WB-0175": {
+   "sig": "7q7666",
+   "card": "d/WB-0175/card-7q7666.jpg"
+  },
+  "d:WB-0176": {
+   "sig": "emiz0f",
+   "card": "d/WB-0176/card-emiz0f.jpg"
+  },
+  "d:WB-0177": {
+   "sig": "12mx72w",
+   "card": "d/WB-0177/card-12mx72w.jpg"
+  },
+  "d:WB-0178": {
+   "sig": "41earm",
+   "card": "d/WB-0178/card-41earm.jpg"
+  },
+  "d:WB-0179": {
+   "sig": "1kuhxo",
+   "card": "d/WB-0179/card-1kuhxo.jpg"
+  },
+  "d:WB-0180": {
+   "sig": "1nfwmgl",
+   "card": "d/WB-0180/card-1nfwmgl.jpg"
+  },
+  "d:WB-0181": {
+   "sig": "1gva3id",
+   "card": "d/WB-0181/card-1gva3id.jpg"
+  },
+  "d:WB-0182": {
+   "sig": "svr30l",
+   "card": "d/WB-0182/card-svr30l.jpg"
+  },
+  "d:WB-0183": {
+   "sig": "16xdeqo",
+   "card": "d/WB-0183/card-16xdeqo.jpg"
+  }
+ }
 };
