@@ -610,3 +610,30 @@ img.fade.in { opacity: 1; }
 .fitbox img.fit-bg { object-fit: cover; filter: blur(14px) saturate(1.1) brightness(.92); transform: scale(1.18); opacity: .85; }
 .pic-tag { position: absolute; left: 8px; bottom: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(255,253,249,.94); color: var(--ink); font: 700 .72rem var(--font-body); }
 .space .fitbox { position: absolute; inset: 0; }
+
+/* ---------- Phone button: Call or WhatsApp (assets/site.js wireCall) ---------- */
+.pc-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--accent); border-radius: 999px; background: var(--surface); color: var(--accent); font: 600 .98rem var(--font-body); cursor: pointer; transition: background .2s var(--ease); }
+.pc-btn:hover, .pc-btn[aria-expanded="true"] { background: var(--accent-soft, #e6f0f0); }
+.pc-btn .pc-ico { width: 16px; height: 16px; flex: none; }
+.pc-car { opacity: .6; font-size: .8em; }
+.contact-row:has(.pc-btn) { align-items: center; }
+.contact-row .pc-btn { min-height: 38px; padding: 0 14px; font-size: .92rem; }
+.pc-menu { position: fixed; z-index: 1000; background: var(--surface); border-radius: 14px; box-shadow: 0 12px 40px rgba(36,27,20,.18), var(--ring); padding: 6px; min-width: 260px; }
+.pc-opt { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; color: var(--ink); text-decoration: none; font-weight: 600; outline: none; }
+.pc-opt small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; }
+.pc-opt:hover, .pc-opt:focus-visible { background: var(--paper, #f6f1ea); }
+.pc-i { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.pc-i svg { width: 18px; height: 18px; }
+.pc-i.call { background: var(--accent-soft, #e6f0f0); color: var(--accent); }
+.pc-i.wa { background: #25D366; color: #fff; }
+.pc-i.wa svg { fill: currentColor; }
+.pc-bg { position: fixed; inset: 0; z-index: 1000; background: rgba(36,27,20,.45); animation: pcFade .2s ease; }
+.pc-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1001; background: var(--surface); border-radius: 18px 18px 0 0; padding: 10px 16px calc(18px + env(safe-area-inset-bottom)); display: grid; gap: 10px; animation: pcUp .25s var(--ease); }
+.pc-sheet h4 { margin: 0; font: 700 1.05rem var(--font-body); color: var(--ink); }
+.pc-sheet p { margin: -8px 0 2px; color: var(--muted); font-size: .86rem; }
+.pc-sheet .pc-opt { border: 1px solid var(--line, #eee4d8); padding: 14px; border-radius: 12px; }
+.pc-grab { width: 40px; height: 4px; border-radius: 2px; background: #ddd; margin: 0 auto 4px; }
+.pc-x { border: 0; background: none; color: var(--muted); font: 600 .95rem var(--font-body); padding: 8px; cursor: pointer; }
+@keyframes pcUp { from { transform: translateY(100%); } }
+@keyframes pcFade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .pc-sheet, .pc-bg { animation: none; } }

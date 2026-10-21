@@ -104,12 +104,49 @@
       if (!a.querySelector(".wa-ico") && a.classList.contains("btn")) a.insertAdjacentHTML("afterbegin", WA_SVG);
     });
     document.querySelectorAll("[data-phone]").forEach(function (el) { el.textContent = WB.config.phoneDisplay; });
+    wireCall();
     document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
     // every WhatsApp tap is logged, wherever it happens
     document.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest('a[href^="https://wa.me/"]');
       if (a) WB.track("whatsapp_tap", { where: a.getAttribute("data-where") || a.id || a.textContent.trim().slice(0, 40) });
     }, true);
+  }
+
+  /* ---------- phone button: the visitor chooses Call or WhatsApp ----------
+     <button data-call> anywhere. Desktop: small menu next to the button. Phone: a sheet from the bottom. */
+  function wireCall() {
+    var menu = null, bg = null, from = null;
+    function close() { if (!menu) return; menu.remove(); if (bg) bg.remove(); menu = bg = null; if (from) { from.setAttribute("aria-expanded", "false"); from.focus(); } }
+    function open(btn) {
+      close(); from = btn; btn.setAttribute("aria-expanded", "true");
+      var sheet = matchMedia("(max-width: 640px)").matches, num = WB.config.phoneDisplay, tel = "tel:+" + WB.config.whatsapp;
+      var ICO = btn.querySelector(".pc-ico") ? btn.querySelector(".pc-ico").outerHTML : "";
+      menu = document.createElement("div"); menu.className = sheet ? "pc-sheet" : "pc-menu"; menu.setAttribute("role", "dialog"); menu.setAttribute("aria-label", "Call or WhatsApp");
+      menu.innerHTML = (sheet ? '<div class="pc-grab"></div><h4>Talk to WallBliss</h4><p>Pick what suits you</p>' : "") +
+        '<a class="pc-opt" data-k="call" href="' + tel + '"><i class="pc-i call">' + ICO + '</i><span>Call now<small>' + num + '</small></span></a>' +
+        '<a class="pc-opt" data-k="wa" href="' + WB.waLink() + '" target="_blank" rel="noopener"><i class="pc-i wa">' + WA_SVG + '</i><span>WhatsApp<small>Send photos, get a price the same day</small></span></a>' +
+        (sheet ? '<button type="button" class="pc-x">Cancel</button>' : "");
+      if (sheet) { bg = document.createElement("div"); bg.className = "pc-bg"; bg.onclick = close; document.body.appendChild(bg); }
+      document.body.appendChild(menu);
+      if (!sheet) {
+        var r = btn.getBoundingClientRect(), h = menu.offsetHeight, w = menu.offsetWidth;
+        var top = r.top - h - 8 < 8 ? r.bottom + 8 : r.top - h - 8;
+        menu.style.top = top + "px"; menu.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left)) + "px";
+      }
+      menu.querySelector(".pc-opt").focus();
+      menu.addEventListener("click", function (e) {
+        var a = e.target.closest(".pc-opt"); if (a && a.dataset.k === "call") WB.track("call_tap", { where: btn.closest("footer") ? "footer" : "contact" });
+        if (a || e.target.closest(".pc-x")) setTimeout(close, 0);
+      });
+    }
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-call]");
+      if (b) { e.preventDefault(); if (menu && from === b) close(); else open(b); return; }
+      if (menu && !menu.contains(e.target)) close();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    addEventListener("scroll", function () { if (menu && menu.className === "pc-menu") close(); }, { passive: true });
   }
 
   function reviews() {

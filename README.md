@@ -67,6 +67,20 @@ updates in 1–2 minutes, including the FAQ data Google reads for search results
 - The list written in `index.html` is only a fallback for the rare visitor whose browser blocks scripts. Keep it roughly in step if you change an answer a lot.
 - Two editors can change different questions at the same time; Publish keeps both changes.
 
+## Homepage pictures (admin → Homepage)
+
+Every picture tile on the homepage ("Every wall has a story" and "Ideas by room") can be chosen here.
+Tap **Change**, pick from designs that suit the room, all designs, or project after-photos.
+1 picture = fixed. 2 or more = the website shows a different one each day (same for every visitor,
+changes at midnight IST). **Automatic** = the tile's built-in choice (the newest design for that room).
+Saved in `settings.tiles` and published straight away. Homepage tiles never show design codes: the
+watermark badge strip is trimmed off on the homepage only.
+
+## Phone button (Call or WhatsApp)
+
+The phone number in the footer and the contact card is a button (`data-call`, assets/site.js
+`wireCall`). Desktop: a small menu; phone: a sheet from the bottom. Visitors pick Call now or WhatsApp.
+
 ## Sharing designs and themes on WhatsApp
 
 - Every live design has a share link, `wallbliss.in/d/WB-0157/`, and every saved theme has one, `wallbliss.in/t/srinivasa-kalyanam/`.
