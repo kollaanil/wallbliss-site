@@ -34,6 +34,31 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
 <link rel="stylesheet" href="assets/styles-v2.css">
 <script src="assets/ui.js"></script>
+<script>/* Launch-video reveal (assets/launch.js). ?launch=on turns it on in this browser only, ?launch=off turns it off. */
+(function () {
+  try {
+    var u = new URL(location.href), p = u.searchParams, s = localStorage, K = 'wb-launch';
+    if (p.has('launch')) {
+      var off = p.get('launch') === 'off';
+      off ? s.removeItem(K) : s.setItem(K, '1');
+      p.delete('launch');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+      document.addEventListener('DOMContentLoaded', function () {
+        window.WB && WB.notify && WB.notify(off ? 'Launch reveal OFF' : 'Launch reveal ON · reload or type the address to play');
+      });
+    } else if (s.getItem(K) === '1') {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      var c = document.createElement('style');
+      c.textContent = 'html.wb-launching::after{content:"";position:fixed;inset:0;background:#F8F3EB;z-index:2147482999}';
+      document.head.appendChild(c);
+      document.documentElement.classList.add('wb-launching');
+      var j = document.createElement('script'); j.src = 'assets/launch.js?v=1';
+      j.onerror = function () { document.documentElement.classList.remove('wb-launching'); };
+      document.head.appendChild(j);
+    }
+  } catch (e) {}
+})();
+</script>
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
