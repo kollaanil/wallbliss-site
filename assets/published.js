@@ -1182,6 +1182,9 @@ window.WB_PUBLISHED = {
    ],
    "room-office": [
     "WB-0176"
+   ],
+   "room-hotel": [
+    "WB-0183"
    ]
   }
  },
@@ -1277,7 +1280,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:21:25.860Z",
+ "updated": "2026-10-23T03:21:54.510Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
