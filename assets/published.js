@@ -1169,7 +1169,12 @@ window.WB_PUBLISHED = {
  "reviews": [],
  "settings": {
   "samplesRetired": true,
-  "themes": []
+  "themes": [],
+  "tiles": {
+   "room-living": [
+    "WB-0182"
+   ]
+  }
  },
  "faqs": [
   {
@@ -1263,7 +1268,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-21T13:44:05.231Z",
+ "updated": "2026-10-23T03:20:30.299Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
