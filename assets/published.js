@@ -1074,6 +1074,29 @@ window.WB_PUBLISHED = {
    "orient": "square",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0184",
+   "name": "Buddha Chrome",
+   "img": "assets/uploads/designs/wb-0184-pwykph.jpg",
+   "tags": [
+    "buddha",
+    "chrome",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "office",
+    "hotel",
+    "cafe"
+   ],
+   "styles": [
+    "texture3d"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1294,7 +1317,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T04:07:59.848Z",
+ "updated": "2026-10-23T16:54:28.014Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -1464,6 +1487,10 @@ window.WB_PUBLISHED = {
   "d:WB-0183": {
    "sig": "ilj67c",
    "card": "d/WB-0183/card-ilj67c.jpg"
+  },
+  "d:WB-0184": {
+   "sig": "f1hw6a",
+   "card": "d/WB-0184/card-f1hw6a.jpg"
   }
  }
 };
