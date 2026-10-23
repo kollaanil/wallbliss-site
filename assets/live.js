@@ -26,12 +26,34 @@
   var PUB = norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {})));
 
   var BASE = "wb_admin_base";   // the published data this device's draft started from (for safe merging at Publish)
+  /* the newest published data this browser knows: the file the site served, or what this device itself
+     published a moment ago (the site takes 1–2 minutes to catch up, so its file can still be the older one) */
+  function newest() { var b = get(BASE, null), r = window.WB_PUBLISHED || {}; return b && (b.updated || "") > (r.updated || "") ? b : r; }
+  var PARTS = ["designs", "edits", "projects", "reviews", "settings", "faqs"];
+  function sameParts(a, b) { return PARTS.every(function (k) { return JSON.stringify(a[k]) === JSON.stringify(b[k]); }); }
   WB.db = {
-    published: function () { return norm(JSON.parse(JSON.stringify(window.WB_PUBLISHED || {}))); },
+    published: function () { return norm(clone(newest())); },
     load: function () {
       var d = get(KEY, null);
-      if (!d) { set(BASE, this.published()); return this.published(); }     // fresh draft: starts from what is live now
+      if (!d) { var p = this.published(), b = get(BASE, null); if (!b || b.updated !== p.updated) set(BASE, p); return p; }     // fresh draft: starts from what is live now
       return norm(d);
+    },
+    /* Someone published from another device (or tab) since this browser's draft started.
+       No edits here → simply switch to the live data. Edits here → merge now, so only real edits stay "unpublished".
+       Returns true when something changed. */
+    catchUp: function (live) {
+      if (!live || !live.updated) return false;
+      var base = get(BASE, null), ref = base || window.WB_PUBLISHED || {};
+      if ((live.updated || "") <= (ref.updated || "")) return false;
+      var d = get(KEY, null), note = { by: live.by || "the team", clashes: [] };
+      if (d && base) {
+        var b = norm(clone(base)), mine = norm(d);
+        if (sameParts(mine, b)) { try { localStorage.removeItem(KEY); } catch (e) {} }
+        else { var m = WB.mergeDrafts(b, mine, norm(clone(live))); set(KEY, Object.assign(mine, m.data)); note.clashes = m.clashes; note.merged = true; }
+      } else if (d) return false;                      // very old draft without a base: leave it to Publish
+      set(BASE, live);
+      try { sessionStorage.setItem("wb_sync_note", JSON.stringify(note)); } catch (e) {}
+      return true;
     },
     save: function (db) { if (!get(BASE, null)) set(BASE, this.published()); return set(KEY, db); },
     base: function () { return norm(get(BASE, null) || this.published()); },
@@ -39,7 +61,69 @@
     discardDraft: function () { try { localStorage.removeItem(KEY); localStorage.removeItem(BASE); } catch (e) {} }
   };
 
+  function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+  function idOf(kind, x) { return kind === "designs" ? x.code : kind === "projects" ? x.slug : kind === "faqs" ? x.id : (x.id || (x.name + "|" + x.quote)); }
+  function mergeList(kind, base, mine, theirs, clashes) {
+    var B = {}, M = {}, T = {};
+    base.forEach(function (x) { B[idOf(kind, x)] = x; }); mine.forEach(function (x) { M[idOf(kind, x)] = x; }); theirs.forEach(function (x) { T[idOf(kind, x)] = x; });
+    var out = [], seen = {};
+    mine.forEach(function (x) {
+      var id = idOf(kind, x), b = B[id], t = T[id];
+      if (b && !t) { if (!same(x, b)) { out.push(x); clashes.push(x.code || x.title || x.name || x.q); } seen[id] = 1; return; }   // they deleted it; keep only if I changed it
+      if (b && t && !same(t, b) && !same(x, b) && !same(x, t)) clashes.push(x.code || x.title || x.name || x.q);
+      out.push(b && same(x, b) && t ? t : x); seen[id] = 1;                                                         // unchanged by me → take theirs
+    });
+    theirs.forEach(function (t) {
+      var id = idOf(kind, t); if (seen[id]) return;
+      var b = B[id];
+      if (b && same(t, b)) return;                                                                                      // I deleted it and they didn't touch it
+      if (kind === "designs" || kind === "faqs") out.push(t); else out.unshift(t);                                                         // their new (or changed) item
+    });
+    /* only they re-ordered the list: keep their order */
+    var ids = function (l) { return l.map(function (x) { return idOf(kind, x); }).join("|"); };
+    if (ids(mine) === ids(base) && ids(theirs) !== ids(base)) {
+      var pos = {}; theirs.forEach(function (x, i) { pos[idOf(kind, x)] = i; });
+      out.sort(function (a, b) { var i = idOf(kind, a), j = idOf(kind, b); return (i in pos ? pos[i] : -1) - (j in pos ? pos[j] : -1); });
+    }
+    return out;
+  }
+  function mergeMap(base, mine, theirs) {
+    var out = {}, keys = {};
+    [base, mine, theirs].forEach(function (o) { Object.keys(o || {}).forEach(function (k) { keys[k] = 1; }); });
+    Object.keys(keys).forEach(function (k) {
+      var b = base[k], m = mine[k], t = theirs[k];
+      var v = same(m, b) ? t : m;                                                                                       // my change wins, otherwise theirs
+      if (v !== undefined) out[k] = v;
+    });
+    return out;
+  }
+  /* FAQs are an ordered list: if only the other editor re-ordered them, keep their order */
+  function mergeFaqs(base, mine, theirs, clashes) {
+    var out = mergeList("faqs", base, mine, theirs, clashes);
+    var ids = function (l) { return l.map(function (x) { return x.id; }).join("|"); };
+    if (ids(mine) === ids(base) && ids(theirs) !== ids(base)) {
+      var pos = {}; theirs.forEach(function (x, i) { pos[x.id] = i; });
+      out.sort(function (a, b) { return (a.id in pos ? pos[a.id] : 1e6) - (b.id in pos ? pos[b.id] : 1e6); });
+    }
+    return out;
+  }
+  function merge(base, mine, theirs) {
+    var clashes = [];
+    var out = {
+      designs: mergeList("designs", base.designs || [], mine.designs, theirs.designs, clashes),
+      projects: mergeList("projects", base.projects || [], mine.projects, theirs.projects, clashes),
+      reviews: mergeList("reviews", base.reviews || [], mine.reviews, theirs.reviews, clashes),
+      faqs: mergeFaqs(base.faqs || [], mine.faqs || [], theirs.faqs || [], clashes),
+      edits: mergeMap(base.edits || {}, mine.edits, theirs.edits),
+      settings: mergeMap(base.settings || {}, mine.settings, theirs.settings)
+    };
+    return { data: out, clashes: clashes };
+  }
+
+  WB.mergeDrafts = merge;
+
   /* the admin previews its own draft; everyone else sees the published data */
+  if (isAdmin) WB.db.catchUp(RAW);
   var db = isAdmin ? WB.db.load() : PUB;
 
   if (WB.config) ["whatsapp", "phoneDisplay", "googleReviewsUrl", "googleWriteReviewUrl"].forEach(function (k) {
