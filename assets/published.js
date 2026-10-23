@@ -1194,6 +1194,9 @@ window.WB_PUBLISHED = {
    ],
    "story-living": [
     "WB-0137"
+   ],
+   "story-kids": [
+    "WB-0160"
    ]
   }
  },
@@ -1289,7 +1292,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:22:28.839Z",
+ "updated": "2026-10-23T03:22:35.086Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
