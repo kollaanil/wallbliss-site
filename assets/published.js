@@ -1173,6 +1173,9 @@ window.WB_PUBLISHED = {
   "tiles": {
    "room-living": [
     "WB-0182"
+   ],
+   "room-bedroom": [
+    "WB-0139"
    ]
   }
  },
@@ -1268,7 +1271,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:20:30.299Z",
+ "updated": "2026-10-23T03:21:01.045Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
