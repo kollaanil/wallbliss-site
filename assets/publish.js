@@ -76,6 +76,44 @@
   }
   setInterval(refresh, 1500); refresh();
 
+  /* ---------- stay in step with other devices and other tabs ----------
+     • Another admin tab in this browser saved → this tab reloads (so it never overwrites that tab's work).
+     • Coming back to this tab, and every 2 minutes: if someone published from another device, this browser
+       catches up (WB.db.catchUp merges any edits made here) and reloads.
+     A reload waits while a form is open or a publish is running. */
+  var LOADED = Date.now(), reloadWanted = false;
+  function formOpen() { return !!document.querySelector("dialog[open]"); }
+  function reloadSoon() { reloadWanted = true; if (!busy && !formOpen()) location.reload(); }
+  setInterval(function () { if (reloadWanted && !busy && !formOpen()) location.reload(); }, 2000);
+  addEventListener("storage", function (e) {
+    if (e.key !== "wb_admin_db" && e.key !== "wb_admin_base") return;
+    if (e.key === "wb_admin_base") { try { if ((JSON.parse(e.oldValue || "{}").updated || "") === (JSON.parse(e.newValue || "{}").updated || "")) return; } catch (x) {} }
+    if (!reloadWanted) WB.notify("Changed in another admin tab. Refreshing this one…");
+    reloadSoon();
+  });
+  function checkLive() {
+    if (document.hidden || busy || reloadWanted) return;
+    fetch("assets/published.js?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (txt) {
+      if (!txt) return;
+      var d = JSON.parse(txt.replace(/^[\s\S]*?window\.WB_PUBLISHED\s*=\s*/, "").replace(/;\s*$/, ""));
+      if (WB.db.catchUp(d)) reloadSoon();
+    }).catch(function () {});
+  }
+  document.addEventListener("visibilitychange", checkLive);
+  setInterval(checkLive, 120000);
+  try {
+    var sn = JSON.parse(sessionStorage.getItem("wb_sync_note") || "null"); sessionStorage.removeItem("wb_sync_note");
+    if (sn) WB.notify("Updated with " + sn.by + "'s latest changes" + (sn.merged ? "; your unpublished edits are kept" : "") + (sn.clashes && sn.clashes.length ? " (you both changed " + sn.clashes.slice(0, 3).join(", ") + ")" : "") + ".", { ms: 6000 });
+  } catch (e) {}
+
+  /* an admin tab opened before the latest website update runs old code: ask for a refresh before publishing */
+  function freshCode(k) {
+    return gh("/repos/" + OWNER + "/" + REPO + "/commits?sha=" + BRANCH + "&per_page=30", null, k).then(function (list) {
+      var c = (list || []).filter(function (x) { return !/^Publish from admin/.test(x.commit.message); })[0];
+      if (c && new Date(c.commit.committer.date).getTime() > LOADED - 90000) throw new Error("OLDADMIN");
+    });
+  }
+
   /* ---------- GitHub ---------- */
   function gh(path, opts, k) {
     opts = opts || {};
@@ -105,64 +143,14 @@
       return d;
     });
   }
-  function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
-  function idOf(kind, x) { return kind === "designs" ? x.code : kind === "projects" ? x.slug : kind === "faqs" ? x.id : (x.id || (x.name + "|" + x.quote)); }
-  function mergeList(kind, base, mine, theirs, clashes) {
-    var B = {}, M = {}, T = {};
-    base.forEach(function (x) { B[idOf(kind, x)] = x; }); mine.forEach(function (x) { M[idOf(kind, x)] = x; }); theirs.forEach(function (x) { T[idOf(kind, x)] = x; });
-    var out = [], seen = {};
-    mine.forEach(function (x) {
-      var id = idOf(kind, x), b = B[id], t = T[id];
-      if (b && !t) { if (!same(x, b)) { out.push(x); clashes.push(x.code || x.title || x.name || x.q); } seen[id] = 1; return; }   // they deleted it; keep only if I changed it
-      if (b && t && !same(t, b) && !same(x, b) && !same(x, t)) clashes.push(x.code || x.title || x.name || x.q);
-      out.push(b && same(x, b) && t ? t : x); seen[id] = 1;                                                         // unchanged by me → take theirs
-    });
-    theirs.forEach(function (t) {
-      var id = idOf(kind, t); if (seen[id]) return;
-      var b = B[id];
-      if (b && same(t, b)) return;                                                                                      // I deleted it and they didn't touch it
-      if (kind === "designs" || kind === "faqs") out.push(t); else out.unshift(t);                                                         // their new (or changed) item
-    });
-    return out;
-  }
-  function mergeMap(base, mine, theirs) {
-    var out = {}, keys = {};
-    [base, mine, theirs].forEach(function (o) { Object.keys(o || {}).forEach(function (k) { keys[k] = 1; }); });
-    Object.keys(keys).forEach(function (k) {
-      var b = base[k], m = mine[k], t = theirs[k];
-      var v = same(m, b) ? t : m;                                                                                       // my change wins, otherwise theirs
-      if (v !== undefined) out[k] = v;
-    });
-    return out;
-  }
-  /* FAQs are an ordered list: if only the other editor re-ordered them, keep their order */
-  function mergeFaqs(base, mine, theirs, clashes) {
-    var out = mergeList("faqs", base, mine, theirs, clashes);
-    var ids = function (l) { return l.map(function (x) { return x.id; }).join("|"); };
-    if (ids(mine) === ids(base) && ids(theirs) !== ids(base)) {
-      var pos = {}; theirs.forEach(function (x, i) { pos[x.id] = i; });
-      out.sort(function (a, b) { return (a.id in pos ? pos[a.id] : 1e6) - (b.id in pos ? pos[b.id] : 1e6); });
-    }
-    return out;
-  }
-  function merge(base, mine, theirs) {
-    var clashes = [];
-    var out = {
-      designs: mergeList("designs", base.designs || [], mine.designs, theirs.designs, clashes),
-      projects: mergeList("projects", base.projects || [], mine.projects, theirs.projects, clashes),
-      reviews: mergeList("reviews", base.reviews || [], mine.reviews, theirs.reviews, clashes),
-      faqs: mergeFaqs(base.faqs || [], mine.faqs || [], theirs.faqs || [], clashes),
-      edits: mergeMap(base.edits || {}, mine.edits, theirs.edits),
-      settings: mergeMap(base.settings || {}, mine.settings, theirs.settings)
-    };
-    return { data: out, clashes: clashes };
-  }
+  /* the three-way merge (base / this device / live) lives in live.js: WB.mergeDrafts */
+  function merge(base, mine, theirs) { return WB.mergeDrafts(base, mine, theirs); }
 
   function publish(k, attempt) {
     attempt = attempt || 1;
     busy = true; pubBtn.disabled = true; work(); bar.classList.remove("ok");
     var note = "", liveOg = {};
-    return liveData(k).then(function (live) {
+    return freshCode(k).then(function () { return liveData(k); }).then(function (live) {
       liveOg = live.og || {};
       var base = WB.db.base(), draft = WB.db.load();
       if ((live.updated || null) !== (base.updated || null)) {
@@ -172,7 +160,11 @@
           (m.clashes.length ? " You both changed " + m.clashes.slice(0, 3).join(", ") + (m.clashes.length > 3 ? "…" : "") + "; your version was used." : "");
       }
       return go();
-    }).catch(function (e) { done(); pubBtn.disabled = false; say("Not published"); if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message); });
+    }).catch(function (e) {
+      done(); pubBtn.disabled = false; say("Not published");
+      if (e.message === "OLDADMIN") { WB.notify("The admin was updated. Refresh this page, then publish (your changes are kept).", { type: "error", action: { label: "Refresh", fn: function () { location.reload(); } } }); return; }
+      if (/key/.test(e.message)) askKey(e.message); else alertMsg(e.message);
+    });
 
     function go() {
     work();
@@ -197,7 +189,7 @@
     var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, faqs: out.faqs || [], updated: new Date().toISOString(),
       by: ((document.getElementById("who-nm") || {}).textContent || "").trim() };
     var gone = [];
-    return sharePages(out, srcImg, liveOg).then(function (sh) {
+    return sharePages(out, srcImg, liveOg, k).then(function (sh) {
       files = files.concat(sh.files); gone = sh.gone; data.og = sh.og;
       files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
       return push();
@@ -348,16 +340,18 @@
     });
   }
 
-  function sharePages(out, srcImg, liveOg) {
+  function sharePages(out, srcImg, liveOg, k) {
     var og = JSON.parse(JSON.stringify(liveOg || {})), add = [], gone = [], jobs = [];
     var live = out.designs.filter(function (d) { return !d.hidden && d.img; });
     var A = window.WBAdmin;
+    var have = {};                                      // files already on the website (filled only when cards are needed)
     function want(key, sig, path, title, desc, go, make) {
       var cur = og[key]; if (cur && cur.sig === sig) return;
       jobs.push(function () {
+        var card = path + "card-" + sig + ".jpg";
+        if (have[card] && have[path + "index.html"]) { og[key] = { sig: sig, card: card }; return Promise.resolve(); }   // already there: nothing to make or upload
         return make().then(function (b64) {
           if (!b64) return;
-          var card = path + "card-" + sig + ".jpg";
           if (cur && cur.card && cur.card !== card) gone.push(cur.card);
           add.push({ path: card, content: b64, encoding: "base64" });
           add.push({ path: path + "index.html", content: pageHTML({ path: path, card: card, title: title, desc: desc, go: go }), encoding: "utf-8" });
@@ -382,8 +376,11 @@
         n + (n === 1 ? " design" : " designs") + " to choose from, printed straight onto your wall. Tap to browse and get a price on WhatsApp.",
         "/catalogue.html?src=share&q=" + encodeURIComponent(q), function () { return themeCard(list.map(function (d) { return srcImg[d.code] || d.img; }), t.name); });
     });
-    if (jobs.length) work("Making WhatsApp preview cards…");
-    return jobs.reduce(function (p, j) { return p.then(j); }, Promise.resolve()).then(function () { return { files: add, gone: gone, og: og }; });
+    if (!jobs.length) return Promise.resolve({ files: add, gone: gone, og: og });
+    work("Making WhatsApp preview cards…");
+    /* if the list of cards was ever lost, cards that already exist are reused instead of being made and uploaded again */
+    var listed = k ? gh("/repos/" + OWNER + "/" + REPO + "/git/trees/" + BRANCH + "?recursive=1", null, k).then(function (t) { (t.tree || []).forEach(function (x) { have[x.path] = 1; }); }).catch(function () {}) : Promise.resolve();
+    return listed.then(function () { return jobs.reduce(function (p, j) { return p.then(j); }, Promise.resolve()); }).then(function () { return { files: add, gone: gone, og: og }; });
   }
   function alertMsg(t) { WB.notify(t, { type: "error" }); }                 // errors stay until tapped
 

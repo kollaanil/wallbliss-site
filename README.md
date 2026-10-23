@@ -25,6 +25,15 @@ repository and the permission *Contents: Read and write*. Create it at
 GitHub → Settings → Developer settings → Fine-grained tokens. The admin keeps it in that
 browser only. Remove it from Settings in the admin if a device is lost, and revoke it on GitHub.
 
+### Several devices and tabs (assets/live.js `WB.db.catchUp`, assets/publish.js)
+
+- Opening the admin, coming back to its tab, and every 2 minutes: if someone published from another
+  device, this browser catches up. No edits here → it switches to the live data. Edits here → they are
+  merged with the live data at once, so "Unpublished changes" only ever means real edits on this device.
+- Two admin tabs in one browser: when one saves, the other refreshes (after any open form is closed).
+- An admin tab opened before the latest code update asks for a refresh before it publishes.
+- WhatsApp preview cards that already exist on the site are reused, never rebuilt in bulk.
+
 ## Uploading designs (admin → Designs → + Add design)
 
 - Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked
