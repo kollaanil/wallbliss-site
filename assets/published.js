@@ -1031,78 +1031,53 @@ window.WB_PUBLISHED = {
   },
   {
    "code": "WB-0182",
-   "name": "Srinivasa Kalyanam with Tirumala Hills",
-   "img": "assets/uploads/designs/wb-0182-coym5a.jpg",
+   "name": "Krishna Lotus Design",
+   "img": "assets/uploads/designs/wb-0182-artqj5.jpg",
    "tags": [
-    "srinivasa",
-    "kalyanam",
-    "srinivasakalyanam",
-    "tirupati"
+    "krishna",
+    "babykrishna",
+    "lotus"
    ],
    "search": [],
    "spaces": [
     "living",
-    "office",
-    "hotel"
+    "bedroom"
    ],
    "styles": [
     "traditional",
     "devotional",
     "texture3d"
    ],
-   "orient": "wide",
+   "orient": "tall",
    "added": "2026-10",
    "pop": 5
   },
   {
    "code": "WB-0183",
-   "name": "Kamadhenu for Double Height Wall",
-   "img": "assets/uploads/designs/wb-0183-16jr648.jpg",
+   "name": "Krishna Flute",
+   "img": "assets/uploads/designs/wb-0183-178ur9i.jpg",
    "tags": [
-    "kamadhenu",
-    "doublewall",
-    "doubleceiling",
-    "doubleheight"
+    "krishna",
+    "flute",
+    "colorful",
+    "mesmerising"
    ],
    "search": [],
    "spaces": [
     "living",
-    "office",
     "hotel"
    ],
    "styles": [
     "traditional",
-    "texture3d",
-    "folk"
+    "devotional"
    ],
-   "orient": "tall",
+   "orient": "square",
    "added": "2026-10",
    "pop": 5
   }
  ],
  "edits": {},
  "projects": [
-  {
-   "slug": "where-the-team-now-walks-in-inspired-zm6p",
-   "title": "Where the team now walks in inspired",
-   "locality": "Horahalli",
-   "space": "Office",
-   "segment": "corporate",
-   "size": "4 ft by 6 ft",
-   "design": "Customer's own picture",
-   "time": "3 hours",
-   "month": "2026-07",
-   "summary": "This wall in Dayanand Sagar University is waiting for a story. We printed a picture chosen by the management right onto it in 3 hours, and the whole reception changed. Students and college admin walk in and get inspired.",
-   "quote": "",
-   "consent": true,
-   "hidden": false,
-   "noHome": false,
-   "w": 720,
-   "h": 1280,
-   "ratio": 0.5625,
-   "before": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-before-zasix1.jpg",
-   "after": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-after-wg18nt.jpg"
-  },
   {
    "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
    "title": "The wall every guest wants a photo with",
@@ -1123,6 +1098,27 @@ window.WB_PUBLISHED = {
    "ratio": 0.75,
    "before": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--before-18pu81f.jpg",
    "after": "assets/uploads/projects/the-wall-every-guest-wants-a-photo-with--after-1m7scrh.jpg"
+  },
+  {
+   "slug": "where-the-team-now-walks-in-inspired-zm6p",
+   "title": "Where the team now walks in inspired",
+   "locality": "Horahalli",
+   "space": "Office",
+   "segment": "corporate",
+   "size": "4 ft by 6 ft",
+   "design": "Customer's own picture",
+   "time": "3 hours",
+   "month": "2026-07",
+   "summary": "This wall in Dayanand Sagar University is waiting for a story. We printed a picture chosen by the management right onto it in 3 hours, and the whole reception changed. Students and college admin walk in and get inspired.",
+   "quote": "",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 720,
+   "h": 1280,
+   "ratio": 0.5625,
+   "before": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-before-zasix1.jpg",
+   "after": "assets/uploads/projects/where-the-team-now-walks-in-inspired-zm6-after-wg18nt.jpg"
   },
   {
    "slug": "shiva-in-cosmos-gzvn",
@@ -1298,8 +1294,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:22:47.473Z",
- "by": "Manasa",
+ "updated": "2026-10-23T04:07:28.247Z",
+ "by": "Anil",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -1462,12 +1458,12 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0181/card-1gva3id.jpg"
   },
   "d:WB-0182": {
-   "sig": "svr30l",
-   "card": "d/WB-0182/card-svr30l.jpg"
+   "sig": "1fijip3",
+   "card": "d/WB-0182/card-1fijip3.jpg"
   },
   "d:WB-0183": {
-   "sig": "16xdeqo",
-   "card": "d/WB-0183/card-16xdeqo.jpg"
+   "sig": "ilj67c",
+   "card": "d/WB-0183/card-ilj67c.jpg"
   }
  }
 };
