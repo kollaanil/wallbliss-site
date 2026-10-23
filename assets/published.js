@@ -1179,6 +1179,9 @@ window.WB_PUBLISHED = {
    ],
    "room-kids": [
     "WB-0163"
+   ],
+   "room-office": [
+    "WB-0176"
    ]
   }
  },
@@ -1274,7 +1277,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:21:12.703Z",
+ "updated": "2026-10-23T03:21:25.860Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
