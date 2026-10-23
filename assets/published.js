@@ -1188,6 +1188,9 @@ window.WB_PUBLISHED = {
    ],
    "room-cafe": [
     "WB-0142"
+   ],
+   "room-custom": [
+    "p:where-the-team-now-walks-in-inspired-zm6p"
    ]
   }
  },
@@ -1283,7 +1286,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T03:22:00.596Z",
+ "updated": "2026-10-23T03:22:07.434Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
