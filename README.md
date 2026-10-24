@@ -91,6 +91,11 @@ changes at midnight IST). **Automatic** = the tile's built-in choice (the newest
 Saved in `settings.tiles` and published straight away. Homepage tiles never show design codes: the
 watermark badge strip is trimmed off on the homepage only.
 
+**WhatsApp link previews** (same tab): pick 1–3 pictures plus a title and a short line for the catalogue,
+homepage and projects links. Publish makes a new card (design codes trimmed off) at
+`assets/img/share/<page>-<sig>.jpg` and updates that page's og:image / og:title / og:description tags.
+Until a page is set, it keeps its built-in card.
+
 ## Phone button (Call or WhatsApp)
 
 The phone number in the footer and the contact card is a button (`data-call`, assets/site.js
