@@ -1097,6 +1097,28 @@ window.WB_PUBLISHED = {
    "orient": "square",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0185",
+   "name": "Golden Kamadhenu",
+   "img": "assets/uploads/designs/wb-0185-p5m8re.jpg",
+   "tags": [
+    "golden",
+    "kamadhenu"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "texture3d",
+    "folk"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1317,8 +1339,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-23T16:54:28.014Z",
- "by": "Anil",
+ "updated": "2026-10-24T04:08:55.006Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -1491,6 +1513,10 @@ window.WB_PUBLISHED = {
   "d:WB-0184": {
    "sig": "f1hw6a",
    "card": "d/WB-0184/card-f1hw6a.jpg"
+  },
+  "d:WB-0185": {
+   "sig": "1o5918e",
+   "card": "d/WB-0185/card-1o5918e.jpg"
   }
  }
 };
