@@ -1119,6 +1119,27 @@ window.WB_PUBLISHED = {
    "orient": "square",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0186",
+   "name": "Krishna Peeking in 3d Design",
+   "img": "assets/uploads/designs/wb-0186-f2xjl6.jpg",
+   "tags": [
+    "krishna",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "kids"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1363,7 +1384,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T06:27:52.194Z",
+ "updated": "2026-10-24T06:29:55.416Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1557,6 +1578,10 @@ window.WB_PUBLISHED = {
   "t:srinivasa": {
    "sig": "xyfba",
    "card": "t/srinivasa/card-xyfba.jpg"
+  },
+  "d:WB-0186": {
+   "sig": "1gbitbe",
+   "card": "d/WB-0186/card-1gbitbe.jpg"
   }
  }
 };
