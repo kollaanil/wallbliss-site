@@ -302,13 +302,19 @@
       return c.toDataURL("image/jpeg", 0.82).split(",")[1];
     });
   }
-  function themeCard(srcs, name) {
+  /* opt.sub = the small line under the title; opt.trim[i] = cut the "WallBliss Studio · WB-xxxx" corner badge off
+     picture i (the bottom 6.8% of the long side, see watermark.js), so marketing cards never show design codes */
+  function themeCard(srcs, name, opt) {
+    opt = opt || {};
     return Promise.all([Promise.all(srcs.slice(0, 4).map(loadImg)), logo(), fontsReady()]).then(function (r) {
-      var ims = r[0].filter(Boolean), lg = r[1]; if (!ims.length) return null;
+      var lg = r[1], keep = [], trims = [];
+      r[0].forEach(function (im, i) { if (im) { keep.push(im); trims.push(!!(opt.trim && opt.trim[i])); } });
+      var ims = keep; if (!ims.length) return null;
+      var sh = ims.map(function (im, i) { return trims[i] ? Math.max(1, im.naturalHeight - Math.round(Math.max(im.naturalWidth, im.naturalHeight) * 0.068)) : im.naturalHeight; });
       var W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
       x.fillStyle = "#FBF6EE"; x.fillRect(0, 0, W, H);
       /* lay the designs out whole, each at its own shape: one row, or two rows when they are wide */
-      var gap = 14, top = 30, boxH = 430, boxW = W - 60, ars = ims.map(function (im) { return im.naturalWidth / im.naturalHeight; });
+      var gap = 14, top = 30, boxH = 430, boxW = W - 60, ars = ims.map(function (im, i) { return im.naturalWidth / sh[i]; });
       function rowsFor(groups) {
         var rh = (boxH - gap * (groups.length - 1)) / groups.length, out = [], area = 0;
         groups.forEach(function (g) {
@@ -325,7 +331,7 @@
         r.g.forEach(function (i) {
           var im = ims[i], tw = ars[i] * r.h;
           x.save(); x.shadowColor = "rgba(36,27,20,.35)"; x.shadowBlur = 24; x.shadowOffsetY = 10; x.fillStyle = "#fff"; rr(x, X, Y, tw, r.h, 12); x.fill(); x.restore();
-          x.save(); rr(x, X, Y, tw, r.h, 12); x.clip(); x.drawImage(im, X, Y, tw, r.h); x.restore();
+          x.save(); rr(x, X, Y, tw, r.h, 12); x.clip(); x.drawImage(im, 0, 0, im.naturalWidth, sh[i], X, Y, tw, r.h); x.restore();
           X += tw + gap;
         });
         Y += r.h + gap;
@@ -334,7 +340,9 @@
       var title = name; while (x.measureText(title).width > W - 420 && title.length > 4) title = title.slice(0, -2) + "…";
       x.fillText(title, 34, H - 64);
       x.font = '500 24px "DM Sans", system-ui, sans-serif'; x.fillStyle = "#6B5E53";
-      x.fillText(srcs.length + " " + (srcs.length === 1 ? "design" : "designs") + " · printed straight onto your wall", 36, H - 26);
+      var line = opt.sub || (srcs.length + " " + (srcs.length === 1 ? "design" : "designs") + " · printed straight onto your wall");
+      while (x.measureText(line).width > W - 240 && line.length > 4) line = line.slice(0, -2) + "…";
+      x.fillText(line, 36, H - 26);
       if (lg) x.drawImage(lg, W - 30 - 120, H - 30 - 81, 120, 81);
       return c.toDataURL("image/jpeg", 0.82).split(",")[1];
     });
@@ -375,6 +383,33 @@
       want("t:" + slugT, hash(t.name + "|" + q + "|" + list.map(function (d) { return d.code + d.img; }).join(",") + "|v1"), path, t.name + " wall murals · WallBliss",
         n + (n === 1 ? " design" : " designs") + " to choose from, printed straight onto your wall. Tap to browse and get a price on WhatsApp.",
         "/catalogue.html?src=share&q=" + encodeURIComponent(q), function () { return themeCard(list.map(function (d) { return srcImg[d.code] || d.img; }), t.name); });
+    });
+    /* the link previews of the main pages (Admin → Homepage → WhatsApp link previews): a new card,
+       and the page's og:image / og:title / og:description tags updated to match */
+    var share = (out.settings && out.settings.share) || {}, PAGES = { catalogue: "catalogue.html", home: "index.html", projects: "projects.html" };
+    Object.keys(PAGES).forEach(function (pg) {
+      var s = share[pg]; if (!s || !(s.pics || []).length || !k) return;
+      var items = s.pics.map(function (ref) {
+        if (/^p:/.test(ref)) { var p = out.projects.filter(function (x) { return x.slug === ref.slice(2); })[0]; return p && p.after && !/^data:/.test(p.after) ? { src: p.after, trim: false } : null; }
+        var d = live.filter(function (x) { return x.code === ref; })[0]; return d ? { src: srcImg[d.code] || d.img, trim: true } : null;
+      }).filter(Boolean);
+      if (!items.length) return;
+      var sig = hash(pg + "|" + s.pics.join(",") + "|" + items.map(function (i) { return String(i.src).slice(0, 200); }).join(",") + "|" + (s.title || "") + "|" + (s.sub || "") + "|v1");
+      var key = "page:" + pg, cur = og[key]; if (cur && cur.sig === sig) return;
+      jobs.push(function () {
+        var card = "assets/img/share/" + pg + "-" + sig + ".jpg";
+        return Promise.all([themeCard(items.map(function (i) { return i.src; }), s.title, { sub: s.sub, trim: items.map(function (i) { return i.trim; }) }),
+          gh("/repos/" + OWNER + "/" + REPO + "/contents/" + PAGES[pg] + "?ref=" + BRANCH, null, k)]).then(function (r) {
+          var b64 = r[0], html = decodeURIComponent(escape(atob(String(r[1].content || "").replace(/\s/g, ""))));
+          if (!b64 || !html) return;
+          function meta(prop, val) { html = html.replace(new RegExp('(<meta property="' + prop + '" content=")[^"]*(")'), function (m, a, b) { return a + escH(val) + b; }); }
+          meta("og:image", SITE + card); if (s.title) meta("og:title", s.title); if (s.sub) meta("og:description", s.sub);
+          if (cur && cur.card && cur.card !== card) gone.push(cur.card);
+          add.push({ path: card, content: b64, encoding: "base64" });
+          add.push({ path: PAGES[pg], content: html, encoding: "utf-8" });
+          og[key] = { sig: sig, card: card };
+        }).catch(function () {});
+      });
     });
     if (!jobs.length) return Promise.resolve({ files: add, gone: gone, og: og });
     work("Making WhatsApp preview cards…");

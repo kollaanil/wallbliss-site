@@ -551,8 +551,12 @@
 <!-- ================= HOMEPAGE PICTURE PICKER ================= -->
 <dialog class="sheet" id="ht-dlg" aria-labelledby="ht-title">
   <div class="sheet-in">
-    <header><div style="display:grid;gap:4px;flex:1"><h2 id="ht-title">Tile</h2><p class="muted" style="margin:0;font-size:.88rem">Tap to select. 1 = fixed, 2 or more = rotates daily.</p></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
+    <header><div style="display:grid;gap:4px;flex:1"><h2 id="ht-title">Tile</h2><p class="muted" id="ht-help" style="margin:0;font-size:.88rem">Tap to select. 1 = fixed, 2 or more = rotates daily.</p></div><button class="x" type="button" data-close aria-label="Close">×</button></header>
     <div class="body">
+      <div class="grid-2" id="ht-text" hidden style="gap:12px">
+        <div class="field"><label for="ht-t">Title on the preview</label><input type="text" id="ht-t" maxlength="40"></div>
+        <div class="field"><label for="ht-s">Short line under it</label><input type="text" id="ht-s" maxlength="90"></div>
+      </div>
       <div class="btn-row" id="ht-chips"></div>
       <div class="ht-grid" id="ht-grid"></div>
     </div>
@@ -1325,6 +1329,10 @@
     ["Ideas by room", [["room-living", "Living room", "", "living"], ["room-bedroom", "Bedroom", "", "bedroom"], ["room-kids", "Kids' room", "", "kids"], ["room-custom", "Your photo or logo", "", "projects"],
       ["room-office", "Office / corporate", "", "office"], ["room-cafe", "Café & restaurant", "", "cafe"], ["room-hotel", "Hotel lobby", "", "hotel"]]]
   ];
+  /* WhatsApp link previews of the main pages: settings.share = { catalogue: { pics, title, sub }, home, projects } */
+  var SHARE_PAGES = [["share-catalogue", "Catalogue link", "www.wallbliss.in/catalogue.html", "all", "Find your wall design", "Devotional, traditional, nature, kids and more · wallbliss.in"],
+    ["share-home", "Homepage link", "www.wallbliss.in", "all", "WallBliss Studio · Wall murals in Bengaluru", "Your favourite picture, printed straight onto your wall in a few hours"],
+    ["share-projects", "Projects link", "www.wallbliss.in/projects.html", "all", "Real walls, before and after", "Bare paint to finished mural in an afternoon, across Bengaluru"]];
   function tileItem(ref) {
     if (/^p:/.test(ref)) { var p = (db.projects || []).filter(function (x) { return x.slug === ref.slice(2); })[0]; return p && p.after ? { img: p.after, name: p.title || "Project", hidden: p.hidden } : null; }
     var d = byCode()[ref]; return d && d.img ? d : null;
@@ -1340,20 +1348,31 @@
           '<span class="ht-st">' + (n > 1 ? "↻ Rotates daily · " + n : n ? "Fixed" : "Automatic") + '</span><button type="button" class="btn btn-ghost btn-xs" data-tile="' + t[0] + '">Change</button></div>';
       }).join("") + '</div></div>';
     }).join("");
+    var S = db.settings.share || {};
+    $("#ht-list").insertAdjacentHTML("beforeend", '<div class="card ht-sec"><h2>WhatsApp link previews<span>picture + text people see when you share a link</span></h2><div>' + SHARE_PAGES.map(function (t) {
+      var s = S[t[0].slice(6)] || {}, items = (s.pics || []).map(tileItem).filter(Boolean);
+      var th = items.length ? items.map(tileThumb).join("") : '<span class="auto">Built-in</span>';
+      return '<div class="ht-row"><span class="ht-th">' + th + '</span><span class="ht-nm">' + esc(t[1]) + '<small>' + esc(s.title || t[4]) + '</small></span>' +
+        '<span class="ht-st">' + (items.length ? items.length + (items.length > 1 ? " pictures" : " picture") : "Built-in picture") + '</span><button type="button" class="btn btn-ghost btn-xs" data-tile="' + t[0] + '">Change</button></div>';
+    }).join("") + '</div><p class="muted" style="font-size:.82rem;margin:4px 0 0">Up to 3 designs. Design codes are left off. WhatsApp keeps the old preview in chats where the link was already shared; new shares show the new one.</p></div>');
     $$("[data-tile]").forEach(function (b) { b.onclick = function () { openTile(b.dataset.tile); }; });
   }
   var tileSel = [], tileSlot = null, tileFilter = "room";
-  function tileDef(slot) { var f = null; TILE_SECS.forEach(function (s) { s[1].forEach(function (t) { if (t[0] === slot) f = t; }); }); return f; }
+  function tileDef(slot) { var f = null; TILE_SECS.forEach(function (s) { s[1].forEach(function (t) { if (t[0] === slot) f = t; }); }); SHARE_PAGES.forEach(function (t) { if (t[0] === slot) f = t; }); return f; }
+  function isShare(slot) { return /^share-/.test(slot || ""); }
   function openTile(slot) {
-    tileSlot = slot; var t = tileDef(slot);
-    tileSel = ((db.settings.tiles || {})[slot] || []).filter(tileItem);
-    tileFilter = t[3] === "projects" ? "projects" : "room";
-    $("#ht-title").textContent = t[1] + " tile";
+    tileSlot = slot; var t = tileDef(slot), sh = isShare(slot), s = sh ? ((db.settings.share || {})[slot.slice(6)] || {}) : null;
+    tileSel = ((sh ? s.pics : (db.settings.tiles || {})[slot]) || []).filter(tileItem);
+    tileFilter = t[3] === "projects" ? "projects" : t[3] === "all" ? "all" : "room";
+    $("#ht-text").hidden = !sh; $("#ht-clear").hidden = sh;
+    $("#ht-help").textContent = sh ? "Pick 1 to 3 pictures and the words people see when you share this link." : "Tap to select. 1 = fixed, 2 or more = rotates daily.";
+    if (sh) { $("#ht-t").value = s.title || t[4]; $("#ht-s").value = s.sub || t[5]; }
+    $("#ht-title").textContent = sh ? t[1] + " preview" : t[1] + " tile";
     drawTilePicker(); openDlg($("#ht-dlg"));
   }
   function drawTilePicker() {
     var t = tileDef(tileSlot), roomName = (DESIGN_ROOMS.filter(function (r) { return r[0] === t[3]; })[0] || [0, ""])[1];
-    var chips = (t[3] !== "projects" ? [["room", "Suits " + roomName.toLowerCase()]] : []).concat([["all", "All designs"], ["projects", "Projects (after photos)"]]);
+    var chips = (t[3] !== "projects" && t[3] !== "all" ? [["room", "Suits " + roomName.toLowerCase()]] : []).concat([["all", "All designs"], ["projects", "Projects (after photos)"]]);
     $("#ht-chips").innerHTML = chips.map(function (c) { return '<button type="button" class="fchip" data-hf="' + c[0] + '" aria-pressed="' + (c[0] === tileFilter) + '">' + esc(c[1]) + '</button>'; }).join("");
     $$("[data-hf]").forEach(function (b) { b.onclick = function () { tileFilter = b.dataset.hf; drawTilePicker(); }; });
     var list;
@@ -1364,12 +1383,23 @@
       var k = tileSel.indexOf(it.ref);
       return '<button type="button" class="ht-pick" data-ref="' + esc(it.ref) + '" aria-pressed="' + (k > -1) + '">' + tileThumb(it) + '<i>' + (k > -1 ? k + 1 : "") + '</i><span>' + esc(it.name) + '</span></button>';
     }).join("") : '<p class="muted">Nothing here yet.</p>';
-    $$("#ht-grid [data-ref]").forEach(function (b) { b.onclick = function () { var r = b.dataset.ref, k = tileSel.indexOf(r); if (k > -1) tileSel.splice(k, 1); else tileSel.push(r); drawTilePicker(); }; });
+    $$("#ht-grid [data-ref]").forEach(function (b) { b.onclick = function () {
+      var r = b.dataset.ref, k = tileSel.indexOf(r);
+      if (k > -1) tileSel.splice(k, 1); else if (isShare(tileSlot) && tileSel.length >= 3) { toast("Up to 3 pictures. Tap one to remove it first."); return; } else tileSel.push(r);
+      drawTilePicker();
+    }; });
     var n = tileSel.length;
-    $("#ht-note").textContent = n ? n + " selected · " + (n > 1 ? "rotates daily" : "fixed") : "Nothing selected: the tile picks automatically";
+    $("#ht-note").textContent = isShare(tileSlot) ? (n ? n + " of 3 selected" : "Pick 1 to 3 pictures") : n ? n + " selected · " + (n > 1 ? "rotates daily" : "fixed") : "Nothing selected: the tile picks automatically";
   }
   $("#ht-clear").onclick = function () { tileSel = []; drawTilePicker(); };
   $("#ht-save").onclick = function () {
+    if (isShare(tileSlot)) {
+      if (!tileSel.length) { toast("Pick at least 1 picture"); return; }
+      var t = tileDef(tileSlot), SH = (db.settings.share = Object.assign({}, db.settings.share || {}));
+      SH[tileSlot.slice(6)] = { pics: tileSel.slice(), title: $("#ht-t").value.trim() || t[4], sub: $("#ht-s").value.trim() || t[5] };
+      if (!save()) return;
+      $("#ht-dlg").close(); renderTiles(); autoPublish("Link preview updated"); return;
+    }
     var T = (db.settings.tiles = Object.assign({}, db.settings.tiles || {}));
     if (tileSel.length) T[tileSlot] = tileSel.slice(); else delete T[tileSlot];
     if (!save()) return;
