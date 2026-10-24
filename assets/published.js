@@ -1245,6 +1245,16 @@ window.WB_PUBLISHED = {
    "story-business": [
     "WB-0175"
    ]
+  },
+  "share": {
+   "catalogue": {
+    "pics": [
+     "WB-0185",
+     "WB-0174"
+    ],
+    "title": "Find your wall design",
+    "sub": "Devotional, traditional, nature, kids and more · wallbliss.in"
+   }
   }
  },
  "faqs": [
@@ -1339,7 +1349,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T04:08:55.006Z",
+ "updated": "2026-10-24T04:12:38.064Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1517,6 +1527,10 @@ window.WB_PUBLISHED = {
   "d:WB-0185": {
    "sig": "1o5918e",
    "card": "d/WB-0185/card-1o5918e.jpg"
+  },
+  "page:catalogue": {
+   "sig": "b86nqd",
+   "card": "assets/img/share/catalogue-b86nqd.jpg"
   }
  }
 };
