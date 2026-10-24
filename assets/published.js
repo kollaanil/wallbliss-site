@@ -1261,6 +1261,13 @@ window.WB_PUBLISHED = {
     ],
     "title": "WallBliss Studio · Wall murals in Bengaluru",
     "sub": "Your favourite picture, printed straight onto your wall in a few hours"
+   },
+   "projects": {
+    "pics": [
+     "p:the-wall-every-guest-wants-a-photo-with-n01l"
+    ],
+    "title": "Real walls, before and after",
+    "sub": "Bare paint to finished mural in an afternoon, across Bengaluru"
    }
   }
  },
@@ -1356,7 +1363,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T04:13:04.668Z",
+ "updated": "2026-10-24T04:13:36.606Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1542,6 +1549,10 @@ window.WB_PUBLISHED = {
   "page:home": {
    "sig": "1cqts8w",
    "card": "assets/img/share/home-1cqts8w.jpg"
+  },
+  "page:projects": {
+   "sig": "1wp852h",
+   "card": "assets/img/share/projects-1wp852h.jpg"
   }
  }
 };
