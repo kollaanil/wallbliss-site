@@ -1210,11 +1210,7 @@ window.WB_PUBLISHED = {
  "reviews": [],
  "settings": {
   "samplesRetired": true,
-  "themes": [
-   {
-    "name": "Srinivasa"
-   }
-  ],
+  "themes": [],
   "tiles": {
    "room-living": [
     "WB-0182"
@@ -1367,7 +1363,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T06:25:31.618Z",
+ "updated": "2026-10-24T06:27:52.194Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
