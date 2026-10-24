@@ -1140,6 +1140,28 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0187",
+   "name": "Latest World Map 2026",
+   "img": "assets/uploads/designs/wb-0187-7p3qmg.jpg",
+   "tags": [
+    "world",
+    "map",
+    "latest"
+   ],
+   "search": [],
+   "spaces": [
+    "kids",
+    "office"
+   ],
+   "styles": [
+    "geometric",
+    "kids"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1384,7 +1406,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T06:53:45.739Z",
+ "updated": "2026-10-24T10:12:47.858Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1586,6 +1608,10 @@ window.WB_PUBLISHED = {
   "t:krishna": {
    "sig": "drrqop",
    "card": "t/krishna/card-drrqop.jpg"
+  },
+  "d:WB-0187": {
+   "sig": "qvi9qb",
+   "card": "d/WB-0187/card-qvi9qb.jpg"
   }
  }
 };
