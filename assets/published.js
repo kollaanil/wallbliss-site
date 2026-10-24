@@ -1254,6 +1254,13 @@ window.WB_PUBLISHED = {
     ],
     "title": "Find your wall design",
     "sub": "Devotional, traditional, nature, kids and more · wallbliss.in"
+   },
+   "home": {
+    "pics": [
+     "WB-0138"
+    ],
+    "title": "WallBliss Studio · Wall murals in Bengaluru",
+    "sub": "Your favourite picture, printed straight onto your wall in a few hours"
    }
   }
  },
@@ -1349,7 +1356,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T04:12:38.064Z",
+ "updated": "2026-10-24T04:13:04.668Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1531,6 +1538,10 @@ window.WB_PUBLISHED = {
   "page:catalogue": {
    "sig": "b86nqd",
    "card": "assets/img/share/catalogue-b86nqd.jpg"
+  },
+  "page:home": {
+   "sig": "1cqts8w",
+   "card": "assets/img/share/home-1cqts8w.jpg"
   }
  }
 };
