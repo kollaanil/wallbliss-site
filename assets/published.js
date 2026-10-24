@@ -1210,7 +1210,11 @@ window.WB_PUBLISHED = {
  "reviews": [],
  "settings": {
   "samplesRetired": true,
-  "themes": [],
+  "themes": [
+   {
+    "name": "Srinivasa"
+   }
+  ],
   "tiles": {
    "room-living": [
     "WB-0182"
@@ -1363,7 +1367,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T04:13:36.606Z",
+ "updated": "2026-10-24T06:24:53.548Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1553,6 +1557,10 @@ window.WB_PUBLISHED = {
   "page:projects": {
    "sig": "1wp852h",
    "card": "assets/img/share/projects-1wp852h.jpg"
+  },
+  "t:srinivasa": {
+   "sig": "xyfba",
+   "card": "t/srinivasa/card-xyfba.jpg"
   }
  }
 };
