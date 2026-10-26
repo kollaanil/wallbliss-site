@@ -1163,6 +1163,416 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0188",
+   "name": "Rama Pattabhishekham",
+   "img": "assets/uploads/designs/wb-0188-8unqrt.jpg",
+   "tags": [
+    "ramakalyanan",
+    "border",
+    "rama",
+    "rama pattabhishekham",
+    "lord ram"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0189",
+   "name": "Raghavendra Swamy",
+   "img": "assets/uploads/designs/wb-0189-1v7ljct.jpg",
+   "tags": [
+    "radhavendra",
+    "swamy"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0190",
+   "name": "Swastik Tall Frame",
+   "img": "assets/uploads/designs/wb-0190-1tsasiw.jpg",
+   "tags": [
+    "swastik",
+    "devotional"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0191",
+   "name": "Srinivasa Kalyanam Bapu Style",
+   "img": "assets/uploads/designs/wb-0191-1gp8qdu.jpg",
+   "tags": [
+    "srinivasa",
+    "srinivasakalyanam",
+    "bapu"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0192",
+   "name": "Rama Pattabhishekham Border",
+   "img": "assets/uploads/designs/wb-0192-1trio7.jpg",
+   "tags": [
+    "sriram",
+    "rama",
+    "pattabhishekham",
+    "border"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0193",
+   "name": "Kamadhenu Temple Background",
+   "img": "assets/uploads/designs/wb-0193-1c9cu2d.jpg",
+   "tags": [
+    "nandi",
+    "kamadhenu"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "texture3d"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0194",
+   "name": "Hanuman Dhyanam",
+   "img": "assets/uploads/designs/wb-0194-kfnuau.jpg",
+   "tags": [
+    "hanuman",
+    "anjaneya",
+    "lord"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0195",
+   "name": "Buddha Pastel Murals",
+   "img": "assets/uploads/designs/wb-0195-5x86qc.jpg",
+   "tags": [
+    "buddha",
+    "murals",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel",
+    "office"
+   ],
+   "styles": [
+    "nature",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0196",
+   "name": "Gods Trilogy",
+   "img": "assets/uploads/designs/wb-0196-9y8n4z.jpg",
+   "tags": [
+    "hanuman",
+    "shiva",
+    "rama",
+    "gods"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0197",
+   "name": "Tom and Jerry",
+   "img": "assets/uploads/designs/wb-0197-13i256p.jpg",
+   "tags": [
+    "tom",
+    "jerry"
+   ],
+   "search": [],
+   "spaces": [
+    "kids"
+   ],
+   "styles": [
+    "texture3d"
+   ],
+   "orient": "square",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0198",
+   "name": "Rama Pattabhishekham Kolam Border",
+   "img": "assets/uploads/designs/wb-0198-f6h87h.jpg",
+   "tags": [
+    "srirama",
+    "rama",
+    "ramapattabhishekam",
+    "kolam"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0199",
+   "name": "Blue River Tall Frame",
+   "img": "assets/uploads/designs/wb-0199-1izeajo.jpg",
+   "tags": [
+    "river",
+    "water",
+    "blue"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "nature"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0201",
+   "name": "Ardha Nareswari",
+   "img": "assets/uploads/designs/wb-0201-frg215.jpg",
+   "tags": [
+    "shiv",
+    "parvati",
+    "shiva"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0202",
+   "name": "Krishna with Kamadhenu",
+   "img": "assets/uploads/designs/wb-0202-1n6amni.jpg",
+   "tags": [
+    "krishna",
+    "kamadhenu",
+    "3d"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "texture3d",
+    "devotional",
+    "traditional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0203",
+   "name": "Srinivasa Kalyanam New Background",
+   "img": "assets/uploads/designs/wb-0203-p75v49.jpg",
+   "tags": [
+    "srinivasa",
+    "kalyanam"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0204",
+   "name": "Green Krishna",
+   "img": "assets/uploads/designs/wb-0204-1icfehe.jpg",
+   "tags": [
+    "green",
+    "krishna"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0205",
+   "name": "7 Horses Ornamental",
+   "img": "assets/uploads/designs/wb-0205-5u0792.jpg",
+   "tags": [
+    "horse",
+    "7horses"
+   ],
+   "search": [],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "texture3d",
+    "nature"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0206",
+   "name": "Yashodha Krishna",
+   "img": "assets/uploads/designs/wb-0206-aiv6oz.jpg",
+   "tags": [
+    "krishna",
+    "yashoda"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
+  },
+  {
+   "code": "WB-0207",
+   "name": "3d Krishna",
+   "img": "assets/uploads/designs/wb-0207-x8gvrr.jpg",
+   "tags": [
+    "3d",
+    "krishna",
+    "cream",
+    "premium"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1407,7 +1817,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-24T10:13:10.387Z",
+ "updated": "2026-10-26T14:57:29.830Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -1613,6 +2023,82 @@ window.WB_PUBLISHED = {
   "d:WB-0187": {
    "sig": "qvi9qb",
    "card": "d/WB-0187/card-qvi9qb.jpg"
+  },
+  "d:WB-0188": {
+   "sig": "1ye6cg0",
+   "card": "d/WB-0188/card-1ye6cg0.jpg"
+  },
+  "d:WB-0189": {
+   "sig": "b7b9p3",
+   "card": "d/WB-0189/card-b7b9p3.jpg"
+  },
+  "d:WB-0190": {
+   "sig": "6co5wo",
+   "card": "d/WB-0190/card-6co5wo.jpg"
+  },
+  "d:WB-0191": {
+   "sig": "1kp3ry9",
+   "card": "d/WB-0191/card-1kp3ry9.jpg"
+  },
+  "d:WB-0192": {
+   "sig": "jdkims",
+   "card": "d/WB-0192/card-jdkims.jpg"
+  },
+  "d:WB-0193": {
+   "sig": "2kpto5",
+   "card": "d/WB-0193/card-2kpto5.jpg"
+  },
+  "d:WB-0194": {
+   "sig": "1sw2vlc",
+   "card": "d/WB-0194/card-1sw2vlc.jpg"
+  },
+  "d:WB-0195": {
+   "sig": "vktpib",
+   "card": "d/WB-0195/card-vktpib.jpg"
+  },
+  "d:WB-0196": {
+   "sig": "114n8sh",
+   "card": "d/WB-0196/card-114n8sh.jpg"
+  },
+  "d:WB-0197": {
+   "sig": "15o9spe",
+   "card": "d/WB-0197/card-15o9spe.jpg"
+  },
+  "d:WB-0198": {
+   "sig": "4vhlgm",
+   "card": "d/WB-0198/card-4vhlgm.jpg"
+  },
+  "d:WB-0199": {
+   "sig": "vd0zow",
+   "card": "d/WB-0199/card-vd0zow.jpg"
+  },
+  "d:WB-0201": {
+   "sig": "1nr1uch",
+   "card": "d/WB-0201/card-1nr1uch.jpg"
+  },
+  "d:WB-0202": {
+   "sig": "1qjqwjx",
+   "card": "d/WB-0202/card-1qjqwjx.jpg"
+  },
+  "d:WB-0203": {
+   "sig": "dlbbce",
+   "card": "d/WB-0203/card-dlbbce.jpg"
+  },
+  "d:WB-0204": {
+   "sig": "67dyx0",
+   "card": "d/WB-0204/card-67dyx0.jpg"
+  },
+  "d:WB-0205": {
+   "sig": "1sbr7av",
+   "card": "d/WB-0205/card-1sbr7av.jpg"
+  },
+  "d:WB-0206": {
+   "sig": "1b4slbg",
+   "card": "d/WB-0206/card-1b4slbg.jpg"
+  },
+  "d:WB-0207": {
+   "sig": "1p9fln7",
+   "card": "d/WB-0207/card-1p9fln7.jpg"
   }
  }
 };
