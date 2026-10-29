@@ -346,6 +346,8 @@
         return add({ op: "upload", code: code, name: name, file: file, size: file.size, type: file.type, fname: file.name, sha: h, by: who(), wait: !!opts.wait, note: opts.note || "" });
       });
     },
+    /* a design's code changed while publishing (both editors used the same new code): queued originals follow it */
+    recode: function (from, to) { queue.forEach(function (j) { if (j.code === from && !j.busy) { j.code = to; qSave(j).catch(function () {}); } }); changed(); },
     rename: function (code, name) { if (O.status(code).s === "missing") return; return add({ op: "rename", code: code, name: name }); },
     retire: function (code) { queue.filter(function (j) { return j.code === code && j.op === "upload" && !j.busy; }).forEach(function (j) { queue.splice(queue.indexOf(j), 1); Q.del(j.id).catch(function () {}); }); if (!index || !index.files[code]) return; return add({ op: "retire", code: code }); },
     retry: function (code) {

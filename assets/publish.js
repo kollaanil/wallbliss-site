@@ -156,6 +156,10 @@
       if ((live.updated || null) !== (base.updated || null)) {
         var m = merge(base, draft, live);
         WB.db.save(Object.assign(draft, m.data)); WB.db.setBase(live);
+        if (m.recoded && m.recoded.length) {
+          if (window.WBOriginals) m.recoded.forEach(function (r) { WBOriginals.recode(r[0], r[1]); });
+          WB.notify((live.by || "The team") + " added " + m.recoded.map(function (r) { return r[0]; }).join(", ") + " at the same time, so yours became " + m.recoded.map(function (r) { return r[1]; }).join(", ") + ".", { ms: 10000 });
+        }
         note = " Also kept " + (live.by || "the team") + "'s changes published " + (live.updated ? new Date(live.updated).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "earlier") + "." +
           (m.clashes.length ? " You both changed " + m.clashes.slice(0, 3).join(", ") + (m.clashes.length > 3 ? "…" : "") + "; your version was used." : "");
       }

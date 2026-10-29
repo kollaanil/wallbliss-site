@@ -108,10 +108,16 @@
     items.forEach(function (it) { if (it !== except) u[it.code] = 1; });
     return u;
   }
-  function nextFree(used) { var n = 0; Object.keys(used).forEach(function (c) { var m = /^WB-(\d+)$/.exec(c); if (m) n = Math.max(n, +m[1]); }); return "WB-" + String(n + 1).padStart(4, "0"); }
+  function nextFree(used) {                                   // never reuses a deleted design's code (see live.js codeFloor)
+    var n = WB.codeFloor({ designs: A.designs(), settings: A.db().settings }, window.WB_PUBLISHED, WB.db.base());
+    Object.keys(used).forEach(function (c) { var m = /^WB-(\d+)$/.exec(c); if (m) n = Math.max(n, +m[1]); });
+    return WB.codeName(n + 1);
+  }
   function codeProblem(it) {
     if (!/^WB-\d{4}$/.test(it.code)) return "Use the format WB-0000";
     if (usedCodes(it)[it.code]) return "This code is already taken";
+    var floor = WB.codeFloor({ settings: A.db().settings }, window.WB_PUBLISHED, WB.db.base());
+    if (+it.code.slice(3) <= floor) return it.code + " belonged to a deleted design. Codes are never reused";
     return "";
   }
 
@@ -373,7 +379,7 @@
       });
     })).then(function (list) {
       var db = A.db();
-      list.forEach(function (d) { db.designs.push(d); });
+      list.forEach(function (d) { db.designs.push(d); A.noteCode(d.code); });
       var first = !db.settings.samplesRetired;
       db.settings.samplesRetired = true;                 // the first real upload retires the drawn samples
       if (!A.save()) throw new Error("Could not save the draft on this device");

@@ -107,8 +107,29 @@
     }
     return out;
   }
+  /* Design codes never repeat: the highest number ever used (live designs, settings.lastCode, and every
+     design that ever had a share page) + 1. Deleted designs' codes stay retired. */
+  function codeNum(c) { var m = /^WB-(\d+)$/.exec(String(c || "")); return m ? +m[1] : 0; }
+  function codeFloor() {
+    var n = 0;
+    for (var i = 0; i < arguments.length; i++) {
+      var d = arguments[i] || {};
+      (d.designs || []).forEach(function (x) { n = Math.max(n, codeNum(x.code)); });
+      n = Math.max(n, +((d.settings || {}).lastCode) || 0);
+      Object.keys(d.og || {}).forEach(function (k) { n = Math.max(n, codeNum(k.replace(/^d:/, ""))); });
+    }
+    return n;
+  }
+  WB.codeFloor = codeFloor;
+  WB.codeName = function (n) { return "WB-" + String(n).padStart(4, "0"); };
   function merge(base, mine, theirs) {
-    var clashes = [];
+    var clashes = [], recoded = [];
+    /* both editors added a new design with the same code at the same time: this device's one gets the next free code */
+    var B = {}, T = {}; (base.designs || []).forEach(function (d) { B[d.code] = 1; }); (theirs.designs || []).forEach(function (d) { T[d.code] = d; });
+    var top = codeFloor(base, mine, theirs);
+    (mine.designs || []).forEach(function (d) {
+      if (!B[d.code] && T[d.code] && !same(T[d.code], d)) { var n = WB.codeName(++top); recoded.push([d.code, n]); d.code = n; }
+    });
     var out = {
       designs: mergeList("designs", base.designs || [], mine.designs, theirs.designs, clashes),
       projects: mergeList("projects", base.projects || [], mine.projects, theirs.projects, clashes),
@@ -117,7 +138,8 @@
       edits: mergeMap(base.edits || {}, mine.edits, theirs.edits),
       settings: mergeMap(base.settings || {}, mine.settings, theirs.settings)
     };
-    return { data: out, clashes: clashes };
+    out.settings.lastCode = Math.max(top, codeFloor({ designs: out.designs }));
+    return { data: out, clashes: clashes, recoded: recoded };
   }
 
   WB.mergeDrafts = merge;
