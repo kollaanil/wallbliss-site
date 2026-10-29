@@ -833,7 +833,8 @@
       return w.charAt(0).toUpperCase() + w.slice(1);
     }).join(" ");
   }
-  function nextCode() { var n = 0; designs().forEach(function (d) { var m = /WB-(\d+)/.exec(d.code); if (m) n = Math.max(n, +m[1]); }); return "WB-" + String(n + 1).padStart(4, "0"); }
+  function nextCode() { return WB.codeName(WB.codeFloor({ designs: designs(), settings: db.settings }, window.WB_PUBLISHED, WB.db.base()) + 1); }   // never reuses a deleted design's code
+  function noteCode(code) { var m = /^WB-(\d+)$/.exec(code || ""); if (m) db.settings.lastCode = Math.max(+db.settings.lastCode || 0, +m[1]); }
 
   /* chips */
   function chipSet(el, list, sel) {
@@ -973,7 +974,7 @@
     if (srcImg) {
       data.img = $("#d-canvas").toDataURL("image/jpeg", .86);
     }
-    if (isNew) { db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
+    if (isNew) { noteCode($("#d-code").value); db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
     var oldName = cur ? cur.name : "";
     if (!isNew) setDesign(cur.code, data);
     if (!save()) { if (isNew) db.designs.pop(); return; }
@@ -1478,7 +1479,7 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, setFilter: setFilter, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, themeDesigns: themeDesigns, slugify: slugify, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, setFilter: setFilter, nextCode: nextCode, noteCode: noteCode, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, themeDesigns: themeDesigns, slugify: slugify, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>
