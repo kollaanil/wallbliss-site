@@ -34,6 +34,26 @@ browser only. Remove it from Settings in the admin if a device is lost, and revo
 - An admin tab opened before the latest code update asks for a refresh before it publishes.
 - WhatsApp preview cards that already exist on the site are reused, never rebuilt in bulk.
 
+## Design originals (Google Drive) — assets/originals.js + originals-ui.js
+
+Every original file picked in Add design (or attached later in Edit design) is uploaded untouched to the
+studio Drive folder **Design originals** (wallblissstudio@gmail.com), named `WB-0124 Kamadhenu colorful.jpeg`.
+The website copy is made as before; publishing never waits for Drive.
+
+- **Setup (done once):** Cloud project 720239373390 → Drive API + Picker API on, scope `drive.file`, browser key
+  restricted to wallbliss.in + Picker (in `assets/admin-config.js → drive`). Test users: the studio account, Anil, Manasa.
+- **Each device, once:** Designs → **Connect originals folder** → sign in as wallblissstudio@gmail.com (any other
+  account is refused). The first connection picks the folder; the choice is saved for both editors. Google asks
+  to reconnect about once an hour of use; uploads wait meanwhile.
+- **Status:** bar on Designs (count, storage used), a "Missing originals" filter, and a label on every picture.
+  Edit design → "Original file": Open in Drive, Replace (side-by-side check, duplicate warning), Attach original.
+- **Safety:** files are found by a hidden tag (`appProperties.wbCode`), so renaming/moving them in Drive is fine;
+  uploads queue in the browser (IndexedDB) and resume in 8 MB pieces; replaced or deleted designs move their
+  original to **Retired** (made by the site inside the folder). Nothing is deleted. No Drive links go into
+  the public data.
+- Any file type is accepted as an original (TIFF, PSD, PDF…). If the browser can't open it, the uploader asks
+  for a smaller JPG/PNG for the website picture and still archives the original.
+
 ## Uploading designs (admin → Designs → + Add design)
 
 - Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked

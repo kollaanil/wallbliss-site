@@ -674,7 +674,8 @@
      DESIGNS
      ===================================================================== */
   var dFilter = "all";
-  $$("[data-df]").forEach(function (b) { b.onclick = function () { dFilter = b.dataset.df; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); renderDesigns(); }; });
+  function setFilter(f) { dFilter = f; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.df === f); }); renderDesigns(); }
+  $$("[data-df]").forEach(function (b) { b.onclick = function () { setFilter(b.dataset.df); }; });
   $("#d-q").addEventListener("input", function () { renderDesigns(); });
   function renderDesigns() {
     renderThemes();
@@ -683,6 +684,7 @@
       if (dFilter === "live" && d.hidden) return false;
       if (dFilter === "hidden" && !d.hidden) return false;
       if (dFilter === "sample" && d.img) return false;
+      if (dFilter === "noorig" && !(window.WBOrigUI && d.img && !d.builtIn && WBOrigUI.isMissing(d.code))) return false;
       return !q || (d.name + " " + d.code + " " + (d.tags || []).join(" ")).toLowerCase().indexOf(q) > -1;
     }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); });
     var samples = all.filter(function (d) { return !d.img; }).length;
@@ -693,6 +695,7 @@
         '<div class="row"><label class="switch" style="font-size:.78rem"><input type="checkbox" data-live="' + d.code + '"' + (d.hidden ? "" : " checked") + '> ' + (d.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-edit="' + d.code + '" style="font-size:.84rem">Edit</button></div></div></div>';
     }).join("");
     paintThumbs($("#d-grid"));
+    if (window.WBOrigUI) WBOrigUI.decorate();                        // "Original saved / No original" on each picture
     $("#d-add-tile").onclick = function () { if (window.WBUpload) WBUpload.open(); else openDesign(null); };
     shown = list.map(function (d) { return d.code; });
     $("#d-section").classList.toggle("selecting", selecting);
@@ -913,15 +916,16 @@
       if (!heic) throw e;
       if (box) w = WB.waiting(box, "heic");
       return H.toJpeg(file).then(open);
-    }).then(function (im) { back(); cb(im); }).catch(function (e) { back(); toast(e.message, "error"); });
+    }).then(function (im) { back(); cb(im, file); }).catch(function (e) { back(); toast(e.message, "error"); });
   }
   function wireDrop(drop, input, cb) {
     input.addEventListener("change", function () { loadFile(input.files[0], cb, drop); input.value = ""; });
     ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
     ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("over"); if (t === "drop") loadFile(e.dataTransfer.files[0], cb, drop); }); });
   }
-  wireDrop($("#d-drop"), $("#d-file"), function (im) {
-    srcImg = im; $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
+  var srcFile = null;
+  wireDrop($("#d-drop"), $("#d-file"), function (im, file) {
+    srcImg = im; srcFile = file || null; if (cur && window.WBOrigUI) WBOrigUI.newImage(srcFile); $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
     var a = analyse(im);
     segSet($("#d-orient"), a.orient); $("#d-orient-note").textContent = "Set from the image shape";
     $("#d-imginfo").textContent = im.naturalWidth + " × " + im.naturalHeight + " px" + (Math.max(im.naturalWidth, im.naturalHeight) < 1200 ? " · small image: it may look soft when printed large. Ask the customer for a bigger file." : " · saved at website size; keep your original for printing.");
@@ -930,7 +934,8 @@
   $("#d-wm").onchange = renderImg; $("#d-wm-style").addEventListener("change", renderImg);
 
   function openDesign(code, wantWord) {
-    cur = code ? byCode()[code] : null; srcImg = null;
+    cur = code ? byCode()[code] : null; srcImg = null; srcFile = null;
+    if (window.WBOrigUI) WBOrigUI.section(cur);
     var st = settings();
     $("#d-title").textContent = cur ? "Edit " + cur.code : "Add a design";
     $("#d-code").value = cur ? cur.code : nextCode();
@@ -969,14 +974,18 @@
       data.img = $("#d-canvas").toDataURL("image/jpeg", .86);
     }
     if (isNew) { db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
-    else setDesign(cur.code, data);
+    var oldName = cur ? cur.name : "";
+    if (!isNew) setDesign(cur.code, data);
     if (!save()) { if (isNew) db.designs.pop(); return; }
+    if (window.WBOrigUI) { if (isNew) { if (srcFile) WBOrigUI.uploaded([{ code: $("#d-code").value, name: name, file: srcFile }]); } else if (!cur.builtIn) WBOrigUI.saved(cur.code, oldName, name); }
     $("#d-dlg").close(); renderDesigns();
     autoPublish(isNew ? "Saved " + $("#d-code").value : "Saved");
   };
   $("#d-delete").onclick = function () {
     var b = this; if (!b.dataset.confirm) { b.dataset.confirm = 1; b.textContent = "Tap again to delete"; setTimeout(function () { delete b.dataset.confirm; b.textContent = "Delete design"; }, 2500); return; }
-    db.designs = db.designs.filter(function (d) { return d.code !== cur.code; }); save(); $("#d-dlg").close(); renderDesigns(); autoPublish("Deleted");
+    db.designs = db.designs.filter(function (d) { return d.code !== cur.code; }); save();
+    if (window.WBOrigUI) WBOrigUI.deleted(cur.code);              // its original moves to "Retired" in Drive (never deleted)
+    $("#d-dlg").close(); renderDesigns(); autoPublish("Deleted");
   };
 
   /* =====================================================================
@@ -1469,12 +1478,14 @@
 
   try { if (sessionStorage.getItem("wb_pn")) $("#preview-note").hidden = true; } catch (e) {}
   $("#pn-x").onclick = function () { $("#preview-note").hidden = true; try { sessionStorage.setItem("wb_pn", 1); } catch (e) {} };
-  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, themeDesigns: themeDesigns, slugify: slugify, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
+  window.WBAdmin = { enter: enter, db: function () { return db; }, reload: function () { db = WB.db.load(); if (user) route(); }, save: save, designs: designs, renderDesigns: renderDesigns, setFilter: setFilter, toast: toast, openDlg: openDlg, esc: esc, ROOMS: DESIGN_ROOMS, niceName: niceName, themeDesigns: themeDesigns, slugify: slugify, STYLES: STYLES, styleList: styleList, ownStyle: ownStyle, autoPublish: autoPublish };
   if (user) enter(user);
 })();
 </script>
 <script src="assets/watermark.js"></script>
 <script src="assets/admin-upload.js"></script>
+<script src="assets/originals.js"></script>
+<script src="assets/originals-ui.js"></script>
 <script src="assets/admin-auth.js"></script>
 <script src="assets/publish.js"></script>
 <script>
