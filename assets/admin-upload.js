@@ -81,7 +81,7 @@
   var dlg = document.createElement("dialog");
   dlg.className = "sheet"; dlg.id = "u-dlg"; dlg.setAttribute("aria-labelledby", "u-title");
   dlg.innerHTML = '<div class="sheet-in"><header><h2 id="u-title">Upload designs</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>' +
-    '<div class="body"><div id="u-pick" class="field"><div class="drop"><input type="file" id="u-file" accept="image/*" multiple aria-label="Choose photos"><div><b>Tap to choose up to ' + MAX + ' photos</b>JPG, PNG, WebP or iPhone photos. Print-size files are fine; they are resized for the website.</div></div>' +
+    '<div class="body"><div id="u-pick" class="field"><div class="drop"><input type="file" id="u-file" accept="image/*,.heic,.heif,.tif,.tiff,.psd,.pdf,.ai,.eps,.bmp" multiple aria-label="Choose photos"><div><b>Tap to choose up to ' + MAX + ' photos</b>JPG, PNG, WebP or iPhone photos. Print-size files are fine; they are resized for the website.</div></div>' +
     '<p class="muted" id="u-ai-state" style="font-size:.84rem"></p></div><p id="u-skipall-row" hidden style="margin:0 0 4px;font-size:.84rem;color:var(--muted)">Claude is filling in the details. <button type="button" class="u-skipall" id="u-skipall">Fill all in myself</button></p><div class="u-items" id="u-items"></div></div>' +
     '<footer><span class="muted" id="u-count" style="font-size:.86rem;margin-right:auto"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="u-save" style="background:var(--ink);box-shadow:none" disabled>Save and publish</button></footer></div>';
   document.body.appendChild(dlg);
@@ -221,40 +221,51 @@
 
   /* ---------- items ---------- */
   function addFiles(files) {
-    files = Array.prototype.slice.call(files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|jfif|png|webp)$/i.test(f.name); });
+    files = Array.prototype.slice.call(files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(heic|heif|jpe?g|jfif|png|webp|tiff?|psd|pdf|ai|eps|bmp)$/i.test(f.name); });
     var room = MAX - items.length;
     if (files.length > room) A.toast("Up to " + MAX + " photos at a time. Taking the first " + room + ".");
     files.slice(0, room).forEach(function (f) {
       var used = usedCodes(null);
       var it = { file: f, code: nextFree(used), name: "", tags: [], search: [], spaces: [], styles: [], orient: "wide", status: "Preparing…", state: "ai" };
       items.push(it); renderItem(it);
-      load(f).then(function (img) {
-        if (!img.naturalWidth) throw new Error("Can't open “" + f.name + "”. If it's a very large print file, save a copy at about 4000 px and try again.");
-        var box = trimBox(img);
-        it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
-        it.base = WBImage.resize(img, WBImage.LONG, box);                 // trim + shrink in one step (safe for huge print files)
-        it.orient = shape(it.base);
-        it.tags = fileWords(f.name);
-        it.status = aiKey() ? "Claude is filling in the details…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
-        if (aiKey()) it.aiStart = Date.now();
-        renderItem(it); paint(it);
-        return askAI(it).then(function (s) {
-          if (s && !it.skipped) {
-            it.name = it.name || (s.name || "").slice(0, 40);
-            it.tags = clean((s.tags || []).concat(it.tags)).slice(0, 16);
-            it.search = clean(s.search_words).slice(0, 40);
-            it.spaces = clean(s.spaces, ids(A.ROOMS)); it.styles = clean(s.styles, ids(A.STYLES));
-            it.aiDone = true; it.aiSecs = Math.round((Date.now() - it.aiStart) / 1000);
-          }
-          it.state = ""; check(it); renderItem(it);
-        }).catch(function (e) {
-          it.state = ""; check(it);
-          if (e.message !== "SKIP") { it.aiErr = e.message + " Fill in the details yourself."; }
-          renderItem(it);
-        });
-      }).catch(function (e) { it.status = e.message; it.state = "bad"; it.broken = true; renderItem(it); });
+      prep(it, f);
     });
     update();
+  }
+  /* make the website picture from the file (or from a smaller copy when the original can't be opened here) */
+  function prep(it, src) {
+    var f = src;
+    load(src).then(function (img) {
+      if (!img.naturalWidth) throw new Error("Can't open “" + f.name + "”. If it's a very large print file, save a copy at about 4000 px and try again.");
+      var box = trimBox(img);
+      it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
+      it.base = WBImage.resize(img, WBImage.LONG, box);                 // trim + shrink in one step (safe for huge print files)
+      it.orient = shape(it.base);
+      it.tags = fileWords(f.name);
+      it.status = aiKey() ? "Claude is filling in the details…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
+      if (aiKey()) it.aiStart = Date.now();
+      renderItem(it); paint(it);
+      return askAI(it).then(function (s) {
+        if (s && !it.skipped) {
+          it.name = it.name || (s.name || "").slice(0, 40);
+          it.tags = clean((s.tags || []).concat(it.tags)).slice(0, 16);
+          it.search = clean(s.search_words).slice(0, 40);
+          it.spaces = clean(s.spaces, ids(A.ROOMS)); it.styles = clean(s.styles, ids(A.STYLES));
+          it.aiDone = true; it.aiSecs = Math.round((Date.now() - it.aiStart) / 1000);
+        }
+        it.state = ""; check(it); renderItem(it);
+      }).catch(function (e) {
+        it.state = ""; check(it);
+        if (e.message !== "SKIP") { it.aiErr = e.message + " Fill in the details yourself."; }
+        renderItem(it);
+      });
+    }).catch(function (e) {
+      it.state = "bad"; it.broken = true;
+      /* a print master the browser can't open (huge, TIFF, PSD, PDF…): its original can still be archived */
+      if (src === it.file && window.WBOrigUI) { it.needWeb = true; it.status = "This file can't be opened here (" + (e.message.indexOf("large") > -1 ? "too large" : "file type") + "). Its original will still be saved to Drive. Choose a smaller JPG or PNG copy for the website picture."; }
+      else it.status = e.message;
+      renderItem(it);
+    });
   }
   function check(it) {
     if (it.broken) return false;
@@ -279,6 +290,13 @@
   }
   function renderItem(it) {
     if (!it.el) { it.el = document.createElement("div"); it.el.className = "u-item"; $("#u-items").appendChild(it.el); }
+    if (it.needWeb && !it.base) {                          // original kept; ask for a website copy
+      it.el.innerHTML = '<div style="display:grid;gap:8px"><p class="u-st bad">' + esc(it.status) + '</p><small class="muted" style="font-size:.74rem;overflow-wrap:anywhere">Original: ' + esc(it.file.name) + ' · ' + (window.WBOriginals ? WBOriginals.mb(it.file.size) : "") + '</small>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn btn-ghost btn-xs" style="position:relative;overflow:hidden">Choose website picture<input type="file" accept="image/*" class="u-web" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><button type="button" class="u-rm">Remove this file</button></div></div>';
+      $(".u-web", it.el).onchange = function () { var w = this.files[0]; if (!w) return; it.webFile = w; it.needWeb = false; it.broken = false; it.state = "ai"; it.status = "Preparing…"; renderItem(it); prep(it, w); };
+      $(".u-rm", it.el).onclick = function () { items.splice(items.indexOf(it), 1); it.el.remove(); update(); };
+      update(); return;
+    }
     if (it.state === "ai" && it.base) {                      // Claude is working: show progress, not a half-filled form
       it.el.innerHTML = '<div class="u-top"><button type="button" class="u-thumb" aria-label="See larger"><canvas></canvas></button><div class="u-wait">' +
         '<p class="u-st ai"><i class="wb-spin" aria-hidden="true"></i> <span class="u-line wb-msg">' + WB.loadLine("aiDesign", (Date.now() - it.aiStart) / 1000) + '</span> <b class="u-sec wb-sec"></b></p>' +
@@ -360,6 +378,7 @@
       db.settings.samplesRetired = true;                 // the first real upload retires the drawn samples
       if (!A.save()) throw new Error("Could not save the draft on this device");
       dlg.close(); A.renderDesigns();
+      if (window.WBOrigUI) WBOrigUI.uploaded(ok.map(function (it) { return { code: it.code, name: A.niceName(it.name), file: it.file }; }));   // the untouched originals go to Drive
       A.autoPublish("Saved " + list.length + (list.length > 1 ? " designs" : " design") + (first ? " (sample designs will be hidden)" : ""));
     }).catch(function (e) { A.toast(e.message, "error"); btn.disabled = false; update(); });
   };
