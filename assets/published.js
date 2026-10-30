@@ -96,7 +96,7 @@ window.WB_PUBLISHED = {
    "orient": "square",
    "added": "2026-10",
    "pop": 5,
-   "hidden": false
+   "hidden": true
   },
   {
    "code": "WB-0141",
@@ -2023,7 +2023,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:38:06.065Z",
+ "updated": "2026-10-30T11:39:04.676Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
