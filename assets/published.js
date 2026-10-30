@@ -1719,6 +1719,57 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0211",
+   "name": "Lotus Kamadhenu Divine",
+   "img": "assets/uploads/designs/wb-0211-m9l6xc.jpg",
+   "tags": [
+    "cow",
+    "lotus",
+    "spiritual",
+    "monochrome",
+    "nature",
+    "devotional",
+    "sacred",
+    "earthy tones",
+    "3d effect",
+    "kamadhenu"
+   ],
+   "search": [
+    "cow and lotus wall mural",
+    "gau mata design",
+    "spiritual cow art",
+    "lotus flower relief",
+    "beige 3d wall art",
+    "sacred animals",
+    "hindu deity setting",
+    "monochrome nature mural",
+    "textured cow painting",
+    "divine animals wallpaper",
+    "गौ माता डिजाइन",
+    "कमल के फूल",
+    "गोपी गाय",
+    "lotus cow vastu",
+    "spiritual wall decor",
+    "cream colored mural",
+    "embossed wall design",
+    "peaceful animal art",
+    "temple inspired wall",
+    "नीलकंठ वास्तु"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d",
+    "nature",
+    "traditional"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1877,7 +1928,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 210
+  "lastCode": 211
  },
  "faqs": [
   {
@@ -1971,7 +2022,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:31:55.699Z",
+ "updated": "2026-10-30T11:36:41.607Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2265,6 +2316,10 @@ window.WB_PUBLISHED = {
   "d:WB-0210": {
    "sig": "cmpffh",
    "card": "d/WB-0210/card-cmpffh.jpg"
+  },
+  "d:WB-0211": {
+   "sig": "1nardiz",
+   "card": "d/WB-0211/card-1nardiz.jpg"
   }
  }
 };
