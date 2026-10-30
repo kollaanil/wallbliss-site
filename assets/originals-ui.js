@@ -40,8 +40,20 @@
   chip.className = "fchip"; chip.type = "button"; chip.dataset.df = "noorig"; chip.hidden = true; chips.appendChild(chip);
   chip.onclick = function () { A.setFilter("noorig"); };
 
+  function design(code) { return A.designs().filter(function (x) { return x.code === code; })[0] || null; }
+  /* designs marked "no original needed" (low-res uploads) don't count as missing */
+  function skipped(code) { var d = design(code); return !!(d && d.noOrig) && !O.has(code); }
   function codes() { return A.designs().filter(function (d) { return d.img && !d.builtIn; }).map(function (d) { return d.code; }); }
-  function counts() { var c = codes(), saved = c.filter(function (x) { return O.status(x).s === "saved"; }).length; return { all: c.length, saved: saved, missing: c.filter(function (x) { return !O.has(x); }).length }; }
+  function counts() {
+    var c = codes(), saved = c.filter(function (x) { return O.status(x).s === "saved"; }).length, skip = c.filter(skipped).length;
+    return { all: c.length - skip, saved: saved, skip: skip, missing: c.filter(function (x) { return !O.has(x) && !skipped(x); }).length };
+  }
+  function setNoOrig(code, on) {
+    var d = A.db().designs.filter(function (x) { return x.code === code; })[0]; if (!d) return;
+    if (on) d.noOrig = true; else delete d.noOrig;
+    A.save(); A.autoPublish(on ? code + ": marked as not needing an original" : code + ": original expected");
+    paintBar();
+  }
   function ago(t) { if (!t) return ""; var m = Math.round((Date.now() - t) / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago"; }
 
   function paintBar() {
@@ -62,7 +74,7 @@
       var line = busy ? "Saving " + up.length + " original" + (up.length > 1 ? "s" : "") + "… " + (busy.pct || 0) + "%"
         : failed ? failed + " original" + (failed > 1 ? "s" : "") + " couldn’t upload"
         : wifi ? wifi + " original" + (wifi > 1 ? "s" : "") + " waiting for Wi-Fi"
-        : O.known() ? n.saved + " of " + n.all + " designs have their original saved" : "Checking Drive…";
+        : O.known() ? n.saved + " of " + n.all + " designs have their original saved" + (n.skip ? " · " + n.skip + " not needed" : "") : "Checking Drive…";
       var sub = (st.email || "") + (st.at ? " · checked " + ago(st.at) : "") + (q && +q.limit ? " · " + O.mb(+q.usage) + " of " + O.mb(+q.limit) + " used" + (used >= .8 ? " — nearly full" : "") : "");
       html = '<span class="ic">' + (busy ? "⟳" : failed ? "!" : "☁") + '</span><span class="grow"><b>' + esc(f.folderName || "Design originals") + ' · ' + esc(line) + '</b><small>' + esc(sub) + '</small></span>' +
         (failed || wifi ? '<button class="og-btn pri" type="button" data-og="retry">' + (failed ? "Retry" : "Upload now") + '</button>' : "") +
@@ -90,7 +102,7 @@
     $$("#d-grid .d-card").forEach(function (c) {
       var b = c.querySelector(".pic[data-edit]"); if (!b) return;
       var code = b.dataset.edit, d = A.designs().filter(function (x) { return x.code === code; })[0]; if (!d || !d.img) return;
-      var st = O.status(code), t = st.s === "uploading" ? "⟳ Saving original " + (st.pct || 0) + "%" : LABEL[st.s];
+      var st = O.status(code), t = st.s === "uploading" ? "⟳ Saving original " + (st.pct || 0) + "%" : skipped(code) ? "" : LABEL[st.s];
       var el = b.querySelector(".oc");
       if (!t) { if (el) el.remove(); return; }
       if (!el) { el = document.createElement("span"); b.appendChild(el); }
@@ -126,11 +138,15 @@
         (s.s === "failed" || s.s === "wifi" || (s.s === "queued" && O.needsTap()) ? '<button class="og-btn pri" type="button" data-oa="retry">' + (s.s === "wifi" ? "Upload now" : O.needsTap() ? "Reconnect & upload" : "Retry") + '</button>' : "") +
         (s.s !== "uploading" ? '<button class="og-btn" type="button" data-oa="cancel">Cancel</button>' : "") + '</div>' +
         (s.s === "uploading" ? '<div class="og-prog"><i style="width:' + (s.pct || 0) + '%"></i></div>' : "");
+    } else if (skipped(d.code) && s.s !== "trash") {
+      box.className = "og-sec";
+      h = '<span class="t">Original file (for printing)</span><div class="og-row"><span class="grow"><small>No original kept for this design (marked as not needed, e.g. a low-resolution file).</small></span>' +
+        '<button class="og-btn" type="button" data-oa="need">Expect an original</button><button class="og-btn pri" type="button" data-oa="pick">Attach original</button></div>';
     } else {
       box.className = "og-sec warn";
       h = '<span class="t">⚠ ' + (s.s === "trash" ? "The original is in Drive’s trash" : s.s === "unknown" ? "Original not checked yet" : "No original saved for this design") + '</span>' +
         '<div class="og-row"><span class="grow"><small>' + (s.s === "trash" ? "Restore “" + esc(f.name) + "” from Drive’s trash (kept 30 days), or attach the file again." : s.s === "unknown" ? "Connect Drive on this device to check." : "Drop the original print file here (any type: JPG, PNG, TIFF, PSD, PDF…), or") + '</small></span>' +
-        (s.s === "unknown" ? '<button class="og-btn pri" type="button" data-oa="connect">Connect Drive</button>' : s.s === "trash" ? '<button class="og-btn" type="button" data-oa="open">Open in Drive ↗</button><button class="og-btn pri" type="button" data-oa="pick">Attach again</button>' : '<button class="og-btn pri" type="button" data-oa="pick">Attach original</button>') + '</div>';
+        (s.s === "unknown" ? '<button class="og-btn pri" type="button" data-oa="connect">Connect Drive</button>' : s.s === "trash" ? '<button class="og-btn" type="button" data-oa="open">Open in Drive ↗</button><button class="og-btn pri" type="button" data-oa="pick">Attach again</button>' : '<button class="og-btn" type="button" data-oa="noneed">Not needed</button><button class="og-btn pri" type="button" data-oa="pick">Attach original</button>') + '</div>';
     }
     if (editFile) h += '<label class="switch" style="font-size:.84rem"><input type="checkbox" id="og-also" checked> Also keep the new image you chose as this design’s original (' + O.mb(editFile.size) + ')</label>';
     box.innerHTML = h;
@@ -167,9 +183,10 @@
     if (k === "nopick") { if (pick) URL.revokeObjectURL(pick.url); pick = null; return paintSection(); }
     if (k === "retry") { if (O.needsTap()) O.connect().then(function () { O.retry(cur.code); }); else O.retry(cur.code); return; }
     if (k === "cancel") { O.cancel(cur.code); return paintSection(); }
+    if (k === "noneed" || k === "need") { setNoOrig(cur.code, k === "noneed"); paintSection(); A.renderDesigns(); return; }
     if (k === "confirm" || k === "later") {
       var p = pick, needTap = O.needsTap() && k === "confirm";
-      var go = function () { return O.save(cur.code, cur.name, p.file, { wait: k === "later" }); };
+      var go = function () { if (cur.noOrig || (design(cur.code) || {}).noOrig) setNoOrig(cur.code, false); return O.save(cur.code, cur.name, p.file, { wait: k === "later" }); };
       (needTap ? O.connect().then(go) : go()).then(function () { URL.revokeObjectURL(p.url); pick = null; paintSection(); A.renderDesigns(); WB.notify(k === "later" ? "Original saved on this device. Tap “Upload now” on Wi-Fi." : "Saving the original to Drive…"); });
     }
   });
@@ -191,13 +208,14 @@
     deleted: function (code) { O.retire(code); },
     /* the bulk uploader: one call per saved design */
     uploaded: function (list) {
+      if (!list.length) return;
       var total = list.reduce(function (a, x) { return a + x.file.size; }, 0), later = total > 25 * 1048576 && O.coarse();
       list.forEach(function (x) { O.save(x.code, x.name, x.file); });
       if (O.state().need === "folder") WB.notify("The original" + (list.length > 1 ? "s are" : " is") + " kept on this device until you connect the originals folder.", { ms: 8000, action: { label: "Connect", fn: function () { O.connect(); } } });
       else if (O.needsTap()) WB.notify(list.length + " original" + (list.length > 1 ? "s" : "") + " will upload once Drive is reconnected.", { ms: 6000, action: { label: "Reconnect", fn: function () { O.connect(); } } });
       else if (later) WB.notify("Uploading " + list.length + " original" + (list.length > 1 ? "s" : "") + " (" + O.mb(total) + ") in the background.", { ms: 8000, action: { label: "Wait for Wi-Fi", fn: function () { O.pending().forEach(function (j) { if (!j.busy) j.wait = true; }); A.renderDesigns(); } } });
     },
-    isMissing: function (code) { return O.known() && !O.has(code); }
+    isMissing: function (code) { return O.known() && !O.has(code) && !skipped(code); }
   };
   O.on(function (fast) { if (fast) { decorate(); var s = cur && O.status(cur.code); if (s && s.s === "uploading" && !pick) { var bar2 = $(".og-prog i", box); if (bar2) bar2.style.width = (s.pct || 0) + "%"; } paintBarLight(); return; } paintBar(); decorate(); if ($("#d-dlg").open && !pick) paintSection(); });
   var lightT = 0; function paintBarLight() { if (Date.now() - lightT > 400) { lightT = Date.now(); paintBar(); } }
