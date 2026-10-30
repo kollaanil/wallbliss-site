@@ -1463,13 +1463,14 @@ window.WB_PUBLISHED = {
     "living"
    ],
    "styles": [
-    "texture3d",
+    "traditional",
     "devotional",
-    "traditional"
+    "texture3d"
    ],
    "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   },
   {
    "code": "WB-0203",
@@ -1965,7 +1966,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:27:01.485Z",
+ "updated": "2026-10-30T11:27:57.240Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
