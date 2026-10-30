@@ -698,7 +698,7 @@ window.WB_PUBLISHED = {
   },
   {
    "code": "WB-0166",
-   "name": "Siva Kalyanam Tanjore style",
+   "name": "Siva Kalyanam Tanjore Style",
    "img": "assets/uploads/designs/wb-0166-1fnpinb.jpg",
    "tags": [
     "siva",
@@ -716,7 +716,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "wide",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   },
   {
    "code": "WB-0167",
@@ -2023,7 +2024,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T15:31:44.200Z",
+ "updated": "2026-10-30T15:32:46.312Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
