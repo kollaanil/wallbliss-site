@@ -1573,6 +1573,30 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0208",
+   "name": "Srinivasa Kalyanam Tirumala Hills",
+   "img": "assets/uploads/designs/wb-0208-1ieir0.jpg",
+   "tags": [
+    "srinivasa",
+    "tirumala",
+    "hills",
+    "kalyanam",
+    "tirupati"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1730,7 +1754,8 @@ window.WB_PUBLISHED = {
    "retiredId": "1HM7sNOopd1FuasRurWaXSwL5gsToEfvH",
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
-  }
+  },
+  "lastCode": 208
  },
  "faqs": [
   {
@@ -1824,8 +1849,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T10:48:50.336Z",
- "by": "Anil",
+ "updated": "2026-10-30T11:10:16.802Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -2106,6 +2131,10 @@ window.WB_PUBLISHED = {
   "d:WB-0207": {
    "sig": "1p9fln7",
    "card": "d/WB-0207/card-1p9fln7.jpg"
+  },
+  "d:WB-0208": {
+   "sig": "wr3jc3",
+   "card": "d/WB-0208/card-wr3jc3.jpg"
   }
  }
 };
