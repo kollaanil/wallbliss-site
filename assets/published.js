@@ -1773,6 +1773,54 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0212",
+   "name": "Baby Krishna in Lotus Garden",
+   "img": "assets/uploads/designs/wb-0212-bguvhq.jpg",
+   "tags": [
+    "krishna",
+    "baby",
+    "lotus flowers",
+    "peacock feather",
+    "garden",
+    "flowers",
+    "devotional",
+    "divine child",
+    "indian mythology",
+    "spiritual"
+   ],
+   "search": [
+    "krishna mural",
+    "baby krishna wall art",
+    "krishna painting",
+    "lotus flower design",
+    "krishna with peacock",
+    "baal krishna",
+    "कृष्ण",
+    "कन्हैया",
+    "baby krishna bedroom",
+    "krishna devotional art",
+    "children's room krishna",
+    "temple wall art",
+    "spiritual home decor",
+    "krishna garden scene",
+    "divine child mural",
+    "krishna kids room",
+    "krishna office wall"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "artistic",
+    "nature",
+    "kids"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1931,7 +1979,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 211
+  "lastCode": 212
  },
  "faqs": [
   {
@@ -2025,7 +2073,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T15:34:23.428Z",
+ "updated": "2026-10-30T15:35:46.622Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -2323,6 +2371,10 @@ window.WB_PUBLISHED = {
   "d:WB-0211": {
    "sig": "1nardiz",
    "card": "d/WB-0211/card-1nardiz.jpg"
+  },
+  "d:WB-0212": {
+   "sig": "1027p5m",
+   "card": "d/WB-0212/card-1027p5m.jpg"
   }
  }
 };
