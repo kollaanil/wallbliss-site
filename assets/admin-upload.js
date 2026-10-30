@@ -82,7 +82,7 @@
   dlg.className = "sheet"; dlg.id = "u-dlg"; dlg.setAttribute("aria-labelledby", "u-title");
   dlg.innerHTML = '<div class="sheet-in"><header><h2 id="u-title">Upload designs</h2><button class="x" type="button" data-close aria-label="Close">×</button></header>' +
     '<div class="body"><div id="u-pick" class="field"><div class="drop"><input type="file" id="u-file" accept="image/*,.heic,.heif,.tif,.tiff,.psd,.pdf,.ai,.eps,.bmp" multiple aria-label="Choose photos"><div><b>Tap to choose up to ' + MAX + ' photos</b>JPG, PNG, WebP or iPhone photos. Print-size files are fine; they are resized for the website.</div></div>' +
-    '<p class="muted" id="u-ai-state" style="font-size:.84rem"></p></div><p id="u-skipall-row" hidden style="margin:0 0 4px;font-size:.84rem;color:var(--muted)">Claude is filling in the details. <button type="button" class="u-skipall" id="u-skipall">Fill all in myself</button></p><div class="u-items" id="u-items"></div></div>' +
+    '<p class="muted" id="u-ai-state" style="font-size:.84rem"></p><p class="muted" id="u-orig-state" style="font-size:.84rem;margin-top:-4px"></p></div><p id="u-skipall-row" hidden style="margin:0 0 4px;font-size:.84rem;color:var(--muted)">Claude is filling in the details. <button type="button" class="u-skipall" id="u-skipall">Fill all in myself</button></p><div class="u-items" id="u-items"></div></div>' +
     '<footer><span class="muted" id="u-count" style="font-size:.86rem;margin-right:auto"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="u-save" style="background:var(--ink);box-shadow:none" disabled>Save and publish</button></footer></div>';
   document.body.appendChild(dlg);
   var zoom = document.createElement("dialog"); zoom.className = "u-zoom"; document.body.appendChild(zoom);
@@ -94,7 +94,15 @@
   function aiState() {
     $("#u-ai-state").innerHTML = aiKey()
       ? "✨ Claude fills in the name, tags, rooms, style and search words for each photo, usually in 5–10 seconds. You can skip it and type them yourself."
-      : "AI is off on this device, so you'll type the details. Add the AI key in <b>Settings</b> and Claude will fill them in for you.";
+      : "AI is off on this device, so you'll type the details. <button type=\"button\" class=\"linkbtn\" id=\"u-go-ai\" style=\"font-size:inherit;padding:0\">Add the AI key</button> once on this device (Settings) and Claude will fill them in for you.";
+    var g = $("#u-go-ai"); if (g) g.onclick = function () { dlg.close(); location.hash = "settings"; setTimeout(function () { var k = $("#ai-key-in"); if (k) { k.scrollIntoView({ block: "center" }); k.focus(); } }, 300); };
+    /* where the original files go */
+    var O = window.WBOriginals, el = $("#u-orig-state"); if (!el) return;
+    if (!O) { el.innerHTML = ""; return; }
+    var st = O.state(), f = O.folder();
+    el.innerHTML = st.need === "folder" ? "☁ Originals: Drive isn't connected yet, so ticked originals wait on this device until you connect the folder (Designs page)."
+      : st.need === "reconnect" || O.needsTap() ? "☁ Originals go to Drive · " + A.esc(f.folderName || "Design originals") + ". Drive needs a quick reconnect on this device; ticked originals wait until then."
+      : "☁ Ticked originals are saved to Drive · " + A.esc(f.folderName || "Design originals") + ", untouched. Untick small or low-quality files.";
   }
   function open() {
     items = []; $("#u-items").innerHTML = ""; $("#u-file").value = ""; $("#u-pick").hidden = false; aiState(); update();
@@ -245,6 +253,8 @@
       if (!img.naturalWidth) throw new Error("Can't open “" + f.name + "”. If it's a very large print file, save a copy at about 4000 px and try again.");
       var box = trimBox(img);
       it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
+      /* originals smaller than the website picture (1600 px) add nothing: unticked by default, tick to keep anyway */
+      if (src === it.file) { it.lowRes = Math.max(it.srcW, it.srcH) < 1600; if (!it.keepTouched) it.keepOrig = !it.lowRes; }
       it.base = WBImage.resize(img, WBImage.LONG, box);                 // trim + shrink in one step (safe for huge print files)
       it.orient = shape(it.base);
       it.tags = fileWords(f.name);
@@ -268,7 +278,7 @@
     }).catch(function (e) {
       it.state = "bad"; it.broken = true;
       /* a print master the browser can't open (huge, TIFF, PSD, PDF…): its original can still be archived */
-      if (src === it.file && window.WBOrigUI) { it.needWeb = true; it.status = "This file can't be opened here (" + (e.message.indexOf("large") > -1 ? "too large" : "file type") + "). Its original will still be saved to Drive. Choose a smaller JPG or PNG copy for the website picture."; }
+      if (src === it.file && window.WBOrigUI) { it.needWeb = true; it.keepOrig = true; it.status = "This file can't be opened here (" + (e.message.indexOf("large") > -1 ? "too large" : "file type") + "). Its original will still be saved to Drive. Choose a smaller JPG or PNG copy for the website picture."; }
       else it.status = e.message;
       renderItem(it);
     });
@@ -325,6 +335,8 @@
       '<div><p class="u-lbl">Rooms it suits</p>' + chipRow(A.ROOMS, it.spaces, "spaces") + '</div>' +
       '<div><p class="u-lbl">Style</p>' + chipRow(A.styleList(it.styles), it.styles, "styles") + '<input type="text" class="u-own" data-f="ownstyle" placeholder="+ type your own style" maxlength="24" enterkeyhint="done" aria-label="Add your own style"></div>' +
       '<details><summary>Also found by these search words (' + it.search.length + ')</summary><textarea data-f="search" aria-label="Search words">' + esc(it.search.join(", ")) + '</textarea><small class="muted" style="font-size:.74rem">Other ways customers may type it: Hindi, Kannada, Telugu, misspellings. Comma separated.</small></details>' +
+      (window.WBOriginals ? '<label class="switch u-keep" style="font-size:.84rem"><input type="checkbox" data-f="keep"' + (it.keepOrig ? " checked" : "") + '> Save original to Drive <span class="muted" style="font-weight:400">· ' +
+        (it.srcW ? it.srcW + "×" + it.srcH + " px · " : "") + WBOriginals.mb(it.file.size) + (it.lowRes ? " · smaller than the website picture, not needed" : "") + '</span></label>' : "") +
       '<button type="button" class="u-rm">Remove this photo</button>';
     paint(it);
     if (focus) { var f = $('[data-f="' + focus + '"]', it.el); if (f) { f.focus(); if (f.setSelectionRange && f.value) f.setSelectionRange(f.value.length, f.value.length); } }
@@ -350,6 +362,7 @@
     own.onkeydown = function (e) { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addOwn(); } };
     own.onblur = addOwn;
     $('[data-f="search"]', el).onchange = function () { it.search = clean(this.value.split(",")); };
+    var keep = $('[data-f="keep"]', el); if (keep) keep.onchange = function () { it.keepOrig = this.checked; it.keepTouched = true; };
     $(".u-rm", el).onclick = function () { items.splice(items.indexOf(it), 1); el.remove(); items.forEach(function (o) { check(o); renderItem(o); }); update(); };
   }
   function update() {
@@ -375,7 +388,7 @@
     Promise.all(ok.map(function (it) {
       var ref = it.code.toLowerCase() + "-" + stamp, data = watermarked(it).toDataURL("image/jpeg", 0.86);
       return IDB.put(ref, data).then(function () {
-        return { code: it.code, name: A.niceName(it.name), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), orient: it.orient, added: month, pop: 5 };
+        return Object.assign(it.keepOrig === false && window.WBOriginals ? { noOrig: true } : {}, { code: it.code, name: A.niceName(it.name), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), orient: it.orient, added: month, pop: 5 });
       });
     })).then(function (list) {
       var db = A.db();
@@ -384,7 +397,7 @@
       db.settings.samplesRetired = true;                 // the first real upload retires the drawn samples
       if (!A.save()) throw new Error("Could not save the draft on this device");
       dlg.close(); A.renderDesigns();
-      if (window.WBOrigUI) WBOrigUI.uploaded(ok.map(function (it) { return { code: it.code, name: A.niceName(it.name), file: it.file }; }));   // the untouched originals go to Drive
+      if (window.WBOrigUI) WBOrigUI.uploaded(ok.filter(function (it) { return it.keepOrig !== false; }).map(function (it) { return { code: it.code, name: A.niceName(it.name), file: it.file }; }));   // the untouched originals go to Drive
       A.autoPublish("Saved " + list.length + (list.length > 1 ? " designs" : " design") + (first ? " (sample designs will be hidden)" : ""));
     }).catch(function (e) { A.toast(e.message, "error"); btn.disabled = false; update(); });
   };
