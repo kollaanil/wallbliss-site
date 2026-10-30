@@ -1599,6 +1599,61 @@ window.WB_PUBLISHED = {
    "added": "2026-10",
    "pop": 9.5,
    "hidden": false
+  },
+  {
+   "code": "WB-0209",
+   "name": "Mystical Waterfall Paradise",
+   "img": "assets/uploads/designs/wb-0209-k6y4v.jpg",
+   "tags": [
+    "waterfalls",
+    "turquoise water",
+    "mountains",
+    "lush greenery",
+    "cascading streams",
+    "rocky cliffs",
+    "sunlight",
+    "nature",
+    "serene",
+    "idyllic landscape",
+    "tropical",
+    "peaceful",
+    "waterfall",
+    "water"
+   ],
+   "search": [
+    "waterfall mural",
+    "nature wall art",
+    "mountain waterfall",
+    "turquoise water wall",
+    "cascading waterfall design",
+    "landscape mural",
+    "scenic waterfall",
+    "nature inspired wall",
+    "waterfall backdrop",
+    "tropical paradise wall",
+    "आपसीकताल दृश्य",
+    "जलप्रपात",
+    "pani ka jharna",
+    "waterfall painting",
+    "nature lover wall",
+    "living room landscape",
+    "bedroom nature mural",
+    "calming nature art",
+    "blue water mural",
+    "mountain scene wall"
+   ],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "nature",
+    "artistic",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1757,7 +1812,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 208
+  "lastCode": 209
  },
  "faqs": [
   {
@@ -1851,7 +1906,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:16:49.343Z",
+ "updated": "2026-10-30T11:18:14.265Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2137,6 +2192,10 @@ window.WB_PUBLISHED = {
   "d:WB-0208": {
    "sig": "wr3jc3",
    "card": "d/WB-0208/card-wr3jc3.jpg"
+  },
+  "d:WB-0209": {
+   "sig": "1fco3bw",
+   "card": "d/WB-0209/card-1fco3bw.jpg"
   }
  }
 };
