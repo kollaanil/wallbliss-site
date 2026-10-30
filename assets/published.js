@@ -1723,6 +1723,13 @@ window.WB_PUBLISHED = {
     "title": "Real walls, before and after",
     "sub": "Bare paint to finished mural in an afternoon, across Bengaluru"
    }
+  },
+  "originals": {
+   "folderId": "1e-DMxp9utRNSJdPlx5HE4Ai-xyLpTKoV",
+   "folderName": "Design Originals",
+   "retiredId": "1HM7sNOopd1FuasRurWaXSwL5gsToEfvH",
+   "by": "Anil",
+   "at": "2026-10-30T10:48:47.817Z"
   }
  },
  "faqs": [
@@ -1817,8 +1824,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-26T14:57:29.830Z",
- "by": "Manasa",
+ "updated": "2026-10-30T10:48:50.336Z",
+ "by": "Anil",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
