@@ -10,7 +10,8 @@
   var A = window.WBAdmin; if (!A) return;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var esc = A.esc, MAX = 10, MIN_TAGS = 2, AI_MODEL = "claude-haiku-5-5";
+  var esc = A.esc, MAX = 10, MIN_TAGS = 2, AI_MODELS = ["claude-haiku-4-5-20251001", "claude-sonnet-5-5"];   // fast + cheap first; the next one is tried if a model is unavailable
+  var AI_MODEL = (function () { try { return localStorage.getItem("wb_ai_model") || AI_MODELS[0]; } catch (e) { return AI_MODELS[0]; } })();
   var AIKEY = "wb_ai_key";
   function aiKey() { try { return localStorage.getItem(AIKEY) || ""; } catch (e) { return ""; } }
   function setAiKey(k) { try { k ? localStorage.setItem(AIKEY, k) : localStorage.removeItem(AIKEY); } catch (e) {} }
@@ -46,7 +47,37 @@
   }
   window.WBHeic = { is: isHeic, toJpeg: heicToJpeg };
 
-  window.WBAI = { key: function () { return aiKey(); }, model: AI_MODEL };   // also used by the project story writer
+  /* one door to Claude for the whole admin (design tags + project stories): clear messages for every failure,
+     and if a model name is retired, the next one is used and remembered on this device */
+  function aiPost(payload, signal) {
+    var key = aiKey(), order = [AI_MODEL].concat(AI_MODELS.filter(function (m) { return m !== AI_MODEL; }));
+    function attempt(i) {
+      var model = order[i];
+      return fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", signal: signal,
+        headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        body: JSON.stringify(Object.assign({ model: model }, payload))
+      }).then(function (r) {
+        if (r.ok) { if (model !== AI_MODEL) { AI_MODEL = model; try { localStorage.setItem("wb_ai_model", model); } catch (e) {} showAi(); } return r.json(); }
+        return r.text().then(function (t) {
+          var msg = ""; try { var j = JSON.parse(t); msg = (j.error && j.error.message) || ""; } catch (e) { msg = t; }
+          if ((r.status === 404 || /model/i.test(msg) && r.status === 400) && i + 1 < order.length) return attempt(i + 1);
+          if (r.status === 401) throw new Error("The AI key was not accepted. Copy it again from the Claude Console and save it in Settings.");
+          if (/credit balance/i.test(msg)) throw new Error("Your Anthropic credit is empty. Add credit in the Claude Console → Billing, then try again.");
+          if (r.status === 403) throw new Error("This key isn't allowed to use Claude. Check the key's workspace in the Claude Console.");
+          if (r.status === 429) throw new Error("Claude is busy (rate limit). Wait a minute and try again.");
+          if (r.status === 529 || r.status >= 500) throw new Error("Claude is overloaded right now. Try again in a minute.");
+          throw new Error("Claude said " + r.status + ": " + String(msg).slice(0, 140));
+        });
+      }, function (e) {
+        if (e && e.name === "AbortError") throw e;
+        throw new Error("Couldn't reach Claude. Check the internet, or turn off an ad/tracker blocker for wallbliss.in.");
+      });
+    }
+    if (!key) return Promise.reject(new Error("No AI key on this device."));
+    return attempt(0);
+  }
+  window.WBAI = { key: function () { return aiKey(); }, model: AI_MODEL, post: aiPost };   // also used by the project story writer
   window.WBImages = {
     /* turn "idb:<key>" into a data URL (used by Publish and by thumbnails) */
     resolve: function (ref) { return /^idb:/.test(ref || "") ? IDB.get(ref.slice(4)) : Promise.resolve(ref); },
@@ -194,17 +225,9 @@
     var data = scaled(it.base, 768, .82).split(",")[1];
     it.ctl = window.AbortController ? new AbortController() : null;
     it.timer = setTimeout(function () { if (it.ctl) { it.timedOut = true; it.ctl.abort(); } }, AI_TIMEOUT);
-    return fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST", signal: it.ctl ? it.ctl.signal : undefined,
-      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({ model: AI_MODEL, max_tokens: 1000, messages: [{ role: "user", content: [
-        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: data } }, { type: "text", text: aiPrompt() }] }] })
-    }).then(function (r) {
-      if (r.status === 401) throw new Error("The AI key was not accepted. Check it in Settings.");
-      if (r.status === 429) throw new Error("AI is busy (rate limit). Wait a minute and try again.");
-      if (!r.ok) return r.text().then(function (t) { throw new Error("AI error " + r.status + ": " + t.slice(0, 120)); });
-      return r.json();
-    }).then(function (j) {
+    return aiPost({ max_tokens: 1000, messages: [{ role: "user", content: [
+        { type: "image", source: { type: "base64", media_type: "image/jpeg", data: data } }, { type: "text", text: aiPrompt() }] }] }, it.ctl ? it.ctl.signal : undefined)
+    .then(function (j) {
       var txt = (j.content || []).map(function (c) { return c.text || ""; }).join("");
       var m = txt.match(/\{[\s\S]*\}/); if (!m) throw new Error("AI reply could not be read.");
       return JSON.parse(m[0]);
@@ -412,7 +435,17 @@
   if (settingsPane) { var grids = $$(".grid-2", settingsPane); (grids[grids.length - 1] || settingsPane).appendChild(keyCard); }
   function showAi() { var e = $("#ai-state"); if (e) e.textContent = aiKey() ? "Added on this device. New uploads get AI tag suggestions (model: " + AI_MODEL + ")." : "Not added. Uploads work, but you type the tags yourself."; }
   showAi();
-  $("#ai-key-save").onclick = function () { var v = $("#ai-key-in").value.trim(); if (!/^sk-ant-/.test(v)) { A.toast("That doesn't look like an Anthropic key (starts with sk-ant-)"); return; } setAiKey(v); $("#ai-key-in").value = ""; showAi(); A.toast("AI key saved on this device"); };
+  /* saving a key also tests it with a tiny request, so problems show up here and not mid-upload */
+  function testAi() {
+    var e = $("#ai-state"); if (!aiKey()) return;
+    var w = WB.waiting(e, "save"); w.step("Checking the key with Claude…");
+    aiPost({ max_tokens: 5, messages: [{ role: "user", content: "Reply with OK" }] })
+      .then(function () { w.stop(); showAi(); e.textContent = "✓ Working. " + e.textContent; A.toast("AI key works ✓"); })
+      .catch(function (err) { w.stop(); e.textContent = "⚠ " + err.message; A.toast(err.message, "error"); });
+  }
+  $("#ai-key-save").onclick = function () { var v = $("#ai-key-in").value.trim(); if (!/^sk-ant-/.test(v)) { A.toast("That doesn't look like an Anthropic key (starts with sk-ant-)"); return; } setAiKey(v); $("#ai-key-in").value = ""; showAi(); testAi(); };
+  var tb = document.createElement("button"); tb.type = "button"; tb.className = "btn btn-ghost btn-xs"; tb.textContent = "Test key"; tb.onclick = testAi;
+  $("#ai-key-del").parentNode.insertBefore(tb, $("#ai-key-del"));
   $("#ai-key-del").onclick = function () { setAiKey(""); showAi(); A.toast("AI key removed from this device"); };
 
   window.WBUpload = { open: open, _items: function () { return items; } };
