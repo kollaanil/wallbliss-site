@@ -1655,6 +1655,63 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0210",
+   "name": "Srinivasa Kalaynam Golden Border",
+   "img": "assets/uploads/designs/wb-0210-90jl2j.jpg",
+   "tags": [
+    "ram navami",
+    "ram sita wedding",
+    "hanuman",
+    "vedic ceremony",
+    "temple architecture",
+    "golden palace",
+    "fire ritual",
+    "divine gathering",
+    "hindu mythology",
+    "traditional indian art",
+    "devotional scene",
+    "warm golden tones",
+    "srinivasa",
+    "kalyanam"
+   ],
+   "search": [
+    "ram sita vivah",
+    "ram navami mural",
+    "ram shaadi wall art",
+    "divine wedding painting",
+    "temple ceremony wall",
+    "hindu mythological art",
+    "vedic ritual wallpaper",
+    "golden palace design",
+    "ramayan scene",
+    "ram darbar",
+    "shri ram painting",
+    "ancient hindu art",
+    "traditional temple art",
+    "purana katha",
+    "धर्मशाला दीवार कला",
+    "मंदिर कला",
+    "राम सीता विवाह",
+    "పవిత్ర వివాహ",
+    "రామ సీత చిత్రం",
+    "ರಾಮ ನವಮಿ ಕಲೆ",
+    "divine ceremony wall mural",
+    "spiritual artwork for puja room",
+    "auspicious wedding scene"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "artistic"
+   ],
+   "orient": "wide",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1813,7 +1870,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 209
+  "lastCode": 210
  },
  "faqs": [
   {
@@ -1907,7 +1964,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:19:01.014Z",
+ "updated": "2026-10-30T11:26:06.840Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2197,6 +2254,10 @@ window.WB_PUBLISHED = {
   "d:WB-0209": {
    "sig": "1fco3bw",
    "card": "d/WB-0209/card-1fco3bw.jpg"
+  },
+  "d:WB-0210": {
+   "sig": "cmpffh",
+   "card": "d/WB-0210/card-cmpffh.jpg"
   }
  }
 };
