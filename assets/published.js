@@ -1556,7 +1556,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   },
   {
    "code": "WB-0207",
@@ -1969,7 +1970,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:30:00.767Z",
+ "updated": "2026-10-30T11:31:29.799Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
