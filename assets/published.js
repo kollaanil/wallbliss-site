@@ -1406,7 +1406,7 @@ window.WB_PUBLISHED = {
   {
    "code": "WB-0199",
    "name": "Blue River Tall Frame",
-   "img": "assets/uploads/designs/wb-0199-1izeajo.jpg",
+   "img": "assets/uploads/designs/wb-0199-q5w09s.jpg",
    "tags": [
     "river",
     "water",
@@ -1420,9 +1420,10 @@ window.WB_PUBLISHED = {
    "styles": [
     "nature"
    ],
-   "orient": "wide",
+   "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   },
   {
    "code": "WB-0201",
@@ -1850,7 +1851,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T11:14:59.479Z",
+ "updated": "2026-10-30T11:16:49.343Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2102,8 +2103,8 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0198/card-4vhlgm.jpg"
   },
   "d:WB-0199": {
-   "sig": "vd0zow",
-   "card": "d/WB-0199/card-vd0zow.jpg"
+   "sig": "11s19cg",
+   "card": "d/WB-0199/card-11s19cg.jpg"
   },
   "d:WB-0201": {
    "sig": "1nr1uch",
