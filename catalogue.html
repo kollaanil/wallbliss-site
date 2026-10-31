@@ -115,6 +115,10 @@
   .fchip { flex: none; scroll-snap-align: start; font: 500 .88rem var(--font-body); min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
   .fchip:hover { border-color: var(--accent); }
   .fchip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .fchip .shp { width: 18px; height: 12px; border: 2px solid currentColor; border-radius: 3px; flex: none; opacity: .8; }
+  .fchip .shp-p { width: 12px; height: 18px; }
+  .fnote { margin: -6px 0 10px; font-size: .84rem; color: var(--muted); }
+  .grid.tall .thumb { aspect-ratio: 3 / 4; }
   .fchip .sw { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); flex: none; }
   .search-note { margin: 4px 0 14px; font-size: .92rem; color: var(--muted); }
   .search-note b { color: var(--ink); }
@@ -325,6 +329,7 @@
   var BY = {}; DATA.forEach(function (d) { BY[d.code] = d; });
   var FACETS = {
     spaces: { label: "Room", opts: [["living", "Living room"], ["bedroom", "Bedroom"], ["kids", "Kids' room"], ["office", "Office / corporate"], ["cafe", "Café & restaurant"], ["hotel", "Hotel lobby"]] },
+    shape: { label: "Wall shape", note: "Square designs show in both.", opts: [["landscape", "Landscape", "", "l"], ["portrait", "Portrait", "", "p"]] },
     styles: { label: "Style", opts: [["traditional", "Traditional"], ["devotional", "Devotional"], ["texture3d", "3D"], ["artistic", "Artistic"], ["folk", "Indian folk"], ["nature", "Nature"], ["abstract", "Abstract"], ["geometric", "Geometric"], ["kids", "Kids"], ["minimal", "Minimal"]] }
   };
   /* styles the team typed themselves (e.g. "tanjore") get their own chip */
@@ -333,9 +338,13 @@
     DATA.forEach(function (d) { (d.styles || []).forEach(function (v) { if (!known[v]) { known[v] = 1; FACETS.styles.opts.push([v, v.charAt(0).toUpperCase() + v.slice(1)]); } }); });
   })();
   var ORIENT = { wide: "Wide wall", tall: "Tall wall", square: "Square" };
+  /* a square design suits both wall shapes */
+  var SHAPES = { wide: ["landscape"], tall: ["portrait"], square: ["landscape", "portrait"] };
+  var SHAPE_WORDS = { landscape: "landscape horizontal wide", portrait: "portrait vertical tall" };
+  function valsOf(d, k) { return k === "shape" ? (SHAPES[d.orient] || SHAPES.wide) : [].concat(d[k]); }
   var SORTS = [["pop", "Most loved"], ["new", "Newest"], ["name", "Name A–Z"]];
   var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
-  var state = { q: "", sort: "pop", f: { spaces: [], styles: [] } };
+  var state = { q: "", sort: "pop", f: { spaces: [], shape: [], styles: [] } };
 
   /* ---------- search: multilingual engine in assets/search.js ---------- */
   WBSearch.index(DATA, SPACE_WORDS);
@@ -361,9 +370,10 @@
 
   /* ---------- filter sheet ---------- */
   var sheet = document.getElementById("fsheet"), fBody = document.getElementById("f-body");
-  function chipHTML(key, o) { return '<button type="button" class="fchip" data-key="' + key + '" data-val="' + o[0] + '">' + (o[2] ? '<span class="sw" style="background:' + o[2] + '"></span>' : "") + o[1] + '</button>'; }
-  fBody.innerHTML = ["spaces", "styles"].map(function (key, i) {
-    return '<details class="fgroup"' + (i > 0 ? " open" : "") + ' data-group="' + key + '"><summary>' + FACETS[key].label + '<small></small></summary><div class="chips">' +
+  function chipHTML(key, o) { return '<button type="button" class="fchip" data-key="' + key + '" data-val="' + o[0] + '">' + (o[2] ? '<span class="sw" style="background:' + o[2] + '"></span>' : "") + (o[3] ? '<span class="shp shp-' + o[3] + '" aria-hidden="true"></span>' : "") + o[1] + '</button>'; }
+  fBody.innerHTML = ["spaces", "shape", "styles"].map(function (key) {
+    return '<details class="fgroup"' + (key !== "spaces" ? " open" : "") + ' data-group="' + key + '"><summary>' + FACETS[key].label + '<small></small></summary>' +
+      (FACETS[key].note ? '<p class="fnote">' + FACETS[key].note + '</p>' : "") + '<div class="chips">' +
       FACETS[key].opts.map(function (o) { return chipHTML(key, o); }).join("") + '</div></details>';
   }).join("") + '<details class="fgroup" open><summary>Sort by</summary><div class="chips">' +
     SORTS.map(function (o) { return '<button type="button" class="fchip" data-sort="' + o[0] + '">' + o[1] + '</button>'; }).join("") + '</div></details>';
@@ -417,7 +427,7 @@
   function matches(d, f) {
     return Object.keys(f).every(function (k) {
       var sel = f[k]; if (!sel.length) return true;
-      var have = [].concat(d[k]); return sel.some(function (v) { return have.indexOf(v) > -1; });
+      var have = valsOf(d, k); return sel.some(function (v) { return have.indexOf(v) > -1; });
     });
   }
   var lastCount = 0;
@@ -446,6 +456,7 @@
       return b.d.pop - a.d.pop;
     });
     lastCount = list.length;
+    grid.classList.toggle("tall", state.f.shape.length === 1 && state.f.shape[0] === "portrait");
     grid.innerHTML = "";
     list.forEach(function (x) { grid.appendChild(card(x.d)); });
     var custom = document.createElement("div"); custom.className = "custom-card";
@@ -469,13 +480,13 @@
     fBody.querySelectorAll("[data-key]").forEach(function (b) { b.setAttribute("aria-pressed", state.f[b.dataset.key].indexOf(b.dataset.val) > -1); });
     fBody.querySelectorAll("[data-sort]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.sort === state.sort); });
     fBody.querySelectorAll("[data-group]").forEach(function (g) { var n = state.f[g.dataset.group].length; g.querySelector("summary small").textContent = n ? n + " selected" : ""; });
-    var n = state.f.spaces.length + state.f.styles.length + (state.sort !== "pop" ? 1 : 0);
+    var n = state.f.spaces.length + state.f.shape.length + state.f.styles.length + (state.sort !== "pop" ? 1 : 0);
     var badge = document.getElementById("f-badge"); badge.textContent = n; badge.hidden = !n;
     document.getElementById("f-done").textContent = lastCount ? "Show " + lastCount + (lastCount === 1 ? " design" : " designs") : "No designs match";
     // tags
     var tags = [];
     if (state.q) tags.push('<button type="button" class="tag" data-key="q">“' + esc(q.value.trim()) + '”<b aria-hidden="true">×</b><span class="skip">Remove search</span></button>');
-    ["styles"].concat(state.f.spaces.length > 1 ? ["spaces"] : []).forEach(function (k) {
+    ["shape", "styles"].concat(state.f.spaces.length > 1 ? ["spaces"] : []).forEach(function (k) {
       state.f[k].forEach(function (v) { tags.push('<button type="button" class="tag" data-key="' + k + '" data-val="' + v + '">' + label(k, v) + '<b aria-hidden="true">×</b><span class="skip">Remove filter</span></button>'); });
     });
     tagsEl.innerHTML = tags.join("");
@@ -489,10 +500,10 @@
   /* ---------- search box with suggestions ---------- */
   var sugg = document.getElementById("sugg"), sel = -1, items = [];
   var FACET_ITEMS = [];
-  ["spaces", "styles"].forEach(function (k) {
+  ["spaces", "shape", "styles"].forEach(function (k) {
     FACETS[k].opts.forEach(function (o) {
-      var count = DATA.filter(function (d) { return [].concat(d[k]).indexOf(o[0]) > -1; }).length;
-      if (count) FACET_ITEMS.push({ type: "facet", key: k, val: o[0], text: o[1], hint: FACETS[k].label, count: count, hay: (o[1] + " " + (k === "spaces" ? SPACE_WORDS[o[0]] : o[0])).toLowerCase() });
+      var count = DATA.filter(function (d) { return valsOf(d, k).indexOf(o[0]) > -1; }).length;
+      if (count) FACET_ITEMS.push({ type: "facet", key: k, val: o[0], text: o[1], hint: FACETS[k].label, count: count, hay: (o[1] + " " + (k === "spaces" ? SPACE_WORDS[o[0]] : k === "shape" ? SHAPE_WORDS[o[0]] : o[0])).toLowerCase() });
     });
   });
   function suggest() {
@@ -754,11 +765,12 @@
   var qs = new URLSearchParams(location.search);
   if (qs.get("q")) { q.value = qs.get("q"); }
   if (h === "pooja" && !qs.get("q")) q.value = "devotional";
+  if (SHAPE_WORDS[h]) state.f.shape = [h];
   if (SPACE_WORDS[h]) state.f.spaces = [h];
   else if (qs.get("room") && SPACE_WORDS[qs.get("room")]) state.f.spaces = [qs.get("room")];
   render(); syncHearts();
   if (/^WB-\d+$/i.test(h) && BY[h.toUpperCase()]) openDesign(h.toUpperCase());
-  addEventListener("hashchange", function () { var x = location.hash.slice(1); if (SPACE_WORDS[x]) { state.f.spaces = [x]; render(); } else if (BY[x]) openDesign(x); });
+  addEventListener("hashchange", function () { var x = location.hash.slice(1); if (SPACE_WORDS[x]) { state.f.spaces = [x]; render(); } else if (SHAPE_WORDS[x]) { state.f.shape = [x]; render(); } else if (BY[x]) openDesign(x); });
   if (qs.get("q")) logSearch(true);
 })();
 </script>
