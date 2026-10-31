@@ -1821,6 +1821,61 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5
+  },
+  {
+   "code": "WB-0213",
+   "name": "Lord Venkateswara Divine Grace",
+   "img": "assets/uploads/designs/wb-0213-cvznrm.jpg",
+   "tags": [
+    "venkateswara",
+    "tirupati balaji",
+    "hindu deity",
+    "spiritual",
+    "devotional",
+    "temple art",
+    "ornate frame",
+    "traditional",
+    "sacred"
+   ],
+   "search": [
+    "venkateswara",
+    "tirupati balaji",
+    "lord balaji",
+    "venkateshwara",
+    "tirupati temple",
+    "hindu god",
+    "devotional wall art",
+    "spiritual mural",
+    "pooja room",
+    "deity painting",
+    "gold temple art",
+    "religious wall design",
+    "bhagwan venkateswara",
+    "tirupati darshan",
+    "puja room decoration",
+    "venkatachalapati",
+    "srinivasa",
+    "spiritual home decor",
+    "temple mural",
+    "divine wall art",
+    "pooja ghar",
+    "bhakti art",
+    "sacred geometry",
+    "lord venkataramana"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-10",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -1979,7 +2034,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 212
+  "lastCode": 213
  },
  "faqs": [
   {
@@ -2073,7 +2128,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-30T15:35:46.622Z",
+ "updated": "2026-10-31T06:16:18.182Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -2375,6 +2430,10 @@ window.WB_PUBLISHED = {
   "d:WB-0212": {
    "sig": "1027p5m",
    "card": "d/WB-0212/card-1027p5m.jpg"
+  },
+  "d:WB-0213": {
+   "sig": "1qyxbpz",
+   "card": "d/WB-0213/card-1qyxbpz.jpg"
   }
  }
 };
