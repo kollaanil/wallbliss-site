@@ -142,6 +142,21 @@
   .sheet footer { display: flex; gap: 8px; justify-content: flex-end; align-items: center; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--surface); flex-wrap: wrap; }
   .sheet footer .grow { flex: 1; }
   .x { width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--surface-2); font-size: 1.3rem; cursor: pointer; color: var(--ink); flex: none; }
+  /* work videos on a project */
+  .pv-add { display: flex; gap: 8px; }
+  .pv-add input { flex: 1; min-width: 0; }
+  .pv-msg { font-size: .82rem; color: var(--muted); margin: 0; }
+  .pv-msg.bad { color: #9a4a00; font-weight: 600; }
+  .pv-msg:empty { display: none; }
+  .pv-list { display: grid; gap: 8px; }
+  .pv-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+  .pv-th { width: 52px; height: 52px; border-radius: 8px; overflow: hidden; background: #1a1714; }
+  .pv-th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pv-tx { display: grid; gap: 4px; min-width: 0; }
+  .pv-tx input { min-height: 36px; padding: 4px 10px; font-size: .9rem; }
+  .pv-shape { justify-self: start; border: 0; background: none; padding: 0; color: var(--muted); font: 600 .78rem var(--font-body); cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+  .pv-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); font-size: 1rem; cursor: pointer; display: grid; place-items: center; }
+  .pv-opts { display: grid; gap: 2px; }
   .drop { position: relative; border: 2px dashed var(--line-strong); border-radius: 12px; background: var(--surface-2); min-height: 170px; display: grid; place-items: center; text-align: center; padding: 18px; color: var(--muted); cursor: pointer; }
   .drop.over { border-color: var(--accent); background: var(--accent-soft); }
   .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
@@ -487,6 +502,17 @@
           <div class="crop-stage" id="p-crop-stage"><img id="p-crop-img" alt="Before photo"><div class="crop-box" id="p-crop-box"></div></div>
           <div class="range-row"><span>Zoom</span><input type="range" id="p-crop-zoom" min="1" max="2.5" step="0.01" value="1" aria-label="Zoom"></div>
         </div>
+        <div class="field">
+          <label class="lbl" for="p-vurl">Work videos <span class="muted" style="font-weight:400">(optional)</span></label>
+          <div class="pv-add"><input type="url" id="p-vurl" inputmode="url" autocomplete="off" placeholder="Paste a YouTube or Shorts link"><button class="btn btn-ghost" type="button" id="p-vadd">Add</button></div>
+          <p class="pv-msg" id="p-vmsg" aria-live="polite"></p>
+          <small>Upload the video to the WallBliss YouTube channel first, set to Public or Unlisted, then paste its link here.</small>
+          <div class="pv-list" id="p-vlist"></div>
+          <div class="pv-opts" id="p-vopts" hidden>
+            <label class="switch"><input type="checkbox" id="p-vstrip" checked> Show in “Watch us print” on Projects</label>
+            <label class="switch"><input type="checkbox" id="p-vhome"> Also show on the homepage</label>
+          </div>
+        </div>
       </div>
       <!-- step 3 -->
       <div data-step="3" hidden style="display:grid;gap:14px">
@@ -503,7 +529,7 @@
         <div class="field"><span class="lbl">Title: pick one</span><div class="opts" id="p-ttl-opts" role="group" aria-label="Title suggestions"></div><input type="text" id="p-ttl" placeholder="Or type your own title" maxlength="70" aria-label="Title"><small>Shows on the card and in Google. Edit freely.</small></div>
         <div class="field"><span class="lbl">What we did: pick one</span><div class="opts" id="p-sum-opts" role="group" aria-label="Story suggestions"></div><textarea id="p-sum" rows="4" placeholder="Or write your own" aria-label="What we did"></textarea><small>Edit freely after picking.</small></div>
         <div class="field"><label for="p-quote">What the customer said <span class="muted" style="font-weight:400">(optional)</span></label><textarea id="p-quote" rows="2" placeholder="Their words, exactly"></textarea></div>
-        <label class="switch"><input type="checkbox" id="p-consent"> The customer agreed to us showing these photos</label>
+        <label class="switch"><input type="checkbox" id="p-consent"> The customer agreed to us showing these photos and videos</label>
       </div>
       <!-- step 4 -->
       <div data-step="4" hidden style="display:grid;gap:12px">
@@ -586,6 +612,7 @@
 <script src="assets/search.js"></script>
 <script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
+<script src="assets/videos.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 (function () {
@@ -1033,7 +1060,7 @@
     var list = db.projects, shownP = list.map(function (p, i) { return [p, i]; }).filter(function (x) { return pFilter === "all" || WB.projectSegment(x[0]) === pFilter; });
     $("#p-list").innerHTML = list.length && !shownP.length ? '<p class="muted">No ' + (pFilter === "residential" ? "residential" : "corporate / institution") + ' projects yet.</p>' : list.length ? shownP.map(function (x) {
       var p = x[0], i = x[1];
-      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + (WB.projectSegment(p) === "corporate" ? "Corporate / institution" : "Residential") + " · " + esc(p.month || "") + '</small><b>' + esc(p.title) + '</b>' +
+      return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + (WB.projectSegment(p) === "corporate" ? "Corporate / institution" : "Residential") + " · " + esc(p.month || "") + ((p.videos || []).length ? " · ▶ " + p.videos.length : "") + '</small><b>' + esc(p.title) + '</b>' +
         '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
     }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
     wireBA($("#p-list"));
@@ -1045,6 +1072,54 @@
     return '<div class="ba" style="--pos:50%' + (+ratio ? ";aspect-ratio:" + (+ratio) : "") + '">' + im(before, "", "Before") + im(after, ' class="after"', esc(title || "After")) + '<div class="handle"></div><span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Compare before and after"></div>';
   }
   function wireBA(root) { $$(".ba input[type=range]", root).forEach(function (r) { r.oninput = function () { r.parentNode.style.setProperty("--pos", r.value + "%"); }; }); }
+  /* ---------- work videos: YouTube links, checked with YouTube before they are added ---------- */
+  var pVids = [];
+  function vidMsg(t, bad) { var m = $("#p-vmsg"); m.textContent = t; m.className = "pv-msg" + (bad ? " bad" : ""); }
+  function vidRows() {
+    $("#p-vlist").innerHTML = pVids.map(function (v, i) {
+      return '<div class="pv-row"><span class="pv-th"><img src="' + WB.videoThumb(v.id) + '" alt=""></span><span class="pv-tx"><input type="text" data-vt="' + i + '" value="' + esc(v.t) + '" maxlength="70" placeholder="Short title, e.g. Printing the Shiva mural" aria-label="Video title">' +
+        '<button type="button" class="pv-shape" data-vshape="' + i + '" title="Tap to change">' + (v.v ? "▯ Tall video (Short)" : "▭ Wide video") + '</button></span>' +
+        (i ? '<button type="button" class="pv-btn" data-vup="' + i + '" aria-label="Move up">↑</button>' : "<span></span>") +
+        '<button type="button" class="pv-btn" data-vrm="' + i + '" aria-label="Remove video">×</button></div>';
+    }).join("");
+    $("#p-vopts").hidden = !pVids.length;
+  }
+  $("#p-vlist").addEventListener("input", function (e) { var i = e.target.dataset.vt; if (i != null) pVids[+i].t = e.target.value; });
+  $("#p-vlist").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.vrm != null) pVids.splice(+b.dataset.vrm, 1);
+    else if (b.dataset.vup != null) { var i = +b.dataset.vup, t = pVids[i]; pVids[i] = pVids[i - 1]; pVids[i - 1] = t; }
+    else if (b.dataset.vshape != null) pVids[+b.dataset.vshape].v = pVids[+b.dataset.vshape].v ? 0 : 1;
+    vidRows();
+  });
+  function addVid() {
+    var raw = $("#p-vurl").value.trim(); if (!raw) return;
+    var id = WB.videoId(raw);
+    if (!id) { vidMsg("That doesn't look like a YouTube link. Copy it from YouTube's Share button.", true); return; }
+    if (pVids.some(function (v) { return v.id === id; })) { vidMsg("This video is already on this project."); $("#p-vurl").value = ""; return; }
+    var other = db.projects.filter(function (p, i) { return i !== P && (p.videos || []).some(function (v) { return v.id === id; }); })[0];
+    var tall = /\/shorts\//i.test(raw), btn = $("#p-vadd");
+    function add(t, isTall, note) {
+      pVids.push({ id: id, t: t, v: isTall ? 1 : 0 }); $("#p-vurl").value = ""; vidRows();
+      vidMsg(note || (other ? "Added. This video is also on “" + other.title + "”." : ""));
+    }
+    btn.disabled = true; vidMsg("Checking the video with YouTube…");
+    fetch("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent(tall ? "https://www.youtube.com/shorts/" + id : "https://www.youtube.com/watch?v=" + id))
+      .then(function (r) { if (r.status === 401 || r.status === 403) throw "private"; if (!r.ok) throw "missing"; return r.json(); })
+      .then(function (j) {
+        var t = String(j.title || "").replace(/#\S+/g, "").replace(/\s+/g, " ").trim().slice(0, 70);
+        add(t, tall || (+j.height > +j.width));
+      })
+      .catch(function (e) {
+        if (e === "private") vidMsg("YouTube won't let us show this video. On YouTube, set it to Public or Unlisted (and allow embedding), then add it again.", true);
+        else if (e === "missing") vidMsg("YouTube can't find this video. Check the link.", true);
+        else add("", tall, "Couldn't reach YouTube to check it, so it was added anyway. Type a short title.");
+      })
+      .then(function () { btn.disabled = false; });
+  }
+  $("#p-vadd").onclick = addVid;
+  $("#p-vurl").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addVid(); } });
+  $("#p-vurl").addEventListener("paste", function () { setTimeout(addVid, 0); });
   var FLOW = [1, 3, 4];
   function setStep(n) {
     step = n;
@@ -1066,6 +1141,8 @@
     segSet($("#p-seg"), WB.projectSegment(p.space ? p : { space: $("#p-space").value })); segTouched = !!p.segment; $("#p-size").value = p.size || ""; $("#p-time").value = p.time || "";
     $("#p-design").value = p.design || ""; $("#p-month").value = p.month || new Date().toISOString().slice(0, 7); $("#p-sum").value = p.summary || ""; $("#p-quote").value = p.quote || "";
     opts = { t: [], s: [] }; tplShift = Math.floor(Math.random() * 3); storyReq++; chosen = { "#p-ttl": !!p.title, "#p-sum": !!p.summary }; $("#p-ttl-opts").innerHTML = $("#p-sum-opts").innerHTML = "";
+    pVids = (p.videos || []).map(function (v) { return { id: v.id, t: v.t || "", v: v.v ? 1 : 0 }; }); $("#p-vurl").value = ""; vidMsg("");
+    $("#p-vstrip").checked = !p.noVidStrip; $("#p-vhome").checked = !!p.vidHome; vidRows();
     $("#p-consent").checked = !!p.consent; $("#p-live").checked = !p.hidden; $("#p-home").checked = !p.noHome; $("#p-delete").hidden = P == null;
     $$(".drop", $('[data-step="1"]')).forEach(function (d) { d.style.backgroundImage = ""; d.querySelector("div").style.opacity = 1; });
     if (P != null) ["before", "after"].forEach(function (k) {
@@ -1233,16 +1310,22 @@
   });
   $("#p-back").onclick = function () { var i = FLOW.indexOf(step); if (i > 0) setStep(FLOW[i - 1]); };
   $("#p-next").onclick = function () {
-    if (step === 1) { if (!bImg || !aImg) { toast("Add both the before and the after photo"); return; } setStep(3); return; }
+    if (step === 1) {
+      if (!bImg || !aImg) { toast("Add both the before and the after photo"); return; }
+      if ($("#p-vurl").value.trim()) { toast("Tap Add for the video link, or clear it"); $("#p-vurl").focus(); return; }
+      setStep(3); return;
+    }
     if (step === 3) {
       if (!$("#p-ttl").value.trim() || !$("#p-loc").value.trim()) { toast("Add a title and the locality"); return; }
-      if (!$("#p-consent").checked) { toast("Please confirm the customer agreed to show the photos"); return; }
+      if (!$("#p-consent").checked) { toast("Please confirm the customer agreed to show the photos and videos"); return; }
       setStep(4); return;
     }
     var o = outPair(), t = $("#p-ttl").value.trim();
     var p = { slug: (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "project") + "-" + Date.now().toString(36).slice(-4), title: t, locality: $("#p-loc").value.trim(), space: $("#p-space").value, segment: segVal($("#p-seg")) || WB.projectSegment({ space: $("#p-space").value }), size: $("#p-size").value.trim(),
       design: $("#p-design").value || "Customer's own picture", time: $("#p-time").value.trim(), month: $("#p-month").value, summary: $("#p-sum").value.trim(), quote: $("#p-quote").value.trim(), consent: true, hidden: !$("#p-live").checked, noHome: !$("#p-home").checked,
       w: o.w, h: o.h, ratio: Math.round(o.w / o.h * 10000) / 10000 };
+    var vids = pVids.map(function (v) { var x = { id: v.id, t: v.t.trim() }; if (v.v) x.v = 1; return x; });
+    if (vids.length) { p.videos = vids; if (!$("#p-vstrip").checked) p.noVidStrip = true; if ($("#p-vhome").checked) p.vidHome = true; }
     if (P != null) p.slug = db.projects[P].slug;
     var btn = this; btn.disabled = true;
     Promise.all([WBImages.put(p.slug + "-before-" + Date.now().toString(36), o.b), WBImages.put(p.slug + "-after-" + Date.now().toString(36), o.a)]).then(function (refs) {

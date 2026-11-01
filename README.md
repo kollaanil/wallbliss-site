@@ -92,6 +92,13 @@ keep less). On the homepage every project has the same height; the width follows
 narrow, landscape wide). The handle sweeps by itself (centre → 25% → 75% → centre) each time a
 project comes to the centre, until someone drags it; the first project shows "Drag to compare".
 
+## Work videos (admin → Projects → a project → Photos step) — assets/videos.js
+- Videos live on YouTube (WallBliss channel, Public or Unlisted); the site only stores the video ID and a short title on the project: `videos: [{ id, t, v }]` (`v: 1` = tall Short).
+- Paste a link (youtu.be, watch?v=, /shorts/, /embed/, /live/): the admin checks it with YouTube oEmbed. Private or embed-blocked videos and wrong links are refused with a message; the title is filled from YouTube (hashtags removed) and can be edited. Tap the shape label to switch Tall / Wide; ↑ reorders.
+- Per project: `noVidStrip` hides its videos from "Watch us print" on Projects; `vidHome` also shows them in the homepage "Watch us print" section (hidden when empty).
+- Public site: tiles use YouTube's thumbnail; nothing else loads until a tap. The player is full-screen, uses youtube-nocookie.com, swipes / arrows to the next video, and has "See this project" + WhatsApp (message names the video). Project cards show a "▶ n videos" button. VideoObject JSON-LD is added for Google. Analytics event: `video_play`.
+- Customer consent: the project's consent tick covers photos and videos.
+
 ## FAQs (admin → FAQs)
 
 The questions on the home page come from the admin, not the code. Edit the wording, add or delete

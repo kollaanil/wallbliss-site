@@ -316,6 +316,7 @@
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
 <script src="assets/ba-carousel.js" defer></script>
+<script src="assets/videos.js" defer></script>
 <main id="main">
   <!-- HERO -->
   <section class="hero">
@@ -387,6 +388,20 @@
       </div>
     </div>
   </section>
+
+  <!-- WORK VIDEOS: shown when a project's videos are switched on for the homepage (admin) -->
+  <section id="watch" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">On site</p>
+        <h2>Watch us print.</h2>
+        <p class="lede">Real Bengaluru walls, filmed while we printed them. Tap a video to watch.</p>
+      </div>
+      <div id="vstrip-home"></div>
+      <p style="margin-top:14px"><a href="projects.html#watch">See all projects and videos →</a></p>
+    </div>
+  </section>
+  <script>addEventListener("DOMContentLoaded", function () { if (window.WB && WB.videoStrip) document.getElementById("watch").hidden = !WB.videoStrip(document.getElementById("vstrip-home"), "home"); });</script>
 
   <!-- REAL WALLS, UP CLOSE -->
   <section id="up-close">

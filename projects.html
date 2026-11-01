@@ -87,6 +87,7 @@
 <script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/videos.js"></script>
 <style>
   .seg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .seg-chips .fchip { flex: none; scroll-snap-align: start; font: 500 .88rem var(--font-body); min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
@@ -103,6 +104,7 @@
   .proj dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: .88rem; }
   .proj dt { color: var(--faint); } .proj dd { margin: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .proj blockquote { margin: 4px 0 0; font-family: var(--font-display); color: var(--ink); }
+  .proj { position: relative; }
   .what { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 8px; }
   .what > div { padding: 18px 20px 18px 0; display: grid; gap: 6px; }
   .what > div + div { padding-left: 20px; border-left: 1px solid var(--line); }
@@ -118,6 +120,13 @@
       <div class="chips seg-chips" id="seg-chips" role="group" aria-label="Show projects for"></div>
       <div class="areas" id="loc-chips"></div>
       <p data-google-reviews hidden><a class="btn btn-ghost btn-sm" data-g-read href="#" target="_blank" rel="noopener"><span class="g-star" aria-hidden="true">★</span> Read our reviews on Google</a></p>
+    </div>
+  </section>
+
+  <section id="watch" style="padding-block:8px 28px" hidden>
+    <div class="wrap" style="display:grid;gap:14px">
+      <h2 style="font-size:var(--step-2);margin:0">Watch us print</h2>
+      <div id="vstrip"></div>
     </div>
   </section>
 
@@ -192,6 +201,9 @@
         '<img class="after fade" src="' + esc(p.after) + '" alt="' + esc(p.title) + ' after printing" loading="lazy"><div class="handle"></div>' +
         '<span class="lbl l">Before</span><span class="lbl r">After</span><input type="range" min="0" max="100" value="50" aria-label="Slide to compare before and after"></div>'
       : '<div class="pics">' + (p.after ? '<figure style="grid-column:1/-1"><img class="fade" src="' + esc(p.after) + '" alt="' + esc(p.title) + '" loading="lazy"><figcaption>After</figcaption></figure>' : '') + '</div>';
+    var nv = (p.videos || []).length;
+    /* "▶ 2 videos" sits on the photo, bottom-left, clear of the Before/After labels */
+    if (nv) pics = pics.replace(/<\/div>$/, '<button type="button" class="vbadge" data-vplay="' + esc(p.slug) + '">' + nv + (nv === 1 ? " video" : " videos") + "</button></div>");
     el.innerHTML = pics +
       '<div class="body"><p class="eyebrow">' + esc(p.locality) + ' · ' + esc(p.space) + '</p><h3>' + esc(p.title) + '</h3><p class="muted" style="font-size:.92rem">' + esc(p.summary) + '</p>' +
       '<dl><dt>Wall</dt><dd>' + esc(p.size) + '</dd><dt>Design</dt><dd>' + (/^WB-/.test(p.design || "") ? '<a href="catalogue.html#' + esc(p.design) + '">' + esc(p.design) + '</a>' : esc(p.design)) + '</dd><dt>Done in</dt><dd>' + esc(p.time) + '</dd></dl>' +
@@ -199,11 +211,16 @@
     grid.appendChild(el);
   });
   WB.wireBA(grid);
+  grid.querySelectorAll("[data-vplay]").forEach(function (b) { b.onclick = function () { WB.playVideos(b.dataset.vplay, 0); }; });
   var locs = {}; P.forEach(function (p) { locs[p.locality] = (locs[p.locality] || 0) + 1; });
   var chips = document.getElementById("loc-chips"); chips.innerHTML = "";
   Object.keys(locs).sort().forEach(function (l) { var s = document.createElement("span"); s.className = "chip"; s.textContent = l + " · " + locs[l]; chips.appendChild(s); });
   }
   render();
+  document.getElementById("watch").hidden = !WB.videoStrip(document.getElementById("vstrip"), "strip");
+  /* links like projects.html#<project> (from the video player or WhatsApp) land on that wall */
+  var go = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (go) setTimeout(function () { go.scrollIntoView({ block: "start" }); }, 60);
 })();
 </script>
 
