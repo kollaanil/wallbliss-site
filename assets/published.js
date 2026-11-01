@@ -1877,6 +1877,165 @@ window.WB_PUBLISHED = {
    "added": "2026-10",
    "pop": 5,
    "hidden": false
+  },
+  {
+   "code": "WB-0214",
+   "name": "Village Life At Sunrise",
+   "img": "assets/uploads/designs/wb-0214-192pi6e.jpg",
+   "tags": [
+    "temple",
+    "village life",
+    "oxen cart",
+    "peacocks",
+    "traditional architecture",
+    "rural landscape",
+    "people",
+    "water",
+    "golden hour",
+    "indian culture",
+    "palm trees",
+    "folk art"
+   ],
+   "search": [
+    "village temple mural",
+    "rural india wall art",
+    "oxen cart painting",
+    "traditional temple design",
+    "sunrise village scene",
+    "indian village life",
+    "peacock wall mural",
+    "temple landscape",
+    "goan village",
+    "karnataka temple art",
+    "traditional south indian",
+    "village sunset",
+    "gaon ka mandir",
+    "grameen jeevan",
+    "গ্রাম জীবন",
+    "గ్రామీణ జీవితం",
+    "గ్రామ దేవాలయం",
+    "village wall painting india",
+    "traditional hindu temple",
+    "rural scenery mural"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "folk",
+    "artistic"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
+  },
+  {
+   "code": "WB-0215",
+   "name": "Krishna Radha 3d Peacock",
+   "img": "assets/uploads/designs/wb-0215-oqv03e.jpg",
+   "tags": [
+    "krishna",
+    "radha",
+    "peacock",
+    "flute",
+    "lotus pond",
+    "flowering tree",
+    "temple",
+    "romantic",
+    "spiritual",
+    "nature landscape",
+    "relief sculpture",
+    "golden",
+    "serene mood"
+   ],
+   "search": [
+    "krishna radha wall mural",
+    "radha krishna painting",
+    "krishna bansuri",
+    "radha krishna devotional art",
+    "कृष्ण राधा",
+    "రాధా కృష్ణ",
+    "ರಾಧಾ ಕೃಷ್ಣ",
+    "radha krishna with peacock",
+    "krishna flute radha",
+    "lotus pond temple scene",
+    "romantic krishna radha",
+    "bedroom wall krishna",
+    "living room devotional",
+    "krishna radha 3d relief",
+    "spiritual couple mural",
+    "golden krishna artwork",
+    "radhakrishna love story"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d",
+    "traditional",
+    "artistic"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
+  },
+  {
+   "code": "WB-0216",
+   "name": "Vivaha Bhojanam",
+   "img": "assets/uploads/designs/wb-0216-yqbrj3.jpg",
+   "tags": [
+    "maharaja",
+    "royal",
+    "abundance",
+    "feast",
+    "gold",
+    "traditional indian",
+    "palace interior",
+    "ornate",
+    "wealth",
+    "festive",
+    "rich colors",
+    "cultural",
+    "luxurious",
+    "bhojanam",
+    "dining",
+    "restaurant"
+   ],
+   "search": [
+    "maharaja wall mural",
+    "royal feast design",
+    "palace interior art",
+    "golden abundance wall",
+    "indian king artwork",
+    "traditional raja painting",
+    "wealth and prosperity mural",
+    "ornate palace decor",
+    "royal dining room wall",
+    "hindi raja wall art",
+    "kannada rajavira painting",
+    "telugu maharaja design",
+    "gold leaf effect wall",
+    "luxury home decoration",
+    "mansion wall mural",
+    "traditional indian royalty",
+    "festive celebration wall",
+    "treasure and riches art",
+    "royal palace interior design",
+    "rich golden tones mural"
+   ],
+   "spaces": [
+    "cafe"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "artistic"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -2035,7 +2194,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 213
+  "lastCode": 216
  },
  "faqs": [
   {
@@ -2129,7 +2288,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-01T08:55:17.591Z",
+ "updated": "2026-11-01T08:57:17.752Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2435,6 +2594,18 @@ window.WB_PUBLISHED = {
   "d:WB-0213": {
    "sig": "1qyxbpz",
    "card": "d/WB-0213/card-1qyxbpz.jpg"
+  },
+  "d:WB-0214": {
+   "sig": "a72yyd",
+   "card": "d/WB-0214/card-a72yyd.jpg"
+  },
+  "d:WB-0215": {
+   "sig": "hwq3t4",
+   "card": "d/WB-0215/card-hwq3t4.jpg"
+  },
+  "d:WB-0216": {
+   "sig": "joloxx",
+   "card": "d/WB-0216/card-joloxx.jpg"
   }
  }
 };
