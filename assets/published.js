@@ -1875,7 +1875,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "tall",
    "added": "2026-10",
-   "pop": 5
+   "pop": 5,
+   "hidden": false
   }
  ],
  "edits": {},
@@ -2128,8 +2129,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-10-31T06:16:18.182Z",
- "by": "Anil",
+ "updated": "2026-11-01T08:55:17.591Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
