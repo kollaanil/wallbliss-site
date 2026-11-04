@@ -123,6 +123,11 @@ homepage and projects links. Publish makes a new card (design codes trimmed off)
 `assets/img/share/<page>-<sig>.jpg` and updates that page's og:image / og:title / og:description tags.
 Until a page is set, it keeps its built-in card.
 
+## Speed: previews, fonts, real-user speed
+- **Design previews:** every design has a small WebP preview (`thumb`, 600 px long side, ~50 KB) in `assets/uploads/designs/thumbs/`, named after its picture. Publish makes it for any design whose preview is missing or belongs to an older picture (browsers that can't write WebP save a JPEG). The catalogue grid and small homepage tiles use `WB.thumb(d)`; the design pop-up and the big lead homepage story use the full picture. A missing preview falls back to the full picture.
+- **Fonts:** DM Sans and Playfair Display are self-hosted in `assets/fonts/` (latin + latin-ext, woff2), the two main files preloaded.
+- **Core Web Vitals:** `assets/site.js` loads Google's web-vitals library after the page has loaded and sends LCP, INP, CLS, FCP and TTFB to Google Analytics as events (`metric_rating` good / needs-improvement / poor, plus `page` and `connection`).
+
 ## Phone button (Call or WhatsApp)
 
 The phone number in the footer and the contact card is a button (`data-call`, assets/site.js

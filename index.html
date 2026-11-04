@@ -29,9 +29,9 @@
 <meta name="geo.placename" content="Bengaluru">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
+<link rel="preload" href="assets/fonts/DMSans-latin-8ca1b7.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/PlayfairDisplay-latin-48d1e9.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/styles-v2.css">
 <script src="assets/ui.js"></script>
 <script>/* Launch-video reveal (assets/launch.js). ?launch=on turns it on in this browser only, ?launch=off turns it off. */
@@ -625,11 +625,13 @@
   }
   document.querySelectorAll("[data-real], [data-slot]").forEach(function (a) {
     var d = pickFor(a.dataset.slot) || (a.dataset.real ? realFor(a.dataset.real) : null), pic = a.querySelector(".pic") || a; if (!d) return;
-    var u = String(d.img).replace(/"/g, "&quot;"), box = document.createElement("span");
+    /* small tiles use the light preview; the big lead story keeps the full picture */
+    var big = a.classList.contains("story") && !a.previousElementSibling, src = d.code && !big && WB.thumb ? WB.thumb(d) : d.img;
+    var u = String(src).replace(/"/g, "&quot;"), bg = String(d.code && WB.thumb ? WB.thumb(d) : d.img).replace(/"/g, "&quot;"), box = document.createElement("span");
     box.className = "fitbox";
-    box.innerHTML = '<img class="fit-bg" src="' + u + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async">';
+    box.innerHTML = '<img class="fit-bg" src="' + bg + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + u + '" alt="' + String(d.name).replace(/"/g, "&quot;") + '" loading="lazy" decoding="async">';
     var c = pic.querySelector("canvas, picture"); if (c) c.replaceWith(box); else pic.insertBefore(box, pic.firstChild);
-    if (d.code) hideBadge(box.querySelector("img.fit"), d.img);
+    if (d.code) hideBadge(box.querySelector("img.fit"), src);
     if (d.code && a.getAttribute("href") && a.getAttribute("href").indexOf("catalogue.html") === 0 && a.classList.contains("story")) a.href = "catalogue.html#" + d.code;
   });
 

@@ -29,9 +29,9 @@
 <meta name="geo.placename" content="Bengaluru">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap">
+<link rel="preload" href="assets/fonts/DMSans-latin-8ca1b7.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/PlayfairDisplay-latin-48d1e9.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/styles-v2.css">
 <script src="assets/ui.js"></script>
 <script type="application/ld+json">
@@ -414,7 +414,8 @@
   }, { rootMargin: "200px" }) : null;
   function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function visual(d) {
-    return d.img ? '<span class="fitbox"><img class="fit-bg" src="' + d.img + '" alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + d.img + '" alt="' + esc(d.name) + ' wall design" loading="lazy"></span>'
+    var t = WB.thumb(d), back = t !== d.img ? ' onerror="this.onerror=null;this.src=\'' + d.img + '\'"' : "";
+    return d.img ? '<span class="fitbox"><img class="fit-bg" src="' + t + '"' + back + ' alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + t + '"' + back + ' alt="' + esc(d.name) + ' wall design" loading="lazy"></span>'
       : '<canvas data-code="' + d.code + '" aria-hidden="true"></canvas>';
   }
   function paint(c) { if (c.tagName === "CANVAS") WBArt.draw(c, BY[c.dataset.code]); }

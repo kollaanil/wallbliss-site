@@ -144,6 +144,13 @@
 
   WB.mergeDrafts = merge;
 
+  /* small WebP preview of a design (made at publish, assets/uploads/designs/thumbs/); the full picture when it has none
+     or when the preview belongs to an older picture */
+  WB.thumb = function (d) {
+    var img = (d && d.img) || "", t = d && d.thumb, base = img.split("/").pop().replace(/\.\w+$/, "");
+    return t && base && t.indexOf("/thumbs/" + base + ".") > -1 ? t : img;
+  };
+
   /* the admin previews its own draft; everyone else sees the published data */
   if (isAdmin) WB.db.catchUp(RAW);
   var db = isAdmin ? WB.db.load() : PUB;

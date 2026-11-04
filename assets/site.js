@@ -77,6 +77,25 @@
     } catch (e) {}
   };
 
+  /* ---------- real-user speed: Google's Core Web Vitals sent to Google Analytics ----------
+     LCP (main picture/text shown), INP (tap response), CLS (layout jumps), FCP, TTFB. One event per metric per page view.
+     GA4: Reports › Engagement › Events › LCP / INP / CLS; "metric_rating" = good / needs-improvement / poor. */
+  addEventListener("load", function () {
+    setTimeout(function () {
+      if (!window.gtag) return;
+      var s = document.createElement("script"); s.src = "https://unpkg.com/web-vitals@4.2.4/dist/web-vitals.iife.js"; s.async = true;
+      s.onload = function () {
+        var wv = window.webVitals; if (!wv) return;
+        function send(m) {
+          window.gtag("event", m.name, { value: Math.round(m.name === "CLS" ? m.value * 1000 : m.value), metric_id: m.id, metric_value: m.value, metric_delta: m.delta,
+            metric_rating: m.rating, page: location.pathname.split("/").pop() || "index.html", connection: (navigator.connection || {}).effectiveType || "", non_interaction: true });
+        }
+        ["onLCP", "onINP", "onCLS", "onFCP", "onTTFB"].forEach(function (f) { if (wv[f]) wv[f](send); });
+      };
+      document.head.appendChild(s);
+    }, 1500);
+  });
+
   /* ---------- shortlist (catalogue hearts) ---------- */
   WB.shortlist = {
     all: function () { return WB.store.get("wb_shortlist", []); },
