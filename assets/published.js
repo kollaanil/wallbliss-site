@@ -309,58 +309,6 @@ window.WB_PUBLISHED = {
    "thumb": "assets/uploads/designs/thumbs/wb-0149-1pk4mrs.webp"
   },
   {
-   "code": "WB-0150",
-   "name": "Beautiful flowers",
-   "img": "assets/uploads/designs/wb-0150-1s1ibvl.jpg",
-   "tags": [
-    "flowers",
-    "premium",
-    "royal"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "hotel",
-    "cafe",
-    "clinic"
-   ],
-   "styles": [
-    "artistic",
-    "nature"
-   ],
-   "orient": "wide",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0150-1s1ibvl.webp"
-  },
-  {
-   "code": "WB-0151",
-   "name": "Cute birds",
-   "img": "assets/uploads/designs/wb-0151-5kzyia.jpg",
-   "tags": [
-    "birds",
-    "colorful",
-    "premium"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "bedroom",
-    "cafe"
-   ],
-   "styles": [
-    "nature",
-    "artistic",
-    "texture3d"
-   ],
-   "orient": "wide",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0151-5kzyia.webp"
-  },
-  {
    "code": "WB-0152",
    "name": "Shiva in cosmos",
    "img": "assets/uploads/designs/wb-0152-6k34j2.jpg",
@@ -2402,7 +2350,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:20:44.119Z",
+ "updated": "2026-11-04T16:39:44.303Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
