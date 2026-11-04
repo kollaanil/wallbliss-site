@@ -1235,7 +1235,8 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0189-1v7ljct.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0189-1v7ljct.webp",
+   "hidden": false
   },
   {
    "code": "WB-0190",
@@ -2396,7 +2397,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:16:54.259Z",
+ "updated": "2026-11-04T16:17:59.868Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
