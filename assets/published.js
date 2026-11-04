@@ -258,31 +258,6 @@ window.WB_PUBLISHED = {
    "thumb": "assets/uploads/designs/thumbs/wb-0147-1rrecwf.webp"
   },
   {
-   "code": "WB-0148",
-   "name": "Serene leaves",
-   "img": "assets/uploads/designs/wb-0148-xsfdx7.jpg",
-   "tags": [
-    "nature",
-    "modern",
-    "artistic"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "cafe",
-    "hotel"
-   ],
-   "styles": [
-    "artistic",
-    "nature"
-   ],
-   "orient": "tall",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0148-xsfdx7.webp"
-  },
-  {
    "code": "WB-0152",
    "name": "Shiva in cosmos",
    "img": "assets/uploads/designs/wb-0152-6k34j2.jpg",
@@ -2324,7 +2299,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:40:02.332Z",
+ "updated": "2026-11-04T16:40:13.310Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
