@@ -54,6 +54,16 @@
     A.save(); A.autoPublish(on ? code + ": marked as not needing an original" : code + ": original expected");
     paintBar();
   }
+  /* plain words for why an upload stopped */
+  function reason(j) {
+    var e = String(j.err || ""), at = j.pctAt ? " at " + j.pctAt + "%" : "";
+    if (/connection dropped/i.test(e)) return "the connection dropped" + at;
+    if (/expired/i.test(e)) return "Drive's upload link expired";
+    if (/no longer in this browser/i.test(e)) return "the file is no longer on this device; attach it again";
+    if (/Drive said 5\d\d/.test(e)) return "Google Drive had a hiccup";
+    if (/Drive said 403/.test(e)) return "Drive refused (folder permission)";
+    return e ? e.replace(/\.$/, "") : "unknown";
+  }
   function ago(t) { if (!t) return ""; var m = Math.round((Date.now() - t) / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago"; }
 
   function paintBar() {
@@ -72,13 +82,15 @@
     } else {
       if (failed) cls = "warn"; if (used >= .8) cls = used >= .95 ? "bad" : "warn";
       var line = busy ? "Saving " + up.length + " original" + (up.length > 1 ? "s" : "") + "… " + (busy.pct || 0) + "%"
-        : failed ? failed + " original" + (failed > 1 ? "s" : "") + " couldn’t upload"
+        : failed ? failed + " original" + (failed > 1 ? "s" : "") + " couldn’t upload (" + up.filter(function (j) { return j.failed; }).map(function (j) { return j.code; }).slice(0, 4).join(", ") + ")"
         : wifi ? wifi + " original" + (wifi > 1 ? "s" : "") + " waiting for Wi-Fi"
         : O.known() ? n.saved + " of " + n.all + " designs have their original saved" + (n.skip ? " · " + n.skip + " not needed" : "") : "Checking Drive…";
-      var sub = (st.email || "") + (st.at ? " · checked " + ago(st.at) : "") + (q && +q.limit ? " · " + O.mb(+q.usage) + " of " + O.mb(+q.limit) + " used" + (used >= .8 ? " — nearly full" : "") : "");
+      var f1 = up.filter(function (j) { return j.failed; })[0];
+      var sub = (f1 ? "Last try: " + reason(f1) + ". Retry checks Drive first, so nothing is uploaded twice. · " : "") + (st.email || "") + (st.at ? " · checked " + ago(st.at) : "") + (q && +q.limit ? " · " + O.mb(+q.usage) + " of " + O.mb(+q.limit) + " used" + (used >= .8 ? " — nearly full" : "") : "");
       html = '<span class="ic">' + (busy ? "⟳" : failed ? "!" : "☁") + '</span><span class="grow"><b>' + esc(f.folderName || "Design originals") + ' · ' + esc(line) + '</b><small>' + esc(sub) + '</small></span>' +
         (failed || wifi ? '<button class="og-btn pri" type="button" data-og="retry">' + (failed ? "Retry" : "Upload now") + '</button>' : "") +
         '<details class="og-more"><summary class="og-btn">More ▾</summary><div class="og-menu">' +
+        (failed ? '<button type="button" data-og="cancelfailed">Stop retrying (cancel failed uploads)</button>' : "") +
         '<button type="button" data-og="refresh">Check Drive again</button><button type="button" data-og="folder">Change folder…</button><button type="button" data-og="disconnect">Disconnect Drive on this device</button></div></details>';
     }
     bar.className = "og-bar " + cls; bar.innerHTML = html;
@@ -90,6 +102,7 @@
     var k = b.dataset.og, more = b.closest("details"); if (more) more.open = false;
     if (k === "connect") O.connect();                                   // straight from the tap: Google's window may open
     else if (k === "retry") { if (O.needsTap()) O.connect().then(function () { O.retry(); }); else O.retry(); }
+    else if (k === "cancelfailed") { O.pending().filter(function (j) { return j.failed; }).forEach(function (j) { O.cancel(j.code); }); }
     else if (k === "refresh") { if (O.needsTap()) O.connect(); else O.refresh(); }
     else if (k === "folder") { if (confirm("Change the originals folder for both of you? Originals already saved stay where they are.")) O.changeFolder(); }
     else if (k === "disconnect") O.disconnect();
@@ -134,9 +147,10 @@
     } else if (s.s === "uploading" || s.s === "queued" || s.s === "wifi" || s.s === "failed") {
       var j = s.job; box.className = "og-sec" + (s.s === "failed" ? " warn" : "");
       h = '<span class="t">Original file (for printing)</span><div class="og-row"><span class="grow"><b>' + esc(j.fname || "") + '</b><small>' + O.mb(j.size || 0) + " · " +
-        (s.s === "uploading" ? "uploading " + (s.pct || 0) + "%" : s.s === "queued" ? (O.needsTap() ? "waiting: reconnect Drive to upload" : "waiting to upload") : s.s === "wifi" ? "waiting for Wi-Fi" : "couldn’t upload: " + esc(j.err || "")) + '</small></span>' +
+        (s.s === "uploading" ? "uploading " + (s.pct || 0) + "%" : s.s === "queued" ? (O.needsTap() ? "waiting: reconnect Drive to upload" : "waiting to upload") : s.s === "wifi" ? "waiting for Wi-Fi" : "couldn’t upload: " + esc(reason(j)) + ". Retry checks Drive first.") + '</small></span>' +
         (s.s === "failed" || s.s === "wifi" || (s.s === "queued" && O.needsTap()) ? '<button class="og-btn pri" type="button" data-oa="retry">' + (s.s === "wifi" ? "Upload now" : O.needsTap() ? "Reconnect & upload" : "Retry") + '</button>' : "") +
-        (s.s !== "uploading" ? '<button class="og-btn" type="button" data-oa="cancel">Cancel</button>' : "") + '</div>' +
+        (s.s !== "uploading" ? '<button class="og-btn" type="button" data-oa="cancel">Cancel</button>' : "") +
+        (s.s === "failed" ? '<button class="og-btn" type="button" data-oa="link">Already in Drive? Link it</button>' : "") + '</div>' +
         (s.s === "uploading" ? '<div class="og-prog"><i style="width:' + (s.pct || 0) + '%"></i></div>' : "");
     } else if (skipped(d.code) && s.s !== "trash") {
       box.className = "og-sec";
@@ -146,7 +160,7 @@
       box.className = "og-sec warn";
       h = '<span class="t">⚠ ' + (s.s === "trash" ? "The original is in Drive’s trash" : s.s === "unknown" ? "Original not checked yet" : "No original saved for this design") + '</span>' +
         '<div class="og-row"><span class="grow"><small>' + (s.s === "trash" ? "Restore “" + esc(f.name) + "” from Drive’s trash (kept 30 days), or attach the file again." : s.s === "unknown" ? "Connect Drive on this device to check." : "Drop the original print file here (any type: JPG, PNG, TIFF, PSD, PDF…), or") + '</small></span>' +
-        (s.s === "unknown" ? '<button class="og-btn pri" type="button" data-oa="connect">Connect Drive</button>' : s.s === "trash" ? '<button class="og-btn" type="button" data-oa="open">Open in Drive ↗</button><button class="og-btn pri" type="button" data-oa="pick">Attach again</button>' : '<button class="og-btn" type="button" data-oa="noneed">Not needed</button><button class="og-btn pri" type="button" data-oa="pick">Attach original</button>') + '</div>';
+        (s.s === "unknown" ? '<button class="og-btn pri" type="button" data-oa="connect">Connect Drive</button>' : s.s === "trash" ? '<button class="og-btn" type="button" data-oa="open">Open in Drive ↗</button><button class="og-btn pri" type="button" data-oa="pick">Attach again</button>' : '<button class="og-btn" type="button" data-oa="noneed">Not needed</button><button class="og-btn" type="button" data-oa="link">Already in Drive? Link it</button><button class="og-btn pri" type="button" data-oa="pick">Attach original</button>') + '</div>';
     }
     if (editFile) h += '<label class="switch" style="font-size:.84rem"><input type="checkbox" id="og-also" checked> Also keep the new image you chose as this design’s original (' + O.mb(editFile.size) + ')</label>';
     box.innerHTML = h;
@@ -183,6 +197,7 @@
     if (k === "nopick") { if (pick) URL.revokeObjectURL(pick.url); pick = null; return paintSection(); }
     if (k === "retry") { if (O.needsTap()) O.connect().then(function () { O.retry(cur.code); }); else O.retry(cur.code); return; }
     if (k === "cancel") { O.cancel(cur.code); return paintSection(); }
+    if (k === "link") return O.link(cur.code, cur.name).then(function (ok) { if (ok && (design(cur.code) || {}).noOrig) setNoOrig(cur.code, false); paintSection(); A.renderDesigns(); });
     if (k === "noneed" || k === "need") { setNoOrig(cur.code, k === "noneed"); paintSection(); A.renderDesigns(); return; }
     if (k === "confirm" || k === "later") {
       var p = pick, needTap = O.needsTap() && k === "confirm";

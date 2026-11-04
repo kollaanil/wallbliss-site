@@ -84,7 +84,11 @@
   .pill.off { background: #F3E3E0; color: #9A3A26; }
   .pill.sample { background: rgba(0,0,0,.55); color: #fff; }
   .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .toolbar input[type=search] { flex: 1 1 220px; border-radius: 999px; padding-left: 16px; height: 44px; }
+  .toolbar input[type=search] { flex: 1 1 220px; border-radius: 999px; padding-left: 16px; padding-right: 44px; height: 44px; width: 100%; }
+  .toolbar .qwrap { position: relative; flex: 1 1 220px; display: flex; }
+  .toolbar input[type=search]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+  .q-x { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border: 0; border-radius: 50%; background: var(--surface-2); color: var(--ink-2); font-size: 1.15rem; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+  .q-x::after { content: ""; position: absolute; inset: -8px; }
 
 
   /* ---------- designs ---------- */
@@ -333,7 +337,7 @@
           <button class="btn btn-wa" type="button" id="d-new" style="background:var(--ink);box-shadow:none">+ Add design</button>
         </div>
         <div class="toolbar">
-          <input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs">
+          <span class="qwrap"><input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs"><button class="q-x" type="button" id="d-q-x" aria-label="Clear search" hidden>×</button></span>
           <button class="btn btn-ghost btn-xs" type="button" id="d-select" aria-pressed="false">Select</button>
           <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button></div>
         </div>
@@ -701,7 +705,9 @@
   var dFilter = "all";
   function setFilter(f) { dFilter = f; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.df === f); }); renderDesigns(); }
   $$("[data-df]").forEach(function (b) { b.onclick = function () { setFilter(b.dataset.df); }; });
-  $("#d-q").addEventListener("input", function () { renderDesigns(); });
+  $("#d-q").addEventListener("input", function () { $("#d-q-x").hidden = !this.value; renderDesigns(); });
+  $("#d-q").addEventListener("keydown", function (e) { if (e.key === "Escape" && this.value) { this.value = ""; $("#d-q-x").hidden = true; renderDesigns(); } });
+  $("#d-q-x").onclick = function () { var q = $("#d-q"); q.value = ""; this.hidden = true; renderDesigns(); q.focus(); };
   function renderDesigns() {
     renderThemes();
     var q = $("#d-q").value.trim().toLowerCase(), all = designs();

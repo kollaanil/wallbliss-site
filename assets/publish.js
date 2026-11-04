@@ -128,6 +128,7 @@
       return r.status === 204 ? null : r.json();
     });
   }
+  function hashAll(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }   // every letter counts
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i += 7) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
   function slug(s) { return String(s || "item").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "item"; }
 
@@ -219,6 +220,16 @@
         });
       }, Promise.resolve());
     }
+    /* plain words for each file while publishing */
+    function what(path) {
+      if (/\/thumbs\//.test(path)) return "Saving small preview";
+      if (/^(d|t)\/.*card-/.test(path) || /^assets\/img\/share\//.test(path)) return "Updating WhatsApp preview picture";
+      if (/^(d|t|p)\/.*index\.html$/.test(path)) return "Updating WhatsApp share page";
+      if (/^assets\/uploads\//.test(path)) return "Uploading photo";
+      if (/published\.js$/.test(path)) return "Saving the design list";
+      if (/\.html$/.test(path)) return "Updating page";
+      return "Saving file";
+    }
     function push() {
     var headSha, treeSha;
     return gh("/repos/" + OWNER + "/" + REPO + "/git/ref/heads/" + BRANCH, null, k)
@@ -227,7 +238,7 @@
         treeSha = c.tree.sha;
         return files.reduce(function (p, f) {
           return p.then(function (acc) {
-            if (files.length > 1) { work("Uploading " + (/\.(jpe?g|png|webp)$/.test(f.path) ? "photo" : "file") + " " + (acc.length + 1) + " of " + files.length + "…"); if (waitLine) waitLine.progress(acc.length, files.length); }
+            if (files.length > 1) { work(what(f.path) + " · " + (acc.length + 1) + " of " + files.length + "…"); if (waitLine) waitLine.progress(acc.length, files.length); }
             return gh("/repos/" + OWNER + "/" + REPO + "/git/blobs", { method: "POST", body: { content: f.content, encoding: f.encoding } }, k)
               .then(function (b) { acc.push({ path: f.path, mode: "100644", type: "blob", sha: b.sha }); return acc; });
           });
@@ -378,17 +389,20 @@
     var live = out.designs.filter(function (d) { return !d.hidden && d.img; });
     var A = window.WBAdmin;
     var have = {};                                      // files already on the website (filled only when cards are needed)
-    function want(key, sig, path, title, desc, go, make) {
-      var cur = og[key]; if (cur && cur.sig === sig) return;
+    function want(key, sig, path, title, desc, go, make, nm) {
+      var cur = og[key], quick = sig, curQ = cur && (cur.q || cur.sig);
+      /* the quick signature skips letters, so a name change (even just capitals) is also checked in full */
+      if (cur && curQ === quick && (!nm || !cur.nm || cur.nm === nm)) { if (nm && !cur.nm) og[key] = Object.assign({}, cur, { nm: nm }); return; }
+      if (cur && curQ === quick) sig = hashAll(quick + "|" + nm) + "n";
       jobs.push(function () {
         var card = path + "card-" + sig + ".jpg";
-        if (have[card] && have[path + "index.html"]) { og[key] = { sig: sig, card: card }; return Promise.resolve(); }   // already there: nothing to make or upload
+        if (have[card] && have[path + "index.html"]) { og[key] = nm ? { sig: sig, card: card, nm: nm, q: quick } : { sig: sig, card: card }; return Promise.resolve(); }   // already there: nothing to make or upload
         return make().then(function (b64) {
           if (!b64) return;
           if (cur && cur.card && cur.card !== card) gone.push(cur.card);
           add.push({ path: card, content: b64, encoding: "base64" });
           add.push({ path: path + "index.html", content: pageHTML({ path: path, card: card, title: title, desc: desc, go: go }), encoding: "utf-8" });
-          og[key] = { sig: sig, card: card };
+          og[key] = nm ? { sig: sig, card: card, nm: nm, q: quick } : { sig: sig, card: card };
         }).catch(function () {});
       });
     }
@@ -397,7 +411,7 @@
       var nm = A && A.niceName ? A.niceName(d.name) : d.name;
       want("d:" + d.code, hash(d.code + "|" + nm + "|" + d.img + "|v1"), path, nm + " · " + d.code,
         "A WallBliss mural, printed straight onto your wall. Tap to see it full size and get a price on WhatsApp.",
-        "/catalogue.html?src=share#" + d.code, function () { return designCard(srcImg[d.code] || d.img, d.code); });
+        "/catalogue.html?src=share#" + d.code, function () { return designCard(srcImg[d.code] || d.img, d.code); }, nm);
     });
     var themes = (out.settings && out.settings.themes) || [];
     themes.forEach(function (t) {
