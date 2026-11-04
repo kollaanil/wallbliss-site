@@ -2115,6 +2115,60 @@ window.WB_PUBLISHED = {
    "added": "2026-11",
    "pop": 5,
    "thumb": "assets/uploads/designs/thumbs/wb-0216-yqbrj3.webp"
+  },
+  {
+   "code": "WB-0217",
+   "name": "Surya with Seven Horses Detailed",
+   "img": "assets/uploads/designs/wb-0217-158qre2.jpg",
+   "tags": [
+    "surya",
+    "seven horses",
+    "chariot",
+    "sun god",
+    "hindu deity",
+    "gold",
+    "devotional",
+    "celestial",
+    "ornamental",
+    "3d relief",
+    "suryabhagwan"
+   ],
+   "search": [
+    "surya dev",
+    "sun god seven horses",
+    "chariot vastu",
+    "sury dev wallpaper",
+    "seven horses painting",
+    "सूर्य देव",
+    "సూర్య దేవ",
+    "ಸೂರ್ಯ ದೇವ",
+    "surya devta",
+    "hari om",
+    "cosmic energy",
+    "celestial chariot",
+    "gold mural",
+    "pooja room wall",
+    "auspicious artwork",
+    "divine protection",
+    "spiritual living room",
+    "vastu compliant",
+    "surya namaskar inspired"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "hotel",
+    "cafe"
+   ],
+   "styles": [
+    "devotional",
+    "traditional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0217-158qre2.jpg"
   }
  ],
  "edits": {},
@@ -2273,7 +2327,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 216
+  "lastCode": 217
  },
  "faqs": [
   {
@@ -2367,7 +2421,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T05:59:20.743Z",
+ "updated": "2026-11-04T15:50:38.517Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -2685,6 +2739,10 @@ window.WB_PUBLISHED = {
   "d:WB-0216": {
    "sig": "joloxx",
    "card": "d/WB-0216/card-joloxx.jpg"
+  },
+  "d:WB-0217": {
+   "sig": "4vetyt",
+   "card": "d/WB-0217/card-4vetyt.jpg"
   }
  }
 };
