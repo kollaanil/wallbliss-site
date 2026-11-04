@@ -1255,7 +1255,8 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0190-1tsasiw.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0190-1tsasiw.webp",
+   "hidden": false
   },
   {
    "code": "WB-0191",
@@ -2395,8 +2396,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:04:09.795Z",
- "by": "Anil",
+ "updated": "2026-11-04T16:16:54.259Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
