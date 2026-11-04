@@ -1339,8 +1339,8 @@ window.WB_PUBLISHED = {
    "search": [],
    "spaces": [
     "living",
-    "hotel",
-    "office"
+    "office",
+    "hotel"
    ],
    "styles": [
     "traditional",
@@ -1350,7 +1350,8 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0194-kfnuau.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0194-kfnuau.webp",
+   "hidden": false
   },
   {
    "code": "WB-0195",
@@ -2400,7 +2401,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:19:40.612Z",
+ "updated": "2026-11-04T16:20:00.536Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
