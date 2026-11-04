@@ -811,8 +811,8 @@ window.WB_PUBLISHED = {
    ],
    "search": [],
    "spaces": [
-    "cafe",
     "living",
+    "cafe",
     "hotel"
    ],
    "styles": [
@@ -824,7 +824,8 @@ window.WB_PUBLISHED = {
    "orient": "square",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0169-1kk3640.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0169-1kk3640.webp",
+   "hidden": false
   },
   {
    "code": "WB-0170",
@@ -2421,7 +2422,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T15:57:34.323Z",
+ "updated": "2026-11-04T16:02:44.436Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
