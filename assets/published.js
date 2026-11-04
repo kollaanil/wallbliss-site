@@ -283,32 +283,6 @@ window.WB_PUBLISHED = {
    "thumb": "assets/uploads/designs/thumbs/wb-0148-xsfdx7.webp"
   },
   {
-   "code": "WB-0149",
-   "name": "Colorful flowers",
-   "img": "assets/uploads/designs/wb-0149-1pk4mrs.jpg",
-   "tags": [
-    "colorful",
-    "flowers",
-    "premium"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "hotel",
-    "cafe",
-    "clinic"
-   ],
-   "styles": [
-    "artistic",
-    "nature"
-   ],
-   "orient": "tall",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0149-1pk4mrs.webp"
-  },
-  {
    "code": "WB-0152",
    "name": "Shiva in cosmos",
    "img": "assets/uploads/designs/wb-0152-6k34j2.jpg",
@@ -2350,7 +2324,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:39:52.754Z",
+ "updated": "2026-11-04T16:40:02.332Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
