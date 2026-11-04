@@ -78,31 +78,6 @@ window.WB_PUBLISHED = {
    "thumb": "assets/uploads/designs/thumbs/wb-0139-105oeix.webp"
   },
   {
-   "code": "WB-0140",
-   "name": "Cute Krishna",
-   "img": "assets/uploads/designs/wb-0140-yyon2u.jpg",
-   "tags": [
-    "krishna",
-    "cute",
-    "colorful"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "kids"
-   ],
-   "styles": [
-    "traditional",
-    "devotional",
-    "folk"
-   ],
-   "orient": "square",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0140-yyon2u.webp"
-  },
-  {
    "code": "WB-0141",
    "name": "Traditional nettipattam",
    "img": "assets/uploads/designs/wb-0141-1l4f3k.jpg",
@@ -2299,7 +2274,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:40:13.310Z",
+ "updated": "2026-11-04T16:40:21.842Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
