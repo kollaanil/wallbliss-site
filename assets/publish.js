@@ -193,11 +193,32 @@
     var data = { designs: out.designs, edits: out.edits, projects: out.projects, reviews: out.reviews, settings: out.settings, faqs: out.faqs || [], updated: new Date().toISOString(),
       by: ((document.getElementById("who-nm") || {}).textContent || "").trim() };
     var gone = [];
-    return sharePages(out, srcImg, liveOg, k).then(function (sh) {
+    return thumbs(out.designs).then(function () { return sharePages(out, srcImg, liveOg, k); }).then(function (sh) {
       files = files.concat(sh.files); gone = sh.gone; data.og = sh.og;
       files.push({ path: "assets/published.js", content: "/* Written by the admin Publish button. Do not edit by hand. */\nwindow.WB_PUBLISHED = " + JSON.stringify(data, null, 1) + ";\n", encoding: "utf-8" });
       return push();
     });
+    /* every design gets a small WebP preview (600 px long side) for the catalogue grid and homepage tiles.
+       Made once per picture: a design whose preview already matches its picture is skipped. */
+    function thumbs(list) {
+      var todo = list.filter(function (d) { return d.img && WB.thumb(d) === d.img; });
+      return todo.reduce(function (p, d) {
+        return p.then(function () {
+          var src = /^data:/.test(srcImg[d.code] || "") ? srcImg[d.code] : d.img;
+          return loadImg(src).then(function (im) {
+            if (!im) return;
+            var s = Math.min(1, 600 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement("canvas");
+            c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
+            var x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(im, 0, 0, c.width, c.height);
+            var url = c.toDataURL("image/webp", 0.78);
+            if (!/^data:image\/webp/.test(url)) url = c.toDataURL("image/jpeg", 0.8);   // browsers that can't write WebP (older Safari)
+            var m = /^data:image\/(webp|jpeg);base64,(.+)$/.exec(url); if (!m) return;
+            var base = d.img.split("/").pop().replace(/\.\w+$/, ""), path = "assets/uploads/designs/thumbs/" + base + "." + (m[1] === "jpeg" ? "jpg" : "webp");
+            files.push({ path: path, content: m[2], encoding: "base64" }); d.thumb = path;
+          });
+        });
+      }, Promise.resolve());
+    }
     function push() {
     var headSha, treeSha;
     return gh("/repos/" + OWNER + "/" + REPO + "/git/ref/heads/" + BRANCH, null, k)
