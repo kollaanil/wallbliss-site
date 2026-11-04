@@ -1239,7 +1239,8 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0188-8unqrt.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0188-8unqrt.webp",
+   "hidden": false
   },
   {
    "code": "WB-0189",
@@ -2366,8 +2367,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-01T08:57:17.752Z",
- "by": "Manasa",
+ "updated": "2026-11-04T05:59:20.743Z",
+ "by": "Anil",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
