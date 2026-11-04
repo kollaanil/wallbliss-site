@@ -235,33 +235,6 @@ window.WB_PUBLISHED = {
    "thumb": "assets/uploads/designs/thumbs/wb-0145-113z4kh.webp"
   },
   {
-   "code": "WB-0146",
-   "name": "3d surya bhagawan 7 horses",
-   "img": "assets/uploads/designs/wb-0146-rauigz.jpg",
-   "tags": [
-    "7 horses",
-    "3d",
-    "surya"
-   ],
-   "search": [],
-   "spaces": [
-    "living",
-    "hotel",
-    "clinic",
-    "cafe"
-   ],
-   "styles": [
-    "traditional",
-    "devotional",
-    "texture3d"
-   ],
-   "orient": "wide",
-   "added": "2026-10",
-   "pop": 5,
-   "hidden": true,
-   "thumb": "assets/uploads/designs/thumbs/wb-0146-rauigz.webp"
-  },
-  {
    "code": "WB-0147",
    "name": "Yashoda krishna",
    "img": "assets/uploads/designs/wb-0147-1rrecwf.jpg",
@@ -2422,7 +2395,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:02:59.386Z",
+ "updated": "2026-11-04T16:04:09.795Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
