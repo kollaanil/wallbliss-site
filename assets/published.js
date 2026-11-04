@@ -30,7 +30,7 @@ window.WB_PUBLISHED = {
    "code": "WB-0138",
    "added": "2026-10",
    "pop": 9.5,
-   "name": "Surya Bhagawan 7 Horses",
+   "name": "Surya Bhagawan 7 Horses Wide",
    "spaces": [
     "living",
     "cafe",
@@ -2422,7 +2422,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:02:44.436Z",
+ "updated": "2026-11-04T16:02:59.386Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -2430,8 +2430,8 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0137/card-1uva2wb.jpg"
   },
   "d:WB-0138": {
-   "sig": "110hyfn",
-   "card": "d/WB-0138/card-110hyfn.jpg"
+   "sig": "7qe56i",
+   "card": "d/WB-0138/card-7qe56i.jpg"
   },
   "d:WB-0139": {
    "sig": "1fkikxj",
