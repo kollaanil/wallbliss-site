@@ -30,7 +30,7 @@ window.WB_PUBLISHED = {
    "code": "WB-0138",
    "added": "2026-10",
    "pop": 9.5,
-   "name": "Surya bhagawan 7 horses",
+   "name": "Surya Bhagawan 7 Horses",
    "spaces": [
     "living",
     "cafe",
@@ -2421,7 +2421,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T15:50:38.517Z",
+ "updated": "2026-11-04T15:57:34.323Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
