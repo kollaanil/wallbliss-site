@@ -131,6 +131,7 @@
         delete trash[code];
       });
       index = { at: Date.now(), files: files, trash: trash }; lsSet("wb_orig_index", index);
+      reconcile();
       return api("GET", "/about?fields=storageQuota").then(function (a) { state.quota = a.storageQuota || null; }).catch(function () {}).then(function () { changed(); return true; });
     }).catch(function (e) { if (e.message === "AUTH") changed(); return false; });
   }
@@ -179,10 +180,22 @@
       next.busy = false; next.pct = 0;
       if (e.message === "AUTH") { state.need = "reconnect"; return; }
       if (e.message === "FULL") { state.full = true; return; }
-      next.tries++; next.err = e.message;
+      next.tries++; next.err = e.message; next.errAt = Date.now(); next.pctAt = next.lastPct || 0;
       if (next.tries >= 3) { next.failed = true; return qSave(next).catch(function () {}); }
       return new Promise(function (r) { setTimeout(r, 2000 * next.tries); });
     }).then(function () { running = false; changed(); if (!state.need && !state.full) run(); });
+  }
+  /* an upload that is already in Drive is done, whatever the app last heard: the same file content saved for
+     that design, or a newer original saved after the job was queued (e.g. Drive finished but the reply was lost) */
+  function inDrive(j) {
+    var f = index && index.files && index.files[j.code];
+    return !!f && ((j.sha && f.sha === j.sha) || (f.at && new Date(f.at).getTime() >= (j.at || 0) - 60000));
+  }
+  function reconcile() {
+    queue.filter(function (j) { return j.op === "upload" && !j.busy && inDrive(j); }).forEach(function (j) {
+      queue.splice(queue.indexOf(j), 1); Q.del(j.id).catch(function () {});
+      if (j.failed || j.tries) WB.notify(j.code + "’s original was already in Drive. Marked as saved.", { ms: 5000 });
+    });
   }
   function codeFile(code) { return index && index.files && index.files[code] || null; }
   function doUpload(j) {
@@ -191,14 +204,18 @@
     var meta = { name: cleanName(j.code, j.name, f), parents: [folder], mimeType: f.type || "application/octet-stream",
       description: "WallBliss design " + j.code + " · " + (j.name || "") + (j.note ? " · " + j.note : ""),
       appProperties: { wbApp: "originals", wbCode: j.code, wbSha: j.sha || "", wbBy: j.by || "" } };
-    return startSession(j, meta).then(function () { return sendChunks(j); }).then(function (file) {
+    /* already there (an earlier attempt finished but its reply was lost)? then nothing to upload */
+    var already = j.sha ? listCode(j.code).then(function (list) {
+      return list.filter(function (x) { return !x.trashed && (x.appProperties || {}).wbSha === j.sha && (x.parents || []).indexOf(conf().retiredId) < 0; })[0] || null;
+    }).catch(function (e) { if (e.message === "AUTH") throw e; return null; }) : Promise.resolve(null);
+    return already.then(function (hit) { return hit || startSession(j, meta).then(function () { return sendChunks(j); }); }).then(function (file) {
       /* any older original of this code (replaced, or saved by the other editor meanwhile) moves to Retired */
       return refresh().then(function () {
         return listCode(j.code).then(function (list) {
           var old = list.filter(function (x) { return x.id !== file.id && !x.trashed && (x.parents || []).indexOf(conf().retiredId) < 0; });
           return old.reduce(function (p, o) { return p.then(function () { return retireFile(o, "replaced " + day(new Date().toISOString())); }); }, Promise.resolve());
         });
-      }).then(refresh);
+      }).then(refresh).catch(function () { /* the file is saved; tidying up is retried at the next check */ });
     });
   }
   function listCode(code) {
@@ -231,7 +248,7 @@
     var size = j.file.size;
     function step() {
       var from = j.offset || 0, to = Math.min(size, from + CHUNK);
-      put.onp = function (n) { j.pct = Math.round((from + n) / Math.max(1, size) * 100); changed(true); };
+      put.onp = function (n) { j.pct = Math.round((from + n) / Math.max(1, size) * 100); j.lastPct = j.pct; changed(true); };
       return put(j.session, size ? j.file.slice(from, to) : j.file, size ? "bytes " + from + "-" + (to - 1) + "/" + size : "bytes */0").then(function (r) {
         if (r.status === 200 || r.status === 201) { j.pct = 100; return JSON.parse(r.body); }
         if (r.status === 308) { var m = /bytes=0-(\d+)/.exec(r.range || ""); j.offset = m ? +m[1] + 1 : to; qSave(j).catch(function () {}); return step(); }
@@ -351,8 +368,29 @@
     rename: function (code, name) { if (O.status(code).s === "missing") return; return add({ op: "rename", code: code, name: name }); },
     retire: function (code) { queue.filter(function (j) { return j.code === code && j.op === "upload" && !j.busy; }).forEach(function (j) { queue.splice(queue.indexOf(j), 1); Q.del(j.id).catch(function () {}); }); if (!index || !index.files[code]) return; return add({ op: "retire", code: code }); },
     retry: function (code) {
-      queue.forEach(function (j) { if (!code || j.code === code) { j.failed = false; j.wait = false; j.tries = 0; qSave(j).catch(function () {}); } });
-      state.full = false; changed(); run();
+      queue.forEach(function (j) { if (!code || j.code === code) { j.failed = false; j.wait = false; j.tries = 0; j.err = ""; qSave(j).catch(function () {}); } });
+      state.full = false; changed();
+      WB.notify("Checking Drive, then retrying…", { ms: 3000 });
+      refresh().then(run);                                   // anything already in Drive clears itself first
+    },
+    /* a file put in the originals folder by hand: pick it in Google's picker (which lets the site see it) and tag it */
+    link: function (code, name) {
+      return (tokenOk() ? Promise.resolve() : signIn()).then(pickerLib).then(function () {
+        return new Promise(function (res, rej) {
+          var view = new google.picker.DocsView(google.picker.ViewId.DOCS).setParent(conf().folderId).setIncludeFolders(true).setSelectFolderEnabled(false);
+          new google.picker.PickerBuilder().addView(view).setOAuthToken(tok.t).setDeveloperKey(CFG.apiKey).setAppId(CFG.appId)
+            .setTitle("Pick the original of " + code).setCallback(function (d) {
+              if (d.action === google.picker.Action.PICKED) res(d.docs[0]);
+              else if (d.action === google.picker.Action.CANCEL) rej(new Error("CANCEL"));
+            }).build().setVisible(true);
+        });
+      }).then(function (f) {
+        var other = index && Object.keys(index.files).filter(function (c) { return c !== code && index.files[c].id === f.id; })[0];
+        if (other) throw new Error("That file is already the original of " + other + ".");
+        queue.filter(function (j) { return j.code === code && j.op === "upload" && !j.busy; }).forEach(function (j) { queue.splice(queue.indexOf(j), 1); Q.del(j.id).catch(function () {}); });
+        return api("PATCH", "/files/" + f.id + "?fields=id", { appProperties: { wbApp: "originals", wbCode: code, wbSha: "", wbBy: who() }, description: "WallBliss design " + code + " · " + (name || "") + " · linked" });
+      }).then(refresh).then(function () { changed(); WB.notify(code + ": original linked."); return true; })
+        .catch(function (e) { if (e.message === "CANCEL") return false; WB.notify(e.message === "AUTH" ? "Reconnect Drive and try again." : popupHelp(e), { type: "error" }); return false; });
     },
     cancel: function (code) { queue.filter(function (j) { return j.code === code && !j.busy; }).forEach(function (j) { queue.splice(queue.indexOf(j), 1); Q.del(j.id).catch(function () {}); }); changed(); },
     /* same file content already saved for another design? */

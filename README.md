@@ -54,6 +54,10 @@ The website copy is made as before; publishing never waits for Drive.
 - Any file type is accepted as an original (TIFF, PSD, PDF…). If the browser can't open it, the uploader asks
   for a smaller JPG/PNG for the website picture and still archives the original.
 
+- **Never uploads twice / self-heals:** before every upload attempt the app asks Drive whether the same file (same content hash) is already saved for that design; if so the job is done. Every Drive check also clears any waiting or failed upload whose file is already there (same content, or a newer original saved after the job was queued). Retry checks Drive first. Tidying up after an upload (moving old versions to Retired) never marks a finished upload as failed.
+- **Link a file already in Drive:** "Already in Drive? Link it" (on designs without an original, and on failed uploads) opens Google's picker in the originals folder; the picked file gets the design's hidden tag and counts as its original. Files put in the folder by hand are invisible to the site until linked this way (Drive's drive.file permission).
+- The folder bar names the designs that failed and the last reason in plain words; More ▾ › "Stop retrying" cancels failed uploads.
+
 ## Uploading designs (admin → Designs → + Add design)
 
 - Up to 10 photos at a time. Each is trimmed (plain borders), resized to 1600 px, watermarked
@@ -142,6 +146,8 @@ The phone number in the footer and the contact card is a button (`data-call`, as
 - In the catalogue, **Share these designs** (after a search) and **Share** (on a design) open the phone's share sheet.
 - Publish makes the pages and picture cards by itself, only for new or changed designs and themes (`og` in published.js remembers them).
   The cards for the homepage, catalogue and projects pages are in `assets/img/share/`.
+
+- Share-card signatures sample the text for speed, so the design name is also compared in full (`og[...].nm`): any name change, even capitals only, refreshes that design's WhatsApp card and share page. While publishing, the status line names each step (design list, small preview, WhatsApp preview picture, share page, photo).
 
 ## Notifications and loading (assets/ui.js)
 
