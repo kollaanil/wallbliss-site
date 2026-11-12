@@ -2176,6 +2176,58 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-11",
    "pop": 5
+  },
+  {
+   "code": "WB-0221",
+   "name": "Krishna and Radha Divine Love",
+   "img": "assets/uploads/designs/wb-0221-1nr7kxd.jpg",
+   "tags": [
+    "krishna",
+    "radha",
+    "peacock",
+    "lotus flowers",
+    "ornamental",
+    "devotional",
+    "romantic",
+    "gold embellished",
+    "classical indian",
+    "divine couple",
+    "serene"
+   ],
+   "search": [
+    "krishna radha wall mural",
+    "divine love wall art",
+    "krishna flute painting",
+    "radha krishna home decor",
+    "devotional wall design",
+    "golden krishna mural",
+    "lotus peacock art",
+    "indian classical couple",
+    "spiritual bedroom wall",
+    "temple inspired mural",
+    "radha krishna ke saath",
+    "krishna radha wall sticker",
+    "कृष्ण राधा दीवार",
+    "కృష్ణ రాధ",
+    "radha krishna vastu",
+    "ornate religious wall",
+    "couple devotional art",
+    "classical mughal style",
+    "luxury gold wall design",
+    "romantic spiritual decor"
+   ],
+   "spaces": [
+    "living",
+    "bedroom"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -2334,7 +2386,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 220
+  "lastCode": 221
  },
  "faqs": [
   {
@@ -2428,7 +2480,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-12T13:09:49.686Z",
+ "updated": "2026-11-12T13:12:05.459Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2762,6 +2814,10 @@ window.WB_PUBLISHED = {
   "d:WB-0220": {
    "sig": "sgxlee",
    "card": "d/WB-0220/card-sgxlee.jpg"
+  },
+  "d:WB-0221": {
+   "sig": "nwo2e9",
+   "card": "d/WB-0221/card-nwo2e9.jpg"
   }
  }
 };
