@@ -2022,6 +2022,56 @@ window.WB_PUBLISHED = {
    "added": "2026-11",
    "pop": 5,
    "thumb": "assets/uploads/designs/thumbs/wb-0217-158qre2.jpg"
+  },
+  {
+   "code": "WB-0218",
+   "name": "Divine Tirumala",
+   "img": "assets/uploads/designs/wb-0218-1j2tcz4.jpg",
+   "tags": [
+    "temple architecture",
+    "waterfall",
+    "mountains",
+    "devotional",
+    "spiritual landscape",
+    "sacred site",
+    "epic fantasy",
+    "tirumala",
+    "tirupati"
+   ],
+   "search": [
+    "murugan temple mural",
+    "south indian temple wall art",
+    "lord murugan statue",
+    "temple landscape",
+    "spiritual wall design",
+    "devotional mural",
+    "kartikeya temple",
+    "six faces murugan",
+    "temple valley painting",
+    "hindu religious art",
+    "sacred architecture mural",
+    "temple waterfall art",
+    "devotional wall painting",
+    "living room spiritual",
+    "office meditation wall",
+    "tilakam mururan",
+    "mukharatna murugan",
+    "murugan samayapuram"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "hotel"
+   ],
+   "styles": [
+    "devotional",
+    "artistic",
+    "traditional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -2180,7 +2230,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 216
+  "lastCode": 218
  },
  "faqs": [
   {
@@ -2274,7 +2324,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-04T16:40:21.842Z",
+ "updated": "2026-11-12T13:05:57.449Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2596,6 +2646,10 @@ window.WB_PUBLISHED = {
   "d:WB-0217": {
    "sig": "4vetyt",
    "card": "d/WB-0217/card-4vetyt.jpg"
+  },
+  "d:WB-0218": {
+   "sig": "5dunyf",
+   "card": "d/WB-0218/card-5dunyf.jpg"
   }
  }
 };
