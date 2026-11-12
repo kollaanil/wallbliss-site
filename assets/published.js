@@ -2072,6 +2072,110 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-11",
    "pop": 5
+  },
+  {
+   "code": "WB-0219",
+   "name": "Sacred Kamadhenu with Calf",
+   "img": "assets/uploads/designs/wb-0219-dgpa7t.jpg",
+   "tags": [
+    "cow",
+    "ornamental",
+    "spiritual",
+    "relief sculpture",
+    "beige and gold",
+    "sacred animal",
+    "devotional",
+    "jpg",
+    "kamadhenu"
+   ],
+   "search": [
+    "cow and calf mural",
+    "sacred cow wall art",
+    "gau mata design",
+    "kamadhenu painting",
+    "spiritual cow art",
+    "ornate cow relief",
+    "gold cow mural",
+    "hindu deity cow",
+    "cow with jewelry",
+    "floral tree background",
+    "devotional wall art",
+    "sacred animal mural",
+    "cow calf bonding",
+    "religious cow art",
+    "traditional cow design",
+    "गाय माता",
+    "গরু",
+    "గో",
+    "vatsalya",
+    "पवित्र गाय",
+    "cow vastu",
+    "pooja room wall",
+    "temple wall art"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "devotional",
+    "traditional",
+    "texture3d"
+   ],
+   "orient": "tall",
+   "added": "2026-11",
+   "pop": 5
+  },
+  {
+   "code": "WB-0220",
+   "name": "Village Landscape",
+   "img": "assets/uploads/designs/wb-0220-jv69tx.jpg",
+   "tags": [
+    "farmer",
+    "rural village",
+    "mountains",
+    "traditional farming",
+    "rice fields",
+    "thatched huts",
+    "sunrise",
+    "pastoral scene",
+    "folk art",
+    "warm earthy tones",
+    "southeast asian village"
+   ],
+   "search": [
+    "village farming mural",
+    "oxen plowing wall art",
+    "rural landscape painting",
+    "traditional agriculture scene",
+    "farmer with bulls",
+    "village life artwork",
+    "mountain village mural",
+    "pastoral farm scene",
+    "kheti mural",
+    "gramin jeevan",
+    "traditional farming art",
+    "countryside landscape wall",
+    "village scene poster",
+    "farm life mural",
+    "oxen cart art",
+    "gaon ki mitti",
+    "agricultural heritage",
+    "traditional village painting",
+    "natural landscape mural",
+    "sunrise village scene"
+   ],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "folk",
+    "nature",
+    "artistic"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5
   }
  ],
  "edits": {},
@@ -2230,7 +2334,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 218
+  "lastCode": 220
  },
  "faqs": [
   {
@@ -2324,7 +2428,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-12T13:05:57.449Z",
+ "updated": "2026-11-12T13:09:49.686Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2650,6 +2754,14 @@ window.WB_PUBLISHED = {
   "d:WB-0218": {
    "sig": "5dunyf",
    "card": "d/WB-0218/card-5dunyf.jpg"
+  },
+  "d:WB-0219": {
+   "sig": "8oddcz",
+   "card": "d/WB-0219/card-8oddcz.jpg"
+  },
+  "d:WB-0220": {
+   "sig": "sgxlee",
+   "card": "d/WB-0220/card-sgxlee.jpg"
   }
  }
 };
