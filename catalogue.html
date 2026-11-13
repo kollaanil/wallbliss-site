@@ -92,6 +92,7 @@
 <script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/mywall.js"></script>
 <script src="assets/search-lexicon.js"></script>
 <script src="assets/search.js"></script>
 <style>
@@ -199,6 +200,10 @@
   .seg button { border: 0; background: none; font: 600 .84rem var(--font-body); padding: 10px 12px; min-height: 40px; border-radius: 6px; cursor: pointer; color: #2E2A26; }
   .seg button[aria-pressed="true"] { background: #0F6B6E; color: #fff; }
   .dlg-view canvas.photo { aspect-ratio: auto; object-fit: contain; touch-action: none; cursor: grab; background: #F5EDE1; }
+  .mw-cta { position: absolute; left: 12px; top: 12px; z-index: 2; min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: #0F6B6E; color: #fff; font: 700 .9rem var(--font-body); cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: calc(100% - 80px); }
+  .mw-cta.pulse { animation: mwpulse 1.6s ease-out 2; }
+  @keyframes mwpulse { 0% { box-shadow: 0 0 0 0 rgba(15,107,110,.55); } 100% { box-shadow: 0 0 0 16px rgba(15,107,110,0); } }
+  @media (prefers-reduced-motion: reduce) { .mw-cta.pulse { animation: none; } }
   .photo-tools { display: grid; gap: 8px; padding: 14px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); }
   .photo-tools input[type=range] { width: 100%; accent-color: #0F6B6E; }
   .upload { display: grid; place-items: center; gap: 10px; padding: 26px; text-align: center; min-height: 260px; color: var(--muted); }
@@ -254,6 +259,7 @@
   <div class="wrap">
     <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button></span></div>
     <p class="search-note" id="search-note" hidden></p>
+    <div class="mw-wallbar" id="mw-wallbar" hidden></div>
     <div class="grid" id="grid">
     </div>
   </div>
@@ -266,6 +272,7 @@
       <canvas id="d-canvas" aria-hidden="true"></canvas>
       <img id="d-img" alt="" hidden>
       <input type="file" id="wall-file" accept="image/*" hidden>
+      <button type="button" class="mw-cta" id="d-mywall">📷 See it on your wall</button>
       <div class="seg" role="group" aria-label="View">
         <button type="button" id="v-design" aria-pressed="true">Design</button>
         <button type="button" id="v-room" aria-pressed="false">In a room</button>
@@ -452,6 +459,7 @@
     else if (lbl && !WBSearch.wants(r, "custom")) html = "No <b>" + lbl + "</b> designs yet. Tell us on WhatsApp and we can create one for your wall.";
     noteEl.innerHTML = html; noteEl.hidden = !html;
   }
+  var shown = [];
   function render() {
     state.q = q.value.trim().toLowerCase();
     var pool = DATA.filter(function (d) { return matches(d, state.f); }), list, r = null;
@@ -463,7 +471,7 @@
       if (state.sort === "name") return a.d.name.localeCompare(b.d.name);
       return b.d.pop - a.d.pop;
     });
-    lastCount = list.length;
+    lastCount = list.length; shown = list.map(function (x) { return x.d; });
     grid.classList.toggle("tall", state.f.shape.length === 1 && state.f.shape[0] === "portrait");
     grid.innerHTML = "";
     list.forEach(function (x) { grid.appendChild(card(x.d)); });
@@ -477,6 +485,7 @@
     if (wantsOwn) grid.insertBefore(custom, grid.firstChild); else grid.appendChild(custom);
     custom.querySelectorAll("[data-wa]").forEach(function (a) { a.href = WB.waLink(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
     grid.querySelectorAll("canvas[data-code]").forEach(function (c) { io ? io.observe(c) : paint(c); });
+    if (WB.myWall) WB.myWall.decorate();
     syncControls();
   }
   function syncControls() {
@@ -583,7 +592,7 @@
 
   grid.addEventListener("click", function (e) {
     var h = e.target.closest("[data-heart]");
-    if (h) { var on = WB.shortlist.toggle(h.dataset.heart); h.setAttribute("aria-pressed", on); toast(on ? "Added to shortlist ♥" : "Removed from shortlist"); return; }
+    if (h) { var on = WB.shortlist.toggle(h.dataset.heart); h.setAttribute("aria-pressed", on); WB.notify(on ? "Added to shortlist ♥" : "Removed from shortlist", on ? { ms: 5000, action: WB.myWall.heartAction(h.dataset.heart) } : {}); return; }
     var o = e.target.closest("[data-open]"); if (o) openDesign(o.dataset.open);
   });
 
@@ -598,6 +607,9 @@
     document.getElementById("d-sample").hidden = !!cur.img;
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
     setView(view === "photo" && photo ? "photo" : "design"); waMsg(); heartBtn(); similar();
+    var cta = document.getElementById("d-mywall");
+    if (!localStorage.getItem("wb_mw_pulsed")) { cta.classList.remove("pulse"); void cta.offsetWidth; cta.classList.add("pulse"); try { localStorage.setItem("wb_mw_pulsed", "1"); } catch (e) {} }
+    if (WB.myWall) WB.myWall.noteOpen();
     WB.track("design_open", { code: cur.code });
     try { history.replaceState(null, "", "#" + cur.code); } catch (e) {}
   }
@@ -607,6 +619,7 @@
     ["design", "room", "photo"].forEach(function (k) { document.getElementById("v-" + k).setAttribute("aria-pressed", v === k); });
     var c = document.getElementById("d-canvas"), img = document.getElementById("d-img");
     document.getElementById("photo-tools").hidden = v !== "photo";
+    document.getElementById("d-mywall").textContent = v === "room" ? "Like it here? Try it on your wall →" : (WB.myWall && WB.myWall.has() ? "📷 See it on your wall ✓" : "📷 See it on your wall");
     c.classList.toggle("photo", v === "photo"); c.style.aspectRatio = "";
     designImg = null;
     if (cur.img) { designImg = new Image(); designImg.src = cur.img; }
@@ -672,7 +685,8 @@
   })();
   document.getElementById("v-design").onclick = function () { setView("design"); };
   document.getElementById("v-room").onclick = function () { setView("room"); WB.track("view_in_room", { code: cur.code }); };
-  document.getElementById("v-photo").onclick = function () { setView("photo"); WB.track("view_on_my_wall", { code: cur.code }); };
+  document.getElementById("v-photo").onclick = function () { WB.myWall.open(cur.code, "tab"); };
+  document.getElementById("d-mywall").onclick = function () { WB.myWall.open(cur.code, view === "room" ? "room" : "button"); };
   document.getElementById("d-close").onclick = function () { dlg.close(); };
   dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener("close", function () { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} });
@@ -708,7 +722,7 @@
     var url = pubOg()["d:" + cur.code] ? SITE + "d/" + cur.code + "/" : SITE + "catalogue.html#" + cur.code;
     shareOut(cur.name + " · " + cur.code, "Have a look at this wall design: " + cur.name + " (" + cur.code + ") 👇", url, { code: cur.code });
   };
-  document.getElementById("d-heart").onclick = function () { var on = WB.shortlist.toggle(cur.code); heartBtn(); toast(on ? "Added to shortlist" : "Removed from shortlist"); syncHearts(); };
+  document.getElementById("d-heart").onclick = function () { var on = WB.shortlist.toggle(cur.code); heartBtn(); WB.notify(on ? "Added to shortlist ♥" : "Removed from shortlist", on ? { ms: 5000, action: WB.myWall.heartAction(cur.code) } : {}); syncHearts(); };
   function similar() {
     var box = document.getElementById("d-similar"); box.innerHTML = "";
     DATA.filter(function (d) { return d !== cur; }).map(function (d) {
@@ -777,8 +791,17 @@
   if (SHAPE_WORDS[h]) state.f.shape = [h];
   if (SPACE_WORDS[h]) state.f.spaces = [h];
   else if (qs.get("room") && SPACE_WORDS[qs.get("room")]) state.f.spaces = [qs.get("room")];
+  WB.myWall.init({
+    designs: function () { return shown.length ? shown : DATA; }, byCode: BY,
+    first: function () { return (shown[0] || DATA[0]).code; }, current: function () { return cur && dlg.open ? cur.code : null; },
+    grid: grid, wallBar: document.getElementById("mw-wallbar"),
+    onClose: function () { syncHearts(); if (cur && dlg.open) { heartBtn(); setView(view); } }
+  });
   render(); syncHearts();
   if (/^WB-\d+$/i.test(h) && BY[h.toUpperCase()]) openDesign(h.toUpperCase());
+  /* #mywall (or #mywall/WB-0143): straight to "see it on your wall" — for links sent on Instagram / WhatsApp */
+  var mw = /^mywall(?:\/(WB-\d+))?$/i.exec(h);
+  if (mw) WB.myWall.open(mw[1] && BY[mw[1].toUpperCase()] ? mw[1].toUpperCase() : null, "link");
   addEventListener("hashchange", function () { var x = location.hash.slice(1); if (SPACE_WORDS[x]) { state.f.spaces = [x]; render(); } else if (SHAPE_WORDS[x]) { state.f.shape = [x]; render(); } else if (BY[x]) openDesign(x); });
   if (qs.get("q")) logSearch(true);
 })();
