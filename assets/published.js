@@ -2071,7 +2071,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "wide",
    "added": "2026-11",
-   "pop": 5
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0218-1j2tcz4.jpg"
   },
   {
    "code": "WB-0219",
@@ -2123,7 +2124,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "tall",
    "added": "2026-11",
-   "pop": 5
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0219-dgpa7t.jpg"
   },
   {
    "code": "WB-0220",
@@ -2175,7 +2177,8 @@ window.WB_PUBLISHED = {
    ],
    "orient": "wide",
    "added": "2026-11",
-   "pop": 5
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0220-jv69tx.jpg"
   },
   {
    "code": "WB-0221",
@@ -2227,7 +2230,31 @@ window.WB_PUBLISHED = {
    ],
    "orient": "wide",
    "added": "2026-11",
-   "pop": 5
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0221-1nr7kxd.jpg"
+  },
+  {
+   "code": "WB-0222",
+   "name": "Rama Pattabhidhekham Wooden Border",
+   "img": "assets/uploads/designs/wb-0222-hh43l5.jpg",
+   "tags": [
+    "rama",
+    "pattabhishekham",
+    "divine"
+   ],
+   "search": [],
+   "spaces": [
+    "living"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "folk"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0222-hh43l5.jpg"
   }
  ],
  "edits": {},
@@ -2386,7 +2413,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 221
+  "lastCode": 222
  },
  "faqs": [
   {
@@ -2480,20 +2507,23 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-12T13:12:05.459Z",
+ "updated": "2026-11-14T08:32:21.708Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
-   "card": "d/WB-0137/card-1uva2wb.jpg"
+   "card": "d/WB-0137/card-1uva2wb.jpg",
+   "nm": "Kamadhenu Colored Marble"
   },
   "d:WB-0138": {
    "sig": "7qe56i",
-   "card": "d/WB-0138/card-7qe56i.jpg"
+   "card": "d/WB-0138/card-7qe56i.jpg",
+   "nm": "Surya Bhagawan 7 Horses Wide"
   },
   "d:WB-0139": {
    "sig": "1fkikxj",
-   "card": "d/WB-0139/card-1fkikxj.jpg"
+   "card": "d/WB-0139/card-1fkikxj.jpg",
+   "nm": "3D Waterfall"
   },
   "d:WB-0140": {
    "sig": "rdl5lw",
@@ -2501,27 +2531,33 @@ window.WB_PUBLISHED = {
   },
   "d:WB-0141": {
    "sig": "6f07ze",
-   "card": "d/WB-0141/card-6f07ze.jpg"
+   "card": "d/WB-0141/card-6f07ze.jpg",
+   "nm": "Traditional Nettipattam"
   },
   "d:WB-0142": {
    "sig": "eifhhn",
-   "card": "d/WB-0142/card-eifhhn.jpg"
+   "card": "d/WB-0142/card-eifhhn.jpg",
+   "nm": "Serene Buddha"
   },
   "d:WB-0143": {
    "sig": "1ffitmk",
-   "card": "d/WB-0143/card-1ffitmk.jpg"
+   "card": "d/WB-0143/card-1ffitmk.jpg",
+   "nm": "Radha Krishna 3d Colorful"
   },
   "d:WB-0144": {
    "sig": "u6myc2",
-   "card": "d/WB-0144/card-u6myc2.jpg"
+   "card": "d/WB-0144/card-u6myc2.jpg",
+   "nm": "3d Marble Kamadhenu"
   },
   "d:WB-0145": {
    "sig": "1q7gkcs",
-   "card": "d/WB-0145/card-1q7gkcs.jpg"
+   "card": "d/WB-0145/card-1q7gkcs.jpg",
+   "nm": "Kid Radha Krishna"
   },
   "d:WB-0147": {
    "sig": "15jh8o",
-   "card": "d/WB-0147/card-15jh8o.jpg"
+   "card": "d/WB-0147/card-15jh8o.jpg",
+   "nm": "Yashoda Krishna"
   },
   "d:WB-0150": {
    "sig": "a9dw8i",
@@ -2529,135 +2565,168 @@ window.WB_PUBLISHED = {
   },
   "d:WB-0152": {
    "sig": "coir88",
-   "card": "d/WB-0152/card-coir88.jpg"
+   "card": "d/WB-0152/card-coir88.jpg",
+   "nm": "Shiva in Cosmos"
   },
   "d:WB-0153": {
    "sig": "13nfg3o",
-   "card": "d/WB-0153/card-13nfg3o.jpg"
+   "card": "d/WB-0153/card-13nfg3o.jpg",
+   "nm": "Krishna with Cow"
   },
   "d:WB-0154": {
    "sig": "5iyxt9",
-   "card": "d/WB-0154/card-5iyxt9.jpg"
+   "card": "d/WB-0154/card-5iyxt9.jpg",
+   "nm": "Radha Krishna Swinging"
   },
   "d:WB-0155": {
    "sig": "11oudus",
-   "card": "d/WB-0155/card-11oudus.jpg"
+   "card": "d/WB-0155/card-11oudus.jpg",
+   "nm": "Radha Krishna"
   },
   "d:WB-0156": {
    "sig": "107ukif",
-   "card": "d/WB-0156/card-107ukif.jpg"
+   "card": "d/WB-0156/card-107ukif.jpg",
+   "nm": "Kamadhenu Classic"
   },
   "d:WB-0157": {
    "sig": "1uadicy",
-   "card": "d/WB-0157/card-1uadicy.jpg"
+   "card": "d/WB-0157/card-1uadicy.jpg",
+   "nm": "Srinivasa Kalyanam"
   },
   "d:WB-0158": {
    "sig": "1ux4jma",
-   "card": "d/WB-0158/card-1ux4jma.jpg"
+   "card": "d/WB-0158/card-1ux4jma.jpg",
+   "nm": "Srinivasa Kalyanam Blue Sky"
   },
   "d:WB-0159": {
    "sig": "sjpe68",
-   "card": "d/WB-0159/card-sjpe68.jpg"
+   "card": "d/WB-0159/card-sjpe68.jpg",
+   "nm": "Rama Parivar"
   },
   "d:WB-0160": {
    "sig": "4xilz6",
-   "card": "d/WB-0160/card-4xilz6.jpg"
+   "card": "d/WB-0160/card-4xilz6.jpg",
+   "nm": "Dinosaur Theme Kids Room"
   },
   "d:WB-0161": {
    "sig": "l3nn2w",
-   "card": "d/WB-0161/card-l3nn2w.jpg"
+   "card": "d/WB-0161/card-l3nn2w.jpg",
+   "nm": "Rama Pattabhishekham New Kolam"
   },
   "d:WB-0162": {
    "sig": "jhbjen",
-   "card": "d/WB-0162/card-jhbjen.jpg"
+   "card": "d/WB-0162/card-jhbjen.jpg",
+   "nm": "Srinivasa Kalyanam Lotus Border"
   },
   "d:WB-0163": {
    "sig": "pm6ofe",
-   "card": "d/WB-0163/card-pm6ofe.jpg"
+   "card": "d/WB-0163/card-pm6ofe.jpg",
+   "nm": "World Map Colors"
   },
   "d:WB-0164": {
    "sig": "r0joja",
-   "card": "d/WB-0164/card-r0joja.jpg"
+   "card": "d/WB-0164/card-r0joja.jpg",
+   "nm": "Srinivasa Kalyanam Orange Theme"
   },
   "d:WB-0165": {
    "sig": "161mnfx",
-   "card": "d/WB-0165/card-161mnfx.jpg"
+   "card": "d/WB-0165/card-161mnfx.jpg",
+   "nm": "Baby Gods"
   },
   "d:WB-0166": {
    "sig": "crah4s",
-   "card": "d/WB-0166/card-crah4s.jpg"
+   "card": "d/WB-0166/card-crah4s.jpg",
+   "nm": "Siva Kalyanam Tanjore Style"
   },
   "d:WB-0167": {
    "sig": "b0qzwf",
-   "card": "d/WB-0167/card-b0qzwf.jpg"
+   "card": "d/WB-0167/card-b0qzwf.jpg",
+   "nm": "Baby Krishna with Calf"
   },
   "d:WB-0168": {
    "sig": "i3ryvl",
-   "card": "d/WB-0168/card-i3ryvl.jpg"
+   "card": "d/WB-0168/card-i3ryvl.jpg",
+   "nm": "Srinivasa Kalyanam Wide"
   },
   "d:WB-0169": {
    "sig": "t7i91c",
-   "card": "d/WB-0169/card-t7i91c.jpg"
+   "card": "d/WB-0169/card-t7i91c.jpg",
+   "nm": "Surya with 7 Horses Without Carving"
   },
   "d:WB-0170": {
    "sig": "1v4p9fa",
-   "card": "d/WB-0170/card-1v4p9fa.jpg"
+   "card": "d/WB-0170/card-1v4p9fa.jpg",
+   "nm": "Balaji Namam"
   },
   "d:WB-0171": {
    "sig": "x4pk5x",
-   "card": "d/WB-0171/card-x4pk5x.jpg"
+   "card": "d/WB-0171/card-x4pk5x.jpg",
+   "nm": "Baby Krishna 3d with Cow"
   },
   "d:WB-0173": {
    "sig": "w2gz4b",
-   "card": "d/WB-0173/card-w2gz4b.jpg"
+   "card": "d/WB-0173/card-w2gz4b.jpg",
+   "nm": "Srinivasa Kalyanam New Border"
   },
   "d:WB-0174": {
    "sig": "ooq1xp",
-   "card": "d/WB-0174/card-ooq1xp.jpg"
+   "card": "d/WB-0174/card-ooq1xp.jpg",
+   "nm": "Srinivasa Kalyanam Dark Interior"
   },
   "d:WB-0175": {
    "sig": "7q7666",
-   "card": "d/WB-0175/card-7q7666.jpg"
+   "card": "d/WB-0175/card-7q7666.jpg",
+   "nm": "Corporate Conference Room Mural"
   },
   "d:WB-0176": {
    "sig": "emiz0f",
-   "card": "d/WB-0176/card-emiz0f.jpg"
+   "card": "d/WB-0176/card-emiz0f.jpg",
+   "nm": "Corporate Team Work Wall Mural"
   },
   "d:WB-0177": {
    "sig": "12mx72w",
-   "card": "d/WB-0177/card-12mx72w.jpg"
+   "card": "d/WB-0177/card-12mx72w.jpg",
+   "nm": "Corporate AI Wall Art"
   },
   "d:WB-0178": {
    "sig": "41earm",
-   "card": "d/WB-0178/card-41earm.jpg"
+   "card": "d/WB-0178/card-41earm.jpg",
+   "nm": "Kerala Netipattam"
   },
   "d:WB-0179": {
    "sig": "1kuhxo",
-   "card": "d/WB-0179/card-1kuhxo.jpg"
+   "card": "d/WB-0179/card-1kuhxo.jpg",
+   "nm": "Corp Global Client Mapping"
   },
   "d:WB-0180": {
    "sig": "1nfwmgl",
-   "card": "d/WB-0180/card-1nfwmgl.jpg"
+   "card": "d/WB-0180/card-1nfwmgl.jpg",
+   "nm": "Corp Client Logo Collage"
   },
   "d:WB-0181": {
    "sig": "1gva3id",
-   "card": "d/WB-0181/card-1gva3id.jpg"
+   "card": "d/WB-0181/card-1gva3id.jpg",
+   "nm": "Corp Cabin Backdrop"
   },
   "d:WB-0182": {
    "sig": "1fijip3",
-   "card": "d/WB-0182/card-1fijip3.jpg"
+   "card": "d/WB-0182/card-1fijip3.jpg",
+   "nm": "Krishna Lotus Design"
   },
   "d:WB-0183": {
    "sig": "ilj67c",
-   "card": "d/WB-0183/card-ilj67c.jpg"
+   "card": "d/WB-0183/card-ilj67c.jpg",
+   "nm": "Krishna Flute"
   },
   "d:WB-0184": {
    "sig": "f1hw6a",
-   "card": "d/WB-0184/card-f1hw6a.jpg"
+   "card": "d/WB-0184/card-f1hw6a.jpg",
+   "nm": "Buddha Chrome"
   },
   "d:WB-0185": {
    "sig": "1o5918e",
-   "card": "d/WB-0185/card-1o5918e.jpg"
+   "card": "d/WB-0185/card-1o5918e.jpg",
+   "nm": "Golden Kamadhenu"
   },
   "page:catalogue": {
    "sig": "b86nqd",
@@ -2677,7 +2746,8 @@ window.WB_PUBLISHED = {
   },
   "d:WB-0186": {
    "sig": "1gbitbe",
-   "card": "d/WB-0186/card-1gbitbe.jpg"
+   "card": "d/WB-0186/card-1gbitbe.jpg",
+   "nm": "Krishna Peeking in 3d Design"
   },
   "t:krishna": {
    "sig": "drrqop",
@@ -2685,139 +2755,179 @@ window.WB_PUBLISHED = {
   },
   "d:WB-0187": {
    "sig": "qvi9qb",
-   "card": "d/WB-0187/card-qvi9qb.jpg"
+   "card": "d/WB-0187/card-qvi9qb.jpg",
+   "nm": "Latest World Map 2026"
   },
   "d:WB-0188": {
    "sig": "1ye6cg0",
-   "card": "d/WB-0188/card-1ye6cg0.jpg"
+   "card": "d/WB-0188/card-1ye6cg0.jpg",
+   "nm": "Rama Pattabhishekham"
   },
   "d:WB-0189": {
    "sig": "b7b9p3",
-   "card": "d/WB-0189/card-b7b9p3.jpg"
+   "card": "d/WB-0189/card-b7b9p3.jpg",
+   "nm": "Raghavendra Swamy"
   },
   "d:WB-0190": {
    "sig": "6co5wo",
-   "card": "d/WB-0190/card-6co5wo.jpg"
+   "card": "d/WB-0190/card-6co5wo.jpg",
+   "nm": "Swastik Tall Frame"
   },
   "d:WB-0191": {
    "sig": "1kp3ry9",
-   "card": "d/WB-0191/card-1kp3ry9.jpg"
+   "card": "d/WB-0191/card-1kp3ry9.jpg",
+   "nm": "Srinivasa Kalyanam Bapu Style"
   },
   "d:WB-0192": {
    "sig": "jdkims",
-   "card": "d/WB-0192/card-jdkims.jpg"
+   "card": "d/WB-0192/card-jdkims.jpg",
+   "nm": "Rama Pattabhishekham Border"
   },
   "d:WB-0193": {
    "sig": "2kpto5",
-   "card": "d/WB-0193/card-2kpto5.jpg"
+   "card": "d/WB-0193/card-2kpto5.jpg",
+   "nm": "Kamadhenu Temple Background"
   },
   "d:WB-0194": {
    "sig": "1sw2vlc",
-   "card": "d/WB-0194/card-1sw2vlc.jpg"
+   "card": "d/WB-0194/card-1sw2vlc.jpg",
+   "nm": "Hanuman Dhyanam"
   },
   "d:WB-0195": {
    "sig": "vktpib",
-   "card": "d/WB-0195/card-vktpib.jpg"
+   "card": "d/WB-0195/card-vktpib.jpg",
+   "nm": "Buddha Pastel Murals"
   },
   "d:WB-0196": {
    "sig": "114n8sh",
-   "card": "d/WB-0196/card-114n8sh.jpg"
+   "card": "d/WB-0196/card-114n8sh.jpg",
+   "nm": "Gods Trilogy"
   },
   "d:WB-0197": {
    "sig": "15o9spe",
-   "card": "d/WB-0197/card-15o9spe.jpg"
+   "card": "d/WB-0197/card-15o9spe.jpg",
+   "nm": "Tom and Jerry"
   },
   "d:WB-0198": {
    "sig": "4vhlgm",
-   "card": "d/WB-0198/card-4vhlgm.jpg"
+   "card": "d/WB-0198/card-4vhlgm.jpg",
+   "nm": "Rama Pattabhishekham Kolam Border"
   },
   "d:WB-0199": {
    "sig": "11s19cg",
-   "card": "d/WB-0199/card-11s19cg.jpg"
+   "card": "d/WB-0199/card-11s19cg.jpg",
+   "nm": "Blue River Tall Frame"
   },
   "d:WB-0201": {
    "sig": "1nr1uch",
-   "card": "d/WB-0201/card-1nr1uch.jpg"
+   "card": "d/WB-0201/card-1nr1uch.jpg",
+   "nm": "Ardha Nareswari"
   },
   "d:WB-0202": {
    "sig": "1qjqwjx",
-   "card": "d/WB-0202/card-1qjqwjx.jpg"
+   "card": "d/WB-0202/card-1qjqwjx.jpg",
+   "nm": "Krishna with Kamadhenu"
   },
   "d:WB-0203": {
    "sig": "dlbbce",
-   "card": "d/WB-0203/card-dlbbce.jpg"
+   "card": "d/WB-0203/card-dlbbce.jpg",
+   "nm": "Srinivasa Kalyanam New Background"
   },
   "d:WB-0204": {
    "sig": "67dyx0",
-   "card": "d/WB-0204/card-67dyx0.jpg"
+   "card": "d/WB-0204/card-67dyx0.jpg",
+   "nm": "Green Krishna"
   },
   "d:WB-0205": {
    "sig": "1sbr7av",
-   "card": "d/WB-0205/card-1sbr7av.jpg"
+   "card": "d/WB-0205/card-1sbr7av.jpg",
+   "nm": "7 Horses Ornamental"
   },
   "d:WB-0206": {
    "sig": "1b4slbg",
-   "card": "d/WB-0206/card-1b4slbg.jpg"
+   "card": "d/WB-0206/card-1b4slbg.jpg",
+   "nm": "Yashodha Krishna"
   },
   "d:WB-0207": {
    "sig": "1p9fln7",
-   "card": "d/WB-0207/card-1p9fln7.jpg"
+   "card": "d/WB-0207/card-1p9fln7.jpg",
+   "nm": "3d Krishna"
   },
   "d:WB-0208": {
    "sig": "wr3jc3",
-   "card": "d/WB-0208/card-wr3jc3.jpg"
+   "card": "d/WB-0208/card-wr3jc3.jpg",
+   "nm": "Srinivasa Kalyanam Tirumala Hills"
   },
   "d:WB-0209": {
    "sig": "1fco3bw",
-   "card": "d/WB-0209/card-1fco3bw.jpg"
+   "card": "d/WB-0209/card-1fco3bw.jpg",
+   "nm": "Mystical Waterfall Paradise"
   },
   "d:WB-0210": {
    "sig": "cmpffh",
-   "card": "d/WB-0210/card-cmpffh.jpg"
+   "card": "d/WB-0210/card-cmpffh.jpg",
+   "nm": "Srinivasa Kalaynam Golden Border"
   },
   "d:WB-0211": {
    "sig": "1nardiz",
-   "card": "d/WB-0211/card-1nardiz.jpg"
+   "card": "d/WB-0211/card-1nardiz.jpg",
+   "nm": "Lotus Kamadhenu Divine"
   },
   "d:WB-0212": {
    "sig": "1027p5m",
-   "card": "d/WB-0212/card-1027p5m.jpg"
+   "card": "d/WB-0212/card-1027p5m.jpg",
+   "nm": "Baby Krishna in Lotus Garden"
   },
   "d:WB-0213": {
    "sig": "1qyxbpz",
-   "card": "d/WB-0213/card-1qyxbpz.jpg"
+   "card": "d/WB-0213/card-1qyxbpz.jpg",
+   "nm": "Lord Venkateswara Divine Grace"
   },
   "d:WB-0214": {
    "sig": "a72yyd",
-   "card": "d/WB-0214/card-a72yyd.jpg"
+   "card": "d/WB-0214/card-a72yyd.jpg",
+   "nm": "Village Life At Sunrise"
   },
   "d:WB-0215": {
    "sig": "hwq3t4",
-   "card": "d/WB-0215/card-hwq3t4.jpg"
+   "card": "d/WB-0215/card-hwq3t4.jpg",
+   "nm": "Krishna Radha 3d Peacock"
   },
   "d:WB-0216": {
    "sig": "joloxx",
-   "card": "d/WB-0216/card-joloxx.jpg"
+   "card": "d/WB-0216/card-joloxx.jpg",
+   "nm": "Vivaha Bhojanam"
   },
   "d:WB-0217": {
    "sig": "4vetyt",
-   "card": "d/WB-0217/card-4vetyt.jpg"
+   "card": "d/WB-0217/card-4vetyt.jpg",
+   "nm": "Surya with Seven Horses Detailed"
   },
   "d:WB-0218": {
    "sig": "5dunyf",
-   "card": "d/WB-0218/card-5dunyf.jpg"
+   "card": "d/WB-0218/card-5dunyf.jpg",
+   "nm": "Divine Tirumala"
   },
   "d:WB-0219": {
    "sig": "8oddcz",
-   "card": "d/WB-0219/card-8oddcz.jpg"
+   "card": "d/WB-0219/card-8oddcz.jpg",
+   "nm": "Sacred Kamadhenu with Calf"
   },
   "d:WB-0220": {
    "sig": "sgxlee",
-   "card": "d/WB-0220/card-sgxlee.jpg"
+   "card": "d/WB-0220/card-sgxlee.jpg",
+   "nm": "Village Landscape"
   },
   "d:WB-0221": {
    "sig": "nwo2e9",
-   "card": "d/WB-0221/card-nwo2e9.jpg"
+   "card": "d/WB-0221/card-nwo2e9.jpg",
+   "nm": "Krishna and Radha Divine Love"
+  },
+  "d:WB-0222": {
+   "sig": "q5v0tw",
+   "card": "d/WB-0222/card-q5v0tw.jpg",
+   "nm": "Rama Pattabhidhekham Wooden Border",
+   "q": "q5v0tw"
   }
  }
 };
