@@ -79,7 +79,7 @@ window.WB_PUBLISHED = {
   },
   {
    "code": "WB-0141",
-   "name": "Traditional nettipattam",
+   "name": "Traditional Kerala Nettipattam",
    "img": "assets/uploads/designs/wb-0141-1l4f3k.jpg",
    "tags": [
     "traditional",
@@ -97,7 +97,8 @@ window.WB_PUBLISHED = {
    "orient": "tall",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0141-1l4f3k.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0141-1l4f3k.webp",
+   "hidden": false
   },
   {
    "code": "WB-0142",
@@ -2507,7 +2508,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-14T08:32:21.708Z",
+ "updated": "2026-11-14T13:19:53.068Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2530,9 +2531,10 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0140/card-rdl5lw.jpg"
   },
   "d:WB-0141": {
-   "sig": "6f07ze",
-   "card": "d/WB-0141/card-6f07ze.jpg",
-   "nm": "Traditional Nettipattam"
+   "sig": "qm1xcf",
+   "card": "d/WB-0141/card-qm1xcf.jpg",
+   "nm": "Traditional Kerala Nettipattam",
+   "q": "qm1xcf"
   },
   "d:WB-0142": {
    "sig": "eifhhn",
