@@ -585,7 +585,7 @@
   /* stories and room tiles: real pictures only.
      data-real lists choices in order: "code:WB-0176" = that design, "room:kids" = newest live design for
      the room, "custom" = newest project printed from the customer's own picture. Nothing found → plain tile. */
-  function newest(list) { return list.sort(function (a, b) { return (b.added || b.month || "").localeCompare(a.added || a.month || "") || String(b.code || "").localeCompare(String(a.code || "")); })[0] || null; }
+  function newest(list) { return list.sort(function (a, b) { return (b.addedAt || b.added || b.month || "").localeCompare(a.addedAt || a.added || a.month || "") || String(b.code || "").localeCompare(String(a.code || "")); })[0] || null; }
   function realFor(spec) {
     var live = (window.WB_DESIGNS || []).filter(function (d) { return d.img && !d.hidden; }), parts = String(spec || "").split(/\s+/);
     for (var i = 0; i < parts.length; i++) {

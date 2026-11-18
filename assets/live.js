@@ -144,6 +144,13 @@
 
   WB.mergeDrafts = merge;
 
+  /* newest first: the exact upload time (addedAt), then the month for designs without one;
+     designs uploaded in the same publish keep their upload order (higher code = later) */
+  WB.byNewest = function (a, b) {
+    function t(d) { return d.addedAt || (d.added ? d.added + "-01T00:00:00.000Z" : ""); }
+    return t(b).localeCompare(t(a)) || (parseInt(String(b.code).replace(/\D/g, ""), 10) || 0) - (parseInt(String(a.code).replace(/\D/g, ""), 10) || 0);
+  };
+
   /* small WebP preview of a design (made at publish, assets/uploads/designs/thumbs/); the full picture when it has none
      or when the preview belongs to an older picture */
   WB.thumb = function (d) {

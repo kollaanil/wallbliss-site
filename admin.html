@@ -717,7 +717,7 @@
       if (dFilter === "sample" && d.img) return false;
       if (dFilter === "noorig" && !(window.WBOrigUI && d.img && !d.builtIn && WBOrigUI.isMissing(d.code))) return false;
       return !q || (d.name + " " + d.code + " " + (d.tags || []).join(" ")).toLowerCase().indexOf(q) > -1;
-    }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); });
+    }).sort(WB.byNewest);
     var samples = all.filter(function (d) { return !d.img; }).length;
     $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + "";
     $("#d-grid").innerHTML = '<button class="d-add" type="button" id="d-add-tile"><span>+</span>Add a design</button>' + list.map(function (d) {
@@ -1005,7 +1005,7 @@
     if (srcImg) {
       data.img = $("#d-canvas").toDataURL("image/jpeg", .86);
     }
-    if (isNew) { noteCode($("#d-code").value); db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
+    if (isNew) { noteCode($("#d-code").value); db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), addedAt: new Date().toISOString(), pop: data.pop || 5 }, data)); }
     var oldName = cur ? cur.name : "";
     if (!isNew) setDesign(cur.code, data);
     if (!save()) { if (isNew) db.designs.pop(); return; }

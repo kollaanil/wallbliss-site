@@ -467,7 +467,7 @@
     lastSearch = r; searchNote(r);
     list.sort(function (a, b) {
       if (state.q && b.s !== a.s) return b.s - a.s;
-      if (state.sort === "new") return b.d.added.localeCompare(a.d.added) || b.d.pop - a.d.pop;
+      if (state.sort === "new") return WB.byNewest(a.d, b.d);
       if (state.sort === "name") return a.d.name.localeCompare(b.d.name);
       return b.d.pop - a.d.pop;
     });
