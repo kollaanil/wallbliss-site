@@ -432,8 +432,6 @@
             <h2>WhatsApp and phone</h2>
             <div class="field"><label for="s-wa">WhatsApp number (with country code)</label><input type="tel" id="s-wa" inputmode="tel" placeholder="917676701113"><small>Every button on the website opens a chat with this number.</small></div>
             <div class="field"><label for="s-phone">Phone number as shown</label><input type="text" id="s-phone" placeholder="+91 76767 01113"></div>
-            <div class="field"><span class="lbl">Free wall check: days you visit</span><div class="chips" id="s-bdays" role="group" aria-label="Visit days"></div></div>
-            <div class="field"><label for="s-bslots">Free wall check: time slots</label><input type="text" id="s-bslots" placeholder="Morning 10–12 | Afternoon 12–4 | Evening 4–7"><small>Separate slots with |. First word is the name, the rest is the time.</small></div>
             <button class="btn btn-ghost btn-xs" type="button" id="s-save" style="justify-self:start">Save</button>
           </div>
           <div class="card">
@@ -1574,17 +1572,11 @@
      ===================================================================== */
   function renderSettings() {
     var st = settings();
-    var bk = st.booking || {}, bd = String(bk.days || "1,2,3,4,5,6").split(",");
-    $("#s-bdays").innerHTML = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (n, i) { return '<button type="button" class="fchip" data-bday="' + i + '" aria-pressed="' + (bd.indexOf(String(i)) > -1) + '">' + n + '</button>'; }).join("");
-    $$("[data-bday]").forEach(function (b) { b.onclick = function () { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); }; });
-    $("#s-bslots").value = bk.slots || "";
     var st = settings();
     $("#s-wa").value = st.whatsapp || "917676701113"; $("#s-phone").value = st.phoneDisplay || "+91 76767 01113";
     $("#s-wm-on").checked = st.wmOn; $("#s-wm-text").value = st.wmText; segSet($("#s-wm-style"), st.wmStyle);
   }
   $("#s-save").onclick = function () {
-    var days = $$("[data-bday]").filter(function (b) { return b.getAttribute("aria-pressed") === "true"; }).map(function (b) { return b.dataset.bday; }).join(",");
-    db.settings.booking = { days: days || "1,2,3,4,5,6", slots: $("#s-bslots").value.trim() };
     var wa = $("#s-wa").value.replace(/\D/g, ""); if (wa.length === 10) wa = "91" + wa;
     if (wa.length < 11) { toast("Enter the WhatsApp number with country code, e.g. 917676701113"); return; }
     db.settings.whatsapp = wa; db.settings.phoneDisplay = $("#s-phone").value.trim(); save(); renderSettings(); toast("Saved. Every WhatsApp button now uses this number");
