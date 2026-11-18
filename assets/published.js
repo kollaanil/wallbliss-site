@@ -748,7 +748,7 @@ window.WB_PUBLISHED = {
   {
    "code": "WB-0174",
    "name": "Srinivasa Kalyanam Dark Interior",
-   "img": "assets/uploads/designs/wb-0174-17fhb2.jpg",
+   "img": "assets/uploads/designs/wb-0174-h6iieu.jpg",
    "tags": [
     "deity",
     "srinivasa",
@@ -768,7 +768,8 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0174-17fhb2.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0174-h6iieu.webp",
+   "hidden": false
   },
   {
    "code": "WB-0175",
@@ -2508,7 +2509,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-14T13:19:53.068Z",
+ "updated": "2026-11-18T05:07:22.830Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2671,9 +2672,10 @@ window.WB_PUBLISHED = {
    "nm": "Srinivasa Kalyanam New Border"
   },
   "d:WB-0174": {
-   "sig": "ooq1xp",
-   "card": "d/WB-0174/card-ooq1xp.jpg",
-   "nm": "Srinivasa Kalyanam Dark Interior"
+   "sig": "k306xu",
+   "card": "d/WB-0174/card-k306xu.jpg",
+   "nm": "Srinivasa Kalyanam Dark Interior",
+   "q": "k306xu"
   },
   "d:WB-0175": {
    "sig": "7q7666",
@@ -2731,8 +2733,8 @@ window.WB_PUBLISHED = {
    "nm": "Golden Kamadhenu"
   },
   "page:catalogue": {
-   "sig": "b86nqd",
-   "card": "assets/img/share/catalogue-b86nqd.jpg"
+   "sig": "vr4a2z",
+   "card": "assets/img/share/catalogue-vr4a2z.jpg"
   },
   "page:home": {
    "sig": "1cqts8w",
