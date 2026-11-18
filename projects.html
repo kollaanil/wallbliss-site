@@ -105,6 +105,10 @@
   .proj dt { color: var(--faint); } .proj dd { margin: 0; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .proj blockquote { margin: 4px 0 0; font-family: var(--font-display); color: var(--ink); }
   .proj { position: relative; }
+  .printed { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font: 600 .88rem var(--font-body); color: var(--brand, #0F6B6E); text-decoration: none; background: var(--surface-2); padding: 8px 12px; border-radius: 999px; }
+  .printed:hover { text-decoration: underline; }
+  .refer { display: grid; gap: 8px; align-content: center; background: #F3EBDD; padding: 22px; }
+  .refer b { font-size: 1.15rem; color: var(--ink); } .refer p { margin: 0; color: var(--muted); } .refer .btn { justify-self: start; }
   .what { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 8px; }
   .what > div { padding: 18px 20px 18px 0; display: grid; gap: 6px; }
   .what > div + div { padding-left: 20px; border-left: 1px solid var(--line); }
@@ -190,11 +194,24 @@
     if (WB.track) WB.track("filter", { key: "project_type", val: type || "all", via: "chip" });
     render();
   });
+  /* "Printed: <design> · see this design ›" when the project used a catalogue design */
+  function printed(p) {
+    var code = /^WB-\d+$/i.test(p.design || "") ? p.design.toUpperCase() : "", d = code && (window.WB_DESIGNS || (window.WB_PUBLISHED || {}).designs || []).filter(function (x) { return x.code === code && !x.hidden; })[0];
+    return d ? '<a class="printed" href="catalogue.html#' + code + '" data-printed="' + code + '">🖼 Printed: ' + esc(d.name) + ' · see this design ›</a>' : "";
+  }
+  /* "Know someone with a bare wall?" — a share card after every 4th project */
+  function referral() {
+    var el = document.createElement("aside"); el.className = "panel refer";
+    var msg = "Look at these walls WallBliss Studio printed in Bengaluru homes and offices: https://www.wallbliss.in/projects.html?src=refer";
+    el.innerHTML = '<b>Know someone with a bare wall?</b><p>Send them our work. A wall like these is printed in a few hours.</p><a class="btn btn-wa" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent(msg) + '">Share on WhatsApp</a>';
+    el.querySelector("a").addEventListener("click", function () { WB.track("refer_share", {}); });
+    return el;
+  }
   function render() {
   segBox.innerHTML = chipsHTML();
   var P = ALL.filter(function (p) { return !type || WB.projectSegment(p) === type; });
   grid.innerHTML = P.length || !ALL.length ? "" : '<p class="muted">No ' + (type === "corporate" ? "corporate or institution" : "home") + ' projects here yet. <a href="projects.html">See all projects</a> or ask us on WhatsApp for photos.</p>';
-  P.forEach(function (p) {
+  P.forEach(function (p, k) {
     var el = document.createElement("article"); el.className = "panel proj"; el.id = p.slug;
     var pics = p.before && p.after
       ? '<div class="ba" id="ba-' + esc(p.slug) + '"' + (+p.ratio ? ' style="aspect-ratio:' + (+p.ratio) + '"' : "") + '><img class="fade" src="' + esc(p.before) + '" alt="' + esc(p.space + " in " + p.locality + " before printing") + '" loading="lazy">' +
@@ -206,9 +223,10 @@
     if (nv) pics = pics.replace(/<\/div>$/, '<button type="button" class="vbadge" data-vplay="' + esc(p.slug) + '">' + nv + (nv === 1 ? " video" : " videos") + "</button></div>");
     el.innerHTML = pics +
       '<div class="body"><p class="eyebrow">' + esc(p.locality) + ' · ' + esc(p.space) + '</p><h3>' + esc(p.title) + '</h3><p class="muted" style="font-size:.92rem">' + esc(p.summary) + '</p>' +
-      '<dl><dt>Wall</dt><dd>' + esc(p.size) + '</dd><dt>Design</dt><dd>' + (/^WB-/.test(p.design || "") ? '<a href="catalogue.html#' + esc(p.design) + '">' + esc(p.design) + '</a>' : esc(p.design)) + '</dd><dt>Done in</dt><dd>' + esc(p.time) + '</dd></dl>' +
-      (p.quote ? '<blockquote>“' + esc(p.quote) + '”</blockquote>' : '') + '</div>';
+      '<dl><dt>Wall</dt><dd>' + esc(p.size) + '</dd>' + (printed(p) ? "" : '<dt>Design</dt><dd>' + (/^WB-/.test(p.design || "") ? '<a href="catalogue.html#' + esc(p.design) + '">' + esc(p.design) + '</a>' : esc(p.design)) + '</dd>') + '<dt>Done in</dt><dd>' + esc(p.time) + '</dd></dl>' +
+      (p.quote ? '<blockquote>“' + esc(p.quote) + '”</blockquote>' : '') + printed(p) + '</div>';
     grid.appendChild(el);
+    if ((k + 1) % 4 === 0 || (k === P.length - 1 && P.length < 4)) grid.appendChild(referral());
   });
   WB.wireBA(grid);
   grid.querySelectorAll("[data-vplay]").forEach(function (b) { b.onclick = function () { WB.playVideos(b.dataset.vplay, 0); }; });

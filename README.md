@@ -127,6 +127,16 @@ homepage and projects links. Publish makes a new card (design codes trimmed off)
 `assets/img/share/<page>-<sig>.jpg` and updates that page's og:image / og:title / og:description tags.
 Until a page is set, it keeps its built-in card.
 
+## Nudges toward booking (catalogue, projects, admin)
+- Designs page: "New this week" label (uploaded in the last 7 days, `addedAt`), "♥ Most loved" label (designs marked "Feature near the top" in admin, `pop >= 9`); with exactly one room picked and no search, a "Top picks · <room>" row (featured first, then newest).
+- Small / large pictures toggle (catalogue + admin Designs, remembered per device): phones 2 per row / full width; desktop 4-ish / 2–3 across. Large uses the full picture.
+- Design pop-up: one real Google review (admin → Reviews, shown, 4★+) above the buttons with "See all reviews"; WhatsApp button "Get exact price in 10 minutes"; "📅 Book a free wall check".
+- Free wall check (assets/book.js, `WB.bookWallCheck`): next 5 visit days, time slots, area → WhatsApp with the request and design codes. Days and slots: admin → Settings (`settings.booking`).
+- Shortlist: "Send my N designs to WallBliss", "See them on my wall", "Free wall check"; a returning visitor with unsent hearts gets one "Your N saved designs are still here" reminder (shares the one-pop-up-per-visit budget with My Wall).
+- Projects: "🖼 Printed: <design> · see this design ›" when the project's design is a live catalogue design; a "Know someone with a bare wall?" share card after every 4th project.
+- Admin → Projects: "Copy follow-up" copies a thank-you with the project link, the Google review link and a share link.
+- Analytics: view_size, toprow_open, book_open, book_request, shortlist_reminder, refer_share.
+
 ## My Wall: designs on the customer's own wall (catalogue) — assets/mywall.js
 - Full-screen studio (`WB.myWall.open(code, via)`): the whole wall photo as large as the screen allows (phone sideways → side column for designs). Drag to move, pinch / corner-drag / mouse wheel to resize, swipe across the photo or tap the strip to swap designs at the same spot and size. Strip order: this design, hearted ones, designs that suit the wall's shape, the rest. "Wall size" (optional) shows "≈ 9 × 6 ft on your 14 ft wall" (assumes the photo shows the full wall width).
 - The photo is resized to 1600 px and kept only on the device (IndexedDB `wb_mywall`, 30 days), with the design's position and size.
