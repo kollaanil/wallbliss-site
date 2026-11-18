@@ -480,12 +480,13 @@ window.WB_PUBLISHED = {
   },
   {
    "code": "WB-0162",
-   "name": "Srinivasa Kalyanam lotus border",
-   "img": "assets/uploads/designs/wb-0162-1hhuj81.jpg",
+   "name": "Srinivasa Kalyanam Lotus Border",
+   "img": "assets/uploads/designs/wb-0162-lptz8h.jpg",
    "tags": [
     "srinivasa",
     "srinivasa kalyanam",
-    "lotus"
+    "lotus",
+    "bapu"
    ],
    "search": [],
    "spaces": [
@@ -499,7 +500,8 @@ window.WB_PUBLISHED = {
    "orient": "wide",
    "added": "2026-10",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0162-1hhuj81.webp"
+   "thumb": "assets/uploads/designs/thumbs/wb-0162-lptz8h.webp",
+   "hidden": false
   },
   {
    "code": "WB-0163",
@@ -2509,7 +2511,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-18T05:07:22.830Z",
+ "updated": "2026-11-18T05:11:55.881Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
@@ -2617,9 +2619,10 @@ window.WB_PUBLISHED = {
    "nm": "Rama Pattabhishekham New Kolam"
   },
   "d:WB-0162": {
-   "sig": "jhbjen",
-   "card": "d/WB-0162/card-jhbjen.jpg",
-   "nm": "Srinivasa Kalyanam Lotus Border"
+   "sig": "1ho9bsp",
+   "card": "d/WB-0162/card-1ho9bsp.jpg",
+   "nm": "Srinivasa Kalyanam Lotus Border",
+   "q": "1ho9bsp"
   },
   "d:WB-0163": {
    "sig": "pm6ofe",
@@ -2733,8 +2736,8 @@ window.WB_PUBLISHED = {
    "nm": "Golden Kamadhenu"
   },
   "page:catalogue": {
-   "sig": "vr4a2z",
-   "card": "assets/img/share/catalogue-vr4a2z.jpg"
+   "sig": "b86nqd",
+   "card": "assets/img/share/catalogue-b86nqd.jpg"
   },
   "page:home": {
    "sig": "1cqts8w",
