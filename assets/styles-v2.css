@@ -767,22 +767,3 @@ html:has(dialog[open]) .mw-bar { display: none; }
 .thumb .mwc { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s; z-index: 1; }
 .thumb .mwc.in { opacity: 1; }
 .grid.mw-grid .thumb .code { z-index: 2; }
-
-/* ---------- free wall check booking (assets/book.js) ---------- */
-dialog.bk { border: 0; padding: 0; border-radius: 22px 22px 0 0; width: 100%; max-width: 520px; margin: auto auto 0; background: var(--surface); color: var(--ink); box-shadow: 0 -12px 40px rgba(0,0,0,.2); }
-@media (min-width: 640px) { dialog.bk { border-radius: 20px; margin: auto; } }
-dialog.bk::backdrop { background: rgba(36,27,20,.5); }
-.bk-in { padding: 18px 18px max(22px, env(safe-area-inset-bottom)); display: grid; gap: 8px; }
-.bk-in header { display: flex; justify-content: space-between; align-items: center; }
-.bk-in h2 { margin: 0; font-size: 1.3rem; }
-.bk-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface); font-size: 1.3rem; cursor: pointer; color: var(--ink); }
-.bk-sub { margin: 0; color: var(--muted); font-size: .9rem; }
-.bk-l { margin: 8px 0 0; font: 700 .76rem var(--font-body); color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
-.bk-opts { display: flex; gap: 6px; flex-wrap: wrap; }
-.bk-opts button { min-width: 64px; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface); color: var(--ink); padding: 6px 10px; cursor: pointer; display: grid; place-items: center; gap: 1px; }
-.bk-opts b { font-size: .84rem; } .bk-opts small { font-size: .72rem; color: var(--muted); }
-.bk-opts button[aria-pressed="true"] { background: #0F6B6E; border-color: #0F6B6E; color: #fff; }
-.bk-opts button[aria-pressed="true"] small { color: #d8f0ef; }
-#bk-area { min-height: 46px; }
-.bk-go { margin-top: 10px; justify-content: center; }
-.bk-prev { margin: 4px 0 0; font-size: .76rem; color: var(--muted); text-align: center; }

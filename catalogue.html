@@ -93,7 +93,6 @@
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
 <script src="assets/mywall.js"></script>
-<script src="assets/book.js"></script>
 <script src="assets/search-lexicon.js"></script>
 <script src="assets/search.js"></script>
 <style>
@@ -326,7 +325,6 @@
       <div class="d-review" id="d-review" hidden></div>
       <div class="actions">
         <a class="btn btn-wa" id="d-wa" data-where="design" href="https://wa.me/917676701113">Get exact price in 10 minutes</a>
-        <button class="btn btn-ghost" type="button" id="d-book">📅 Book a free wall check</button>
         <button class="btn btn-ghost" type="button" id="d-heart">Add to shortlist</button>
         <button class="btn btn-ghost" type="button" id="d-share">Share</button>
       </div>
@@ -354,7 +352,7 @@
         <div class="field"><label for="sl-area">Area in Bengaluru</label><input id="sl-area" type="text" placeholder="e.g. HSR Layout"></div>
       </div>
       <a class="btn btn-wa" id="sl-send" data-where="shortlist" href="https://wa.me/917676701113">Send shortlist on WhatsApp</a>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost" type="button" id="sl-wall" style="flex:1">📷 See them on my wall</button><button class="btn btn-ghost" type="button" id="sl-book" style="flex:1">📅 Free wall check</button></div>
+      <button class="btn btn-ghost" type="button" id="sl-wall">📷 See them on my wall</button>
       <button class="linkbtn" type="button" id="sl-copy" style="justify-self:start">Copy design codes</button>
     </footer>
   </div>
@@ -761,7 +759,6 @@
       (link ? ' · <a href="' + esc(link) + '" target="_blank" rel="noopener">See all reviews</a>' : "") + '</small></div>';
     box.hidden = false;
   }
-  document.getElementById("d-book").onclick = function () { WB.bookWallCheck({ codes: [cur.code], via: "design" }); };
   function heartBtn() { var b = document.getElementById("d-heart"), on = WB.shortlist.has(cur.code); b.textContent = on ? "♥ In your shortlist" : "Add to shortlist"; }
   /* ---------- share: a theme search or one design, with a picture preview in WhatsApp ---------- */
   var SITE = "https://www.wallbliss.in/";
@@ -832,7 +829,7 @@
     var send = document.getElementById("sl-send");
     send.href = WB.waLink(slMessage()); send.target = "_blank"; send.rel = "noopener";
     send.textContent = a.length ? "Send my " + (a.length === 1 ? "design" : a.length + " designs") + " to WallBliss" : "Send shortlist on WhatsApp";
-    document.getElementById("sl-wall").disabled = document.getElementById("sl-book").disabled = !a.length;
+    document.getElementById("sl-wall").disabled = !a.length;
     send.toggleAttribute("aria-disabled", !a.length); send.style.opacity = a.length ? 1 : .5; send.style.pointerEvents = a.length ? "" : "none";
   }
   function openDrawer() { renderDrawer(); if (drawer.showModal) drawer.showModal(); else drawer.setAttribute("open", ""); }
@@ -840,7 +837,6 @@
   document.getElementById("open-sl-2").onclick = openDrawer;
   document.getElementById("sl-close").onclick = function () { drawer.close(); };
   document.getElementById("sl-wall").onclick = function () { var a = WB.shortlist.all(); if (a.length) { drawer.close(); WB.myWall.open(a[0], "shortlist"); } };
-  document.getElementById("sl-book").onclick = function () { drawer.close(); WB.bookWallCheck({ codes: WB.shortlist.all(), via: "shortlist", area: document.getElementById("sl-area").value.trim() }); };
   document.getElementById("sl-send").addEventListener("click", function () { try { localStorage.setItem("wb_sl_sent", WB.shortlist.all().join(",")); } catch (e) {} });
   /* returning visitor with unsent hearts: one reminder per visit (shares the one-pop-up-per-visit budget with My Wall) */
   (function () {
