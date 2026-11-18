@@ -411,7 +411,7 @@
     Promise.all(ok.map(function (it) {
       var ref = it.code.toLowerCase() + "-" + stamp, data = watermarked(it).toDataURL("image/jpeg", 0.86);
       return IDB.put(ref, data).then(function () {
-        return Object.assign(it.keepOrig === false && window.WBOriginals ? { noOrig: true } : {}, { code: it.code, name: A.niceName(it.name), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), orient: it.orient, added: month, pop: 5 });
+        return Object.assign(it.keepOrig === false && window.WBOriginals ? { noOrig: true } : {}, { code: it.code, name: A.niceName(it.name), img: "idb:" + ref, tags: it.tags.slice(), search: it.search.slice(), spaces: it.spaces.slice(), styles: it.styles.slice(), orient: it.orient, added: month, addedAt: new Date().toISOString(), pop: 5 });
       });
     })).then(function (list) {
       var db = A.db();

@@ -92,6 +92,8 @@
 <script>/* load the latest published content: a new address every minute, so browsers never show content older than ~1 minute */document.write('<script src="assets/published.js?v=' + Math.floor(Date.now() / 60000) + '"><\/script>');</script>
 <script src="assets/live.js"></script>
 <script src="assets/art.js"></script>
+<script src="assets/mywall.js"></script>
+<script src="assets/book.js"></script>
 <script src="assets/search-lexicon.js"></script>
 <script src="assets/search.js"></script>
 <style>
@@ -165,6 +167,30 @@
   .linkbtn { background: none; border: 0; color: var(--link); font: 600 .92rem var(--font-body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; padding-bottom: 56px; }
   @media (max-width: 520px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+  /* large pictures: one per row on phones, two to three across on bigger screens */
+  .grid.big { grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 26px; }
+  @media (max-width: 520px) { .grid.big { grid-template-columns: 1fr; gap: 22px; } }
+  .grid.big .card h3 { font-size: 1.12rem; }
+  /* small / large pictures toggle */
+  .clbl { position: absolute; left: 8px; bottom: 8px; z-index: 2; font: 700 .7rem var(--font-body); padding: 4px 9px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,.15); pointer-events: none; }
+  .clbl.new { background: #0F6B6E; color: #fff; } .clbl.love { background: #FFE7DD; color: #9a3b15; }
+  .toprow { margin: 0 0 18px; } .tr-h h2 { font-size: 1.1rem; margin: 0 0 10px; }
+  .tr-list { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+  .tr-list::-webkit-scrollbar { display: none; }
+  .tr-card { flex: none; width: 168px; border: 0; background: none; padding: 0; text-align: left; cursor: pointer; scroll-snap-align: start; display: grid; gap: 6px; color: var(--ink); }
+  .tr-pic { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: var(--radius-sm, 8px); overflow: hidden; background: var(--wall); }
+  .tr-pic .fitbox, .tr-pic canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .tr-card b { font-size: .84rem; line-height: 1.25; }
+  /* design pop-up: a real review right above the buttons */
+  .d-review { display: flex; gap: 10px; background: var(--surface-2); border-radius: 12px; padding: 10px 12px; }
+  .d-review .st { color: #E0A23A; white-space: nowrap; font-size: .92rem; letter-spacing: 1px; }
+  .d-review p { margin: 0; font-size: .86rem; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .d-review small { display: block; margin-top: 3px; color: var(--muted); font-size: .76rem; }
+  .d-review a { color: inherit; }
+  .vt-tog { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px; background: var(--surface); flex: none; }
+  .vt-tog button { width: 38px; height: 34px; border: 0; border-radius: 999px; background: none; color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+  .vt-tog button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
   .card { display: grid; gap: 8px; align-content: start; min-width: 0; }
   .thumb { position: relative; aspect-ratio: 4 / 3; max-width: 100%; border-radius: 8px; overflow: hidden; background: var(--wall); cursor: zoom-in; border: 0; padding: 0; width: 100%; display: block; }
   .thumb canvas, .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
@@ -199,6 +225,10 @@
   .seg button { border: 0; background: none; font: 600 .84rem var(--font-body); padding: 10px 12px; min-height: 40px; border-radius: 6px; cursor: pointer; color: #2E2A26; }
   .seg button[aria-pressed="true"] { background: #0F6B6E; color: #fff; }
   .dlg-view canvas.photo { aspect-ratio: auto; object-fit: contain; touch-action: none; cursor: grab; background: #F5EDE1; }
+  .mw-cta { position: absolute; left: 12px; top: 12px; z-index: 2; min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: #0F6B6E; color: #fff; font: 700 .9rem var(--font-body); cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.25); max-width: calc(100% - 80px); }
+  .mw-cta.pulse { animation: mwpulse 1.6s ease-out 2; }
+  @keyframes mwpulse { 0% { box-shadow: 0 0 0 0 rgba(15,107,110,.55); } 100% { box-shadow: 0 0 0 16px rgba(15,107,110,0); } }
+  @media (prefers-reduced-motion: reduce) { .mw-cta.pulse { animation: none; } }
   .photo-tools { display: grid; gap: 8px; padding: 14px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); }
   .photo-tools input[type=range] { width: 100%; accent-color: #0F6B6E; }
   .upload { display: grid; place-items: center; gap: 10px; padding: 26px; text-align: center; min-height: 260px; color: var(--muted); }
@@ -252,8 +282,10 @@
   </div>
 
   <div class="wrap">
-    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button></span></div>
+    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button><span class="vt-tog" role="group" aria-label="View"><button type="button" data-view="small" aria-label="Small pictures" aria-pressed="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></button><button type="button" data-view="large" aria-label="Large pictures" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="12" rx="1.5"/><rect x="3" y="17" width="18" height="4" rx="1.5"/></svg></button></span></span></div>
     <p class="search-note" id="search-note" hidden></p>
+    <div class="mw-wallbar" id="mw-wallbar" hidden></div>
+    <section class="toprow" id="toprow" hidden><div class="tr-h"><h2 id="toprow-t"></h2></div><div class="tr-list" id="toprow-list"></div></section>
     <div class="grid" id="grid">
     </div>
   </div>
@@ -266,6 +298,7 @@
       <canvas id="d-canvas" aria-hidden="true"></canvas>
       <img id="d-img" alt="" hidden>
       <input type="file" id="wall-file" accept="image/*" hidden>
+      <button type="button" class="mw-cta" id="d-mywall">📷 See it on your wall</button>
       <div class="seg" role="group" aria-label="View">
         <button type="button" id="v-design" aria-pressed="true">Design</button>
         <button type="button" id="v-room" aria-pressed="false">In a room</button>
@@ -290,8 +323,10 @@
         </div>
         <p class="muted" style="font-size:.86rem;margin:0">Add it and we'll send your price and a preview on WhatsApp.</p>
       </div>
+      <div class="d-review" id="d-review" hidden></div>
       <div class="actions">
-        <a class="btn btn-wa" id="d-wa" data-where="design" href="https://wa.me/917676701113">Get a quote on WhatsApp</a>
+        <a class="btn btn-wa" id="d-wa" data-where="design" href="https://wa.me/917676701113">Get exact price in 10 minutes</a>
+        <button class="btn btn-ghost" type="button" id="d-book">📅 Book a free wall check</button>
         <button class="btn btn-ghost" type="button" id="d-heart">Add to shortlist</button>
         <button class="btn btn-ghost" type="button" id="d-share">Share</button>
       </div>
@@ -319,6 +354,7 @@
         <div class="field"><label for="sl-area">Area in Bengaluru</label><input id="sl-area" type="text" placeholder="e.g. HSR Layout"></div>
       </div>
       <a class="btn btn-wa" id="sl-send" data-where="shortlist" href="https://wa.me/917676701113">Send shortlist on WhatsApp</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost" type="button" id="sl-wall" style="flex:1">📷 See them on my wall</button><button class="btn btn-ghost" type="button" id="sl-book" style="flex:1">📅 Free wall check</button></div>
       <button class="linkbtn" type="button" id="sl-copy" style="justify-self:start">Copy design codes</button>
     </footer>
   </div>
@@ -417,17 +453,21 @@
   }, { rootMargin: "200px" }) : null;
   function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function visual(d) {
-    var t = WB.thumb(d), back = t !== d.img ? ' onerror="this.onerror=null;this.src=\'' + d.img + '\'"' : "";
+    var t = big ? d.img : WB.thumb(d), back = t !== d.img ? ' onerror="this.onerror=null;this.src=\'' + d.img + '\'"' : "";
     return d.img ? '<span class="fitbox"><img class="fit-bg" src="' + t + '"' + back + ' alt="" aria-hidden="true" loading="lazy"><img class="fit fade" src="' + t + '"' + back + ' alt="' + esc(d.name) + ' wall design" loading="lazy"></span>'
       : '<canvas data-code="' + d.code + '" aria-hidden="true"></canvas>';
   }
   function paint(c) { if (c.tagName === "CANVAS") WBArt.draw(c, BY[c.dataset.code]); }
   function label(key, v) { var o = FACETS[key].opts.filter(function (x) { return x[0] === v; })[0]; return o ? o[1] : v; }
 
+  /* "New this week" (uploaded in the last 7 days) or "Most loved" (designs you mark "Feature near the top" in admin) */
+  var WEEK = 7 * 864e5;
+  function isNew(d) { return d.addedAt && Date.now() - new Date(d.addedAt).getTime() < WEEK; }
+  function badge(d) { return isNew(d) ? '<span class="clbl new">New this week</span>' : (d.pop || 0) >= 9 ? '<span class="clbl love">♥ Most loved</span>' : ""; }
   function card(d) {
     var el = document.createElement("article"); el.className = "card"; el.id = d.code;
     el.innerHTML = '<div style="position:relative"><button class="thumb" type="button" data-open="' + d.code + '" aria-label="View ' + esc(d.name) + '">' + visual(d) +
-      '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="sample">Sample</span>') + '</button>' +
+      '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="sample">Sample</span>') + badge(d) + '</button>' +
       '<button class="heart" type="button" data-heart="' + d.code + '" aria-pressed="' + WB.shortlist.has(d.code) + '" aria-label="Shortlist ' + esc(d.name) + '">' + HEART + '</button></div>' +
       '<h3>' + esc(d.name) + '</h3><div class="meta">' + d.spaces.slice(0, 2).map(function (s) { return label("spaces", s); }).join(" · ") + '</div>';
     return el;
@@ -452,6 +492,28 @@
     else if (lbl && !WBSearch.wants(r, "custom")) html = "No <b>" + lbl + "</b> designs yet. Tell us on WhatsApp and we can create one for your wall.";
     noteEl.innerHTML = html; noteEl.hidden = !html;
   }
+  var shown = [];
+  /* one room picked and no search: a "Top picks for living rooms" row (featured first, then newest) */
+  function topRow(list) {
+    var box = document.getElementById("toprow"), room = state.f.spaces.length === 1 && !state.q ? state.f.spaces[0] : "";
+    if (!room || list.length < 6) { box.hidden = true; return; }
+    var picks = list.map(function (x) { return x.d; }).filter(function (d) { return d.img; }).sort(function (a, b) { return ((b.pop || 0) >= 9) - ((a.pop || 0) >= 9) || WB.byNewest(a, b); }).slice(0, 8);
+    document.getElementById("toprow-t").textContent = "Top picks · " + label("spaces", room);
+    document.getElementById("toprow-list").innerHTML = picks.map(function (d) {
+      return '<button type="button" class="tr-card" data-open="' + d.code + '"><span class="tr-pic">' + visual(d) + badge(d) + '</span><b>' + esc(d.name) + '</b></button>';
+    }).join("");
+    box.hidden = false;
+  }
+  document.getElementById("toprow").addEventListener("click", function (e) { var b = e.target.closest("[data-open]"); if (b) { openDesign(b.dataset.open); WB.track("toprow_open", { code: b.dataset.open }); } });
+  /* small / large pictures (remembered on this device); large uses the full picture so it stays sharp */
+  var big = false; try { big = localStorage.getItem("wb_view") === "large"; } catch (e) {}
+  function setBig(on, rerender) {
+    big = on; grid.classList.toggle("big", on);
+    document.querySelectorAll(".vt-tog [data-view]").forEach(function (b) { b.setAttribute("aria-pressed", (b.dataset.view === "large") === on); });
+    try { localStorage.setItem("wb_view", on ? "large" : "small"); } catch (e) {}
+    if (rerender) { render(); WB.track("view_size", { size: on ? "large" : "small" }); }
+  }
+  document.querySelector(".vt-tog").addEventListener("click", function (e) { var b = e.target.closest("[data-view]"); if (b) setBig(b.dataset.view === "large", true); });
   function render() {
     state.q = q.value.trim().toLowerCase();
     var pool = DATA.filter(function (d) { return matches(d, state.f); }), list, r = null;
@@ -459,11 +521,12 @@
     lastSearch = r; searchNote(r);
     list.sort(function (a, b) {
       if (state.q && b.s !== a.s) return b.s - a.s;
-      if (state.sort === "new") return b.d.added.localeCompare(a.d.added) || b.d.pop - a.d.pop;
+      if (state.sort === "new") return WB.byNewest(a.d, b.d);
       if (state.sort === "name") return a.d.name.localeCompare(b.d.name);
       return b.d.pop - a.d.pop;
     });
-    lastCount = list.length;
+    lastCount = list.length; shown = list.map(function (x) { return x.d; });
+    topRow(list);
     grid.classList.toggle("tall", state.f.shape.length === 1 && state.f.shape[0] === "portrait");
     grid.innerHTML = "";
     list.forEach(function (x) { grid.appendChild(card(x.d)); });
@@ -477,6 +540,7 @@
     if (wantsOwn) grid.insertBefore(custom, grid.firstChild); else grid.appendChild(custom);
     custom.querySelectorAll("[data-wa]").forEach(function (a) { a.href = WB.waLink(a.dataset.wa); a.target = "_blank"; a.rel = "noopener"; });
     grid.querySelectorAll("canvas[data-code]").forEach(function (c) { io ? io.observe(c) : paint(c); });
+    if (WB.myWall) WB.myWall.decorate();
     syncControls();
   }
   function syncControls() {
@@ -583,7 +647,7 @@
 
   grid.addEventListener("click", function (e) {
     var h = e.target.closest("[data-heart]");
-    if (h) { var on = WB.shortlist.toggle(h.dataset.heart); h.setAttribute("aria-pressed", on); toast(on ? "Added to shortlist ♥" : "Removed from shortlist"); return; }
+    if (h) { var on = WB.shortlist.toggle(h.dataset.heart); h.setAttribute("aria-pressed", on); WB.notify(on ? "Added to shortlist ♥" : "Removed from shortlist", on ? { ms: 5000, action: WB.myWall.heartAction(h.dataset.heart) } : {}); return; }
     var o = e.target.closest("[data-open]"); if (o) openDesign(o.dataset.open);
   });
 
@@ -597,7 +661,10 @@
       cur.styles.map(function (s) { return label("styles", s); }).join(" · ") + " · " + (ORIENT[cur.orient] || "") + ".";
     document.getElementById("d-sample").hidden = !!cur.img;
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
-    setView(view === "photo" && photo ? "photo" : "design"); waMsg(); heartBtn(); similar();
+    setView(view === "photo" && photo ? "photo" : "design"); waMsg(); heartBtn(); similar(); reviewLine();
+    var cta = document.getElementById("d-mywall");
+    if (!localStorage.getItem("wb_mw_pulsed")) { cta.classList.remove("pulse"); void cta.offsetWidth; cta.classList.add("pulse"); try { localStorage.setItem("wb_mw_pulsed", "1"); } catch (e) {} }
+    if (WB.myWall) WB.myWall.noteOpen();
     WB.track("design_open", { code: cur.code });
     try { history.replaceState(null, "", "#" + cur.code); } catch (e) {}
   }
@@ -607,6 +674,7 @@
     ["design", "room", "photo"].forEach(function (k) { document.getElementById("v-" + k).setAttribute("aria-pressed", v === k); });
     var c = document.getElementById("d-canvas"), img = document.getElementById("d-img");
     document.getElementById("photo-tools").hidden = v !== "photo";
+    document.getElementById("d-mywall").textContent = v === "room" ? "Like it here? Try it on your wall →" : (WB.myWall && WB.myWall.has() ? "📷 See it on your wall ✓" : "📷 See it on your wall");
     c.classList.toggle("photo", v === "photo"); c.style.aspectRatio = "";
     designImg = null;
     if (cur.img) { designImg = new Image(); designImg.src = cur.img; }
@@ -672,7 +740,8 @@
   })();
   document.getElementById("v-design").onclick = function () { setView("design"); };
   document.getElementById("v-room").onclick = function () { setView("room"); WB.track("view_in_room", { code: cur.code }); };
-  document.getElementById("v-photo").onclick = function () { setView("photo"); WB.track("view_on_my_wall", { code: cur.code }); };
+  document.getElementById("v-photo").onclick = function () { WB.myWall.open(cur.code, "tab"); };
+  document.getElementById("d-mywall").onclick = function () { WB.myWall.open(cur.code, view === "room" ? "room" : "button"); };
   document.getElementById("d-close").onclick = function () { dlg.close(); };
   dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener("close", function () { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} });
@@ -682,6 +751,17 @@
       (w && h ? " for a wall about " + w + " ft × " + h + " ft" : "") + ". Can you share a price and preview?");
   }
   ["m-w", "m-h"].forEach(function (id) { document.getElementById(id).addEventListener("input", waMsg); });
+  /* one real Google review (admin → Reviews, shown ones, 4★+), a different one each time */
+  var rvAt = Math.floor(Math.random() * 50);
+  function reviewLine() {
+    var box = document.getElementById("d-review"), R = (window.WB_REVIEWS || []).filter(function (r) { return r && r.text && (r.stars || 5) >= 4; });
+    if (!R.length) { box.hidden = true; return; }
+    var r = R[rvAt++ % R.length], st = ((window.WB_PUBLISHED || {}).settings || {}), link = st.googleReviewsUrl || (WB.config && WB.config.googleReviews) || "";
+    box.innerHTML = '<span class="st" aria-label="' + (r.stars || 5) + ' stars">' + "★★★★★".slice(0, r.stars || 5) + '</span><div><p>“' + esc(r.text) + '”</p><small>' + esc(r.name || "Customer") + ' · Google review' +
+      (link ? ' · <a href="' + esc(link) + '" target="_blank" rel="noopener">See all reviews</a>' : "") + '</small></div>';
+    box.hidden = false;
+  }
+  document.getElementById("d-book").onclick = function () { WB.bookWallCheck({ codes: [cur.code], via: "design" }); };
   function heartBtn() { var b = document.getElementById("d-heart"), on = WB.shortlist.has(cur.code); b.textContent = on ? "♥ In your shortlist" : "Add to shortlist"; }
   /* ---------- share: a theme search or one design, with a picture preview in WhatsApp ---------- */
   var SITE = "https://www.wallbliss.in/";
@@ -708,7 +788,7 @@
     var url = pubOg()["d:" + cur.code] ? SITE + "d/" + cur.code + "/" : SITE + "catalogue.html#" + cur.code;
     shareOut(cur.name + " · " + cur.code, "Have a look at this wall design: " + cur.name + " (" + cur.code + ") 👇", url, { code: cur.code });
   };
-  document.getElementById("d-heart").onclick = function () { var on = WB.shortlist.toggle(cur.code); heartBtn(); toast(on ? "Added to shortlist" : "Removed from shortlist"); syncHearts(); };
+  document.getElementById("d-heart").onclick = function () { var on = WB.shortlist.toggle(cur.code); heartBtn(); WB.notify(on ? "Added to shortlist ♥" : "Removed from shortlist", on ? { ms: 5000, action: WB.myWall.heartAction(cur.code) } : {}); syncHearts(); };
   function similar() {
     var box = document.getElementById("d-similar"); box.innerHTML = "";
     DATA.filter(function (d) { return d !== cur; }).map(function (d) {
@@ -751,12 +831,27 @@
     });
     var send = document.getElementById("sl-send");
     send.href = WB.waLink(slMessage()); send.target = "_blank"; send.rel = "noopener";
+    send.textContent = a.length ? "Send my " + (a.length === 1 ? "design" : a.length + " designs") + " to WallBliss" : "Send shortlist on WhatsApp";
+    document.getElementById("sl-wall").disabled = document.getElementById("sl-book").disabled = !a.length;
     send.toggleAttribute("aria-disabled", !a.length); send.style.opacity = a.length ? 1 : .5; send.style.pointerEvents = a.length ? "" : "none";
   }
   function openDrawer() { renderDrawer(); if (drawer.showModal) drawer.showModal(); else drawer.setAttribute("open", ""); }
   document.getElementById("open-sl").onclick = openDrawer;
   document.getElementById("open-sl-2").onclick = openDrawer;
   document.getElementById("sl-close").onclick = function () { drawer.close(); };
+  document.getElementById("sl-wall").onclick = function () { var a = WB.shortlist.all(); if (a.length) { drawer.close(); WB.myWall.open(a[0], "shortlist"); } };
+  document.getElementById("sl-book").onclick = function () { drawer.close(); WB.bookWallCheck({ codes: WB.shortlist.all(), via: "shortlist", area: document.getElementById("sl-area").value.trim() }); };
+  document.getElementById("sl-send").addEventListener("click", function () { try { localStorage.setItem("wb_sl_sent", WB.shortlist.all().join(",")); } catch (e) {} });
+  /* returning visitor with unsent hearts: one reminder per visit (shares the one-pop-up-per-visit budget with My Wall) */
+  (function () {
+    var a = WB.shortlist.all(), sent = ""; try { sent = localStorage.getItem("wb_sl_sent") || ""; } catch (e) {}
+    if (!a.length || sent === a.join(",") || sessionStorage.getItem("wb_sl_seen")) return;
+    try { sessionStorage.setItem("wb_sl_seen", "1"); } catch (e) {}
+    if (document.referrer.indexOf(location.host) > -1) return;           // only on a fresh visit
+    if (sessionStorage.getItem("wb_mw_pop")) return;
+    try { sessionStorage.setItem("wb_mw_pop", "1"); } catch (e) {}
+    setTimeout(function () { WB.notify("♥ Your " + (a.length === 1 ? "saved design is" : a.length + " saved designs are") + " still here", { ms: 8000, action: { label: "See them", fn: openDrawer } }); WB.track("shortlist_reminder", { n: a.length }); }, 900);
+  })();
   drawer.addEventListener("click", function (e) { if (e.target === drawer) drawer.close(); });
   ["sl-size", "sl-area"].forEach(function (id) { document.getElementById(id).addEventListener("input", function () { document.getElementById("sl-send").href = WB.waLink(slMessage()); }); });
   document.getElementById("sl-copy").onclick = function () {
@@ -777,8 +872,18 @@
   if (SHAPE_WORDS[h]) state.f.shape = [h];
   if (SPACE_WORDS[h]) state.f.spaces = [h];
   else if (qs.get("room") && SPACE_WORDS[qs.get("room")]) state.f.spaces = [qs.get("room")];
+  WB.myWall.init({
+    designs: function () { return shown.length ? shown : DATA; }, byCode: BY,
+    first: function () { return (shown[0] || DATA[0]).code; }, current: function () { return cur && dlg.open ? cur.code : null; },
+    grid: grid, wallBar: document.getElementById("mw-wallbar"),
+    onClose: function () { syncHearts(); if (cur && dlg.open) { heartBtn(); setView(view); } }
+  });
+  setBig(big, false);
   render(); syncHearts();
   if (/^WB-\d+$/i.test(h) && BY[h.toUpperCase()]) openDesign(h.toUpperCase());
+  /* #mywall (or #mywall/WB-0143): straight to "see it on your wall" — for links sent on Instagram / WhatsApp */
+  var mw = /^mywall(?:\/(WB-\d+))?$/i.exec(h);
+  if (mw) WB.myWall.open(mw[1] && BY[mw[1].toUpperCase()] ? mw[1].toUpperCase() : null, "link");
   addEventListener("hashchange", function () { var x = location.hash.slice(1); if (SPACE_WORDS[x]) { state.f.spaces = [x]; render(); } else if (SHAPE_WORDS[x]) { state.f.shape = [x]; render(); } else if (BY[x]) openDesign(x); });
   if (qs.get("q")) logSearch(true);
 })();

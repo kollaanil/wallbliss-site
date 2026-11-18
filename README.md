@@ -127,6 +127,24 @@ homepage and projects links. Publish makes a new card (design codes trimmed off)
 `assets/img/share/<page>-<sig>.jpg` and updates that page's og:image / og:title / og:description tags.
 Until a page is set, it keeps its built-in card.
 
+## Nudges toward booking (catalogue, projects, admin)
+- Designs page: "New this week" label (uploaded in the last 7 days, `addedAt`), "♥ Most loved" label (designs marked "Feature near the top" in admin, `pop >= 9`); with exactly one room picked and no search, a "Top picks · <room>" row (featured first, then newest).
+- Small / large pictures toggle (catalogue + admin Designs, remembered per device): phones 2 per row / full width; desktop 4-ish / 2–3 across. Large uses the full picture.
+- Design pop-up: one real Google review (admin → Reviews, shown, 4★+) above the buttons with "See all reviews"; WhatsApp button "Get exact price in 10 minutes"; "📅 Book a free wall check".
+- Free wall check (assets/book.js, `WB.bookWallCheck`): next 5 visit days, time slots, area → WhatsApp with the request and design codes. Days and slots: admin → Settings (`settings.booking`).
+- Shortlist: "Send my N designs to WallBliss", "See them on my wall", "Free wall check"; a returning visitor with unsent hearts gets one "Your N saved designs are still here" reminder (shares the one-pop-up-per-visit budget with My Wall).
+- Projects: "🖼 Printed: <design> · see this design ›" when the project's design is a live catalogue design; a "Know someone with a bare wall?" share card after every 4th project.
+- Admin → Projects: "Copy follow-up" copies a thank-you with the project link, the Google review link and a share link.
+- Analytics: view_size, toprow_open, book_open, book_request, shortlist_reminder, refer_share.
+
+## My Wall: designs on the customer's own wall (catalogue) — assets/mywall.js
+- Full-screen studio (`WB.myWall.open(code, via)`): the whole wall photo as large as the screen allows (phone sideways → side column for designs). Drag to move, pinch / corner-drag / mouse wheel to resize, swipe across the photo or tap the strip to swap designs at the same spot and size. Strip order: this design, hearted ones, designs that suit the wall's shape, the rest. "Wall size" (optional) shows "≈ 9 × 6 ft on your 14 ft wall" (assumes the photo shows the full wall width).
+- The photo is resized to 1600 px and kept only on the device (IndexedDB `wb_mywall`, 30 days), with the design's position and size.
+- Send: "Love it? Get price" opens our WhatsApp chat with the text (code, name, wall size) — step 1, so WallBliss is in recent chats — then a sheet shares the picture (wall + design + a small "WallBliss Studio · code · wallbliss.in" mark) through the phone's share sheet; where files can't be shared (most desktops) it downloads the picture to attach.
+- Nudges: "📷 See it on your wall" button on the design pop-up (one pulse the first time; in "In a room" it reads "Like it here? Try it on your wall →"); a one-time card after 2 designs opened; "See on your wall" on every heart message; "📷 Try on wall" / "📷 My wall" in the phone bottom bar; "Which one felt like home?" sheet after 3 designs tried or a heart (once per visit); "Welcome back. Your wall is ready." for returning visitors; "On my wall" switch above the grid draws every preview on their wall. At most one pop-up nudge per visit (`wb_mw_pop`).
+- Links: `catalogue.html#mywall` or `#mywall/WB-0143` open straight into "take a photo of your wall".
+- Analytics: mywall_open, mywall_photo, mywall_try, mywall_nudge, mywall_send_text, mywall_send_picture, mywall_grid, mywall_size.
+
 ## Speed: previews, fonts, real-user speed
 - **Design previews:** every design has a small WebP preview (`thumb`, 600 px long side, ~50 KB) in `assets/uploads/designs/thumbs/`, named after its picture. Publish makes it for any design whose preview is missing or belongs to an older picture (browsers that can't write WebP save a JPEG). The catalogue grid and small homepage tiles use `WB.thumb(d)`; the design pop-up and the big lead homepage story use the full picture. A missing preview falls back to the full picture.
 - **Fonts:** DM Sans and Playfair Display are self-hosted in `assets/fonts/` (latin + latin-ext, woff2), the two main files preloaded.

@@ -94,6 +94,15 @@
   /* ---------- designs ---------- */
   .d-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
   @media (max-width: 480px) { .d-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+  .d-grid.big { grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 18px; }
+  @media (max-width: 480px) { .d-grid.big { grid-template-columns: 1fr; } }
+  .d-grid.big .d-card .body b { font-size: .98rem; }
+  .d-grid.big .d-add { aspect-ratio: auto; min-height: 96px; grid-column: 1 / -1; }
+  /* small / large pictures toggle */
+  .vt-tog { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px; background: var(--surface); flex: none; }
+  .vt-tog button { width: 38px; height: 34px; border: 0; border-radius: 999px; background: none; color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+  .vt-tog button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
   .d-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; min-width: 0; }
   .d-card.off { opacity: .55; }
   /* select several designs */
@@ -126,7 +135,7 @@
   .d-card .pic .pill { position: absolute; left: 6px; bottom: 6px; }
   .d-card .code { position: absolute; left: 6px; top: 6px; background: rgba(255,255,255,.92); font: 700 .7rem var(--font-body); padding: 3px 6px; border-radius: 4px; color: #1A1714; }
   .d-card .body { padding: 10px 12px 12px; display: grid; gap: 6px; }
-  .d-card .body b { color: var(--ink); font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .d-card .body b { color: var(--ink); font-size: .84rem; line-height: 1.3; overflow-wrap: anywhere; }   /* full name, wrapped: versions differ only by their suffix */
   .d-card .stats { font-size: .76rem; color: var(--faint); font-variant-numeric: tabular-nums; }
   .d-card .row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
   .d-add { border: 2px dashed var(--line-strong); border-radius: var(--radius); display: grid; place-items: center; gap: 6px; text-align: center; padding: 18px; color: var(--muted); cursor: pointer; background: transparent; font: 600 .95rem var(--font-body); min-height: 200px; }
@@ -339,6 +348,7 @@
         <div class="toolbar">
           <span class="qwrap"><input type="search" id="d-q" placeholder="Search by name, code or tag" aria-label="Search designs"><button class="q-x" type="button" id="d-q-x" aria-label="Clear search" hidden>×</button></span>
           <button class="btn btn-ghost btn-xs" type="button" id="d-select" aria-pressed="false">Select</button>
+          <span class="vt-tog" role="group" aria-label="View"><button type="button" data-view="small" aria-label="Small pictures" aria-pressed="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></button><button type="button" data-view="large" aria-label="Large pictures" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="12" rx="1.5"/><rect x="3" y="17" width="18" height="4" rx="1.5"/></svg></button></span>
           <div class="chips" role="group" aria-label="Show"><button class="fchip" type="button" data-df="all" aria-pressed="true">All</button><button class="fchip" type="button" data-df="live">Live</button><button class="fchip" type="button" data-df="hidden">Hidden</button></div>
         </div>
         <details class="card themes" id="th-card">
@@ -422,6 +432,8 @@
             <h2>WhatsApp and phone</h2>
             <div class="field"><label for="s-wa">WhatsApp number (with country code)</label><input type="tel" id="s-wa" inputmode="tel" placeholder="917676701113"><small>Every button on the website opens a chat with this number.</small></div>
             <div class="field"><label for="s-phone">Phone number as shown</label><input type="text" id="s-phone" placeholder="+91 76767 01113"></div>
+            <div class="field"><span class="lbl">Free wall check: days you visit</span><div class="chips" id="s-bdays" role="group" aria-label="Visit days"></div></div>
+            <div class="field"><label for="s-bslots">Free wall check: time slots</label><input type="text" id="s-bslots" placeholder="Morning 10–12 | Afternoon 12–4 | Evening 4–7"><small>Separate slots with |. First word is the name, the rest is the time.</small></div>
             <button class="btn btn-ghost btn-xs" type="button" id="s-save" style="justify-self:start">Save</button>
           </div>
           <div class="card">
@@ -479,7 +491,7 @@
       <div class="field"><label for="d-tags">Tags (at least 2)</label><input type="text" id="d-tags" placeholder="peacock, bird, feathers, blue"><small>Hidden from customers; search uses them. Separate with commas.</small></div>
       <div class="grid-2" style="gap:12px">
         <div class="field"><span class="lbl">Best wall shape</span><div class="seg" role="group" id="d-orient"><button type="button" data-v="wide" aria-pressed="true">Wide</button><button type="button" data-v="tall">Tall</button><button type="button" data-v="square">Square</button></div><small id="d-orient-note"></small></div>
-        <div class="field"><span class="lbl">Show</span><label class="switch"><input type="checkbox" id="d-live" checked> Live on the website</label><label class="switch"><input type="checkbox" id="d-feat"> Feature near the top</label></div>
+        <div class="field"><span class="lbl">Show</span><label class="switch"><input type="checkbox" id="d-live" checked> Live on the website</label><label class="switch"><input type="checkbox" id="d-feat"> Feature near the top <span class="muted" style="font-weight:400">(shows a “♥ Most loved” label)</span></label></div>
       </div>
     </div>
     <footer><button class="linkbtn danger" type="button" id="d-delete" hidden>Delete design</button><span class="grow"></span><button class="btn btn-ghost" type="button" data-close>Cancel</button><button class="btn btn-wa" type="button" id="d-save" style="background:var(--ink);box-shadow:none">Save design</button></footer>
@@ -703,6 +715,17 @@
      DESIGNS
      ===================================================================== */
   var dFilter = "all";
+  /* small / large pictures in the Designs list (remembered on this device) */
+  (function () {
+    var big = false; try { big = localStorage.getItem("wb_admin_view") === "large"; } catch (e) {}
+    function set(on) {
+      $("#d-grid").classList.toggle("big", on);
+      $$(".vt-tog [data-view]").forEach(function (b) { b.setAttribute("aria-pressed", (b.dataset.view === "large") === on); });
+      try { localStorage.setItem("wb_admin_view", on ? "large" : "small"); } catch (e) {}
+    }
+    document.querySelector(".vt-tog").addEventListener("click", function (e) { var b = e.target.closest("[data-view]"); if (b) set(b.dataset.view === "large"); });
+    set(big);
+  })();
   function setFilter(f) { dFilter = f; $$("[data-df]").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.df === f); }); renderDesigns(); }
   $$("[data-df]").forEach(function (b) { b.onclick = function () { setFilter(b.dataset.df); }; });
   $("#d-q").addEventListener("input", function () { $("#d-q-x").hidden = !this.value; renderDesigns(); });
@@ -717,7 +740,7 @@
       if (dFilter === "sample" && d.img) return false;
       if (dFilter === "noorig" && !(window.WBOrigUI && d.img && !d.builtIn && WBOrigUI.isMissing(d.code))) return false;
       return !q || (d.name + " " + d.code + " " + (d.tags || []).join(" ")).toLowerCase().indexOf(q) > -1;
-    }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || "") || b.code.localeCompare(a.code); });
+    }).sort(WB.byNewest);
     var samples = all.filter(function (d) { return !d.img; }).length;
     $("#d-count").textContent = all.length + " designs · " + all.filter(function (d) { return !d.hidden; }).length + " live" + "";
     $("#d-grid").innerHTML = '<button class="d-add" type="button" id="d-add-tile"><span>+</span>Add a design</button>' + list.map(function (d) {
@@ -1005,7 +1028,7 @@
     if (srcImg) {
       data.img = $("#d-canvas").toDataURL("image/jpeg", .86);
     }
-    if (isNew) { noteCode($("#d-code").value); db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), pop: data.pop || 5 }, data)); }
+    if (isNew) { noteCode($("#d-code").value); db.designs.push(Object.assign({ code: $("#d-code").value, added: new Date().toISOString().slice(0, 7), addedAt: new Date().toISOString(), pop: data.pop || 5 }, data)); }
     var oldName = cur ? cur.name : "";
     if (!isNew) setDesign(cur.code, data);
     if (!save()) { if (isNew) db.designs.pop(); return; }
@@ -1065,11 +1088,22 @@
     $("#p-list").innerHTML = list.length && !shownP.length ? '<p class="muted">No ' + (pFilter === "residential" ? "residential" : "corporate / institution") + ' projects yet.</p>' : list.length ? shownP.map(function (x) {
       var p = x[0], i = x[1];
       return '<div class="proj-card">' + baHTML(p.before, p.after, p.title, p.ratio) + '<div class="body"><small>' + esc(p.locality) + " · " + esc(p.space) + " · " + (WB.projectSegment(p) === "corporate" ? "Corporate / institution" : "Residential") + " · " + esc(p.month || "") + ((p.videos || []).length ? " · ▶ " + p.videos.length : "") + '</small><b>' + esc(p.title) + '</b>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></div></div></div>';
+        '<div style="display:flex;justify-content:space-between;align-items:center"><label class="switch" style="font-size:.8rem"><input type="checkbox" data-plive="' + i + '"' + (p.hidden ? "" : " checked") + '> ' + (p.hidden ? "Hidden" : "Live") + '</label><span style="display:flex;gap:12px"><button class="linkbtn" type="button" data-pfollow="' + i + '">Copy follow-up</button><button class="linkbtn" type="button" data-pedit="' + i + '">Edit</button></span></div></div></div>';
     }).join("") : '<div class="empty-state"><h3>No projects yet</h3><p>After your first wall, add the before and after photos here. The website lines them up and builds the slider for you.</p><button class="btn btn-ghost" type="button" onclick="document.getElementById(\'p-new\').click()">+ Add your first project</button></div>';
     wireBA($("#p-list"));
     $$("[data-plive]").forEach(function (c) { c.onchange = function () { db.projects[+c.dataset.plive].hidden = !c.checked; save(); renderProjects(); autoPublish(c.checked ? "Shown" : "Hidden"); }; });
     $$("[data-pedit]").forEach(function (b) { b.onclick = function () { openProject(+b.dataset.pedit); }; });
+    $$("[data-pfollow]").forEach(function (b) { b.onclick = function () { copyFollowUp(db.projects[+b.dataset.pfollow]); }; });
+  }
+  /* after printing: thank-you + their before/after link + review link + share link, to paste into the customer's chat */
+  function copyFollowUp(p) {
+    var st = settings(), link = "https://www.wallbliss.in/projects.html#" + p.slug, review = st.googleWriteReviewUrl || st.googleReviewsUrl || "";
+    var txt = "Thank you for choosing WallBliss! 🎉 Here's your wall, before and after:\n" + link +
+      (review ? "\n\n⭐ If you loved it, a 1-minute Google review helps us a lot: " + review : "") +
+      "\n\n📲 Friends asking about it? Share this link with them: " + link + "?src=friend";
+    var done = function () { toast(p.hidden ? "Copied. Note: this project is hidden, so the link won't open until it's live." : "Follow-up message copied. Paste it in the customer's WhatsApp chat."); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function () { prompt("Copy this message", txt); });
+    else prompt("Copy this message", txt);
   }
   function baHTML(before, after, title, ratio) {
     function im(u, cls, alt) { return /^idb:/.test(u || "") ? '<img' + cls + ' data-idb="' + u + '" alt="' + alt + '">' : '<img' + cls + ' src="' + u + '" alt="' + alt + '">'; }
@@ -1540,10 +1574,17 @@
      ===================================================================== */
   function renderSettings() {
     var st = settings();
+    var bk = st.booking || {}, bd = String(bk.days || "1,2,3,4,5,6").split(",");
+    $("#s-bdays").innerHTML = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (n, i) { return '<button type="button" class="fchip" data-bday="' + i + '" aria-pressed="' + (bd.indexOf(String(i)) > -1) + '">' + n + '</button>'; }).join("");
+    $$("[data-bday]").forEach(function (b) { b.onclick = function () { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); }; });
+    $("#s-bslots").value = bk.slots || "";
+    var st = settings();
     $("#s-wa").value = st.whatsapp || "917676701113"; $("#s-phone").value = st.phoneDisplay || "+91 76767 01113";
     $("#s-wm-on").checked = st.wmOn; $("#s-wm-text").value = st.wmText; segSet($("#s-wm-style"), st.wmStyle);
   }
   $("#s-save").onclick = function () {
+    var days = $$("[data-bday]").filter(function (b) { return b.getAttribute("aria-pressed") === "true"; }).map(function (b) { return b.dataset.bday; }).join(",");
+    db.settings.booking = { days: days || "1,2,3,4,5,6", slots: $("#s-bslots").value.trim() };
     var wa = $("#s-wa").value.replace(/\D/g, ""); if (wa.length === 10) wa = "91" + wa;
     if (wa.length < 11) { toast("Enter the WhatsApp number with country code, e.g. 917676701113"); return; }
     db.settings.whatsapp = wa; db.settings.phoneDisplay = $("#s-phone").value.trim(); save(); renderSettings(); toast("Saved. Every WhatsApp button now uses this number");
