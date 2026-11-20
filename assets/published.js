@@ -2386,6 +2386,62 @@ window.WB_PUBLISHED = {
    "addedAt": "2026-11-20T06:25:57.458Z",
    "pop": 5,
    "thumb": "assets/uploads/designs/thumbs/wb-0223-1udul5c.jpg"
+  },
+  {
+   "code": "WB-0224",
+   "name": "Krishna's Divine Victory",
+   "img": "assets/uploads/designs/wb-0224-1aerm9p.jpg",
+   "tags": [
+    "krishna",
+    "arjuna",
+    "bhagavad gita",
+    "chariot",
+    "mahabharata",
+    "divine",
+    "celestial",
+    "warrior",
+    "spiritual",
+    "golden",
+    "dramatic sky",
+    "mythology",
+    "devotional art"
+   ],
+   "search": [
+    "krishna arjuna",
+    "bhagavad gita wall mural",
+    "mahabharata art",
+    "divine krishna",
+    "spiritual wall design",
+    "hindu mythology mural",
+    "कृष्ण अर्जुन",
+    "कृष्ण भगवद गीता",
+    "mahabharatam",
+    "arjunudu krishnudu",
+    "कृष्ण रथ",
+    "chariot war scene",
+    "temple art mural",
+    "devotional wall painting",
+    "krishna blessed hand",
+    "गीता उपदेश",
+    "भक्ति कला",
+    "divine intervention",
+    "celestial warrior",
+    "lord krishna chariot"
+   ],
+   "spaces": [
+    "living",
+    "hotel"
+   ],
+   "styles": [
+    "traditional",
+    "devotional",
+    "texture3d"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "addedAt": "2026-11-20T06:44:14.283Z",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0224-1aerm9p.jpg"
   }
  ],
  "edits": {},
@@ -2544,7 +2600,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 223
+  "lastCode": 224
  },
  "faqs": [
   {
@@ -2638,8 +2694,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-20T06:28:12.189Z",
- "by": "Anil",
+ "updated": "2026-11-20T06:44:17.089Z",
+ "by": "Manasa",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -3068,6 +3124,12 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0223/card-1ulwzxv.jpg",
    "nm": "Galloping Horses At Sunset",
    "q": "1ulwzxv"
+  },
+  "d:WB-0224": {
+   "sig": "9qxdkt",
+   "card": "d/WB-0224/card-9qxdkt.jpg",
+   "nm": "Krishna's Divine Victory",
+   "q": "9qxdkt"
   }
  }
 };
