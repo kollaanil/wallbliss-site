@@ -2441,7 +2441,8 @@ window.WB_PUBLISHED = {
    "added": "2026-11",
    "addedAt": "2026-11-20T06:44:14.283Z",
    "pop": 5,
-   "thumb": "assets/uploads/designs/thumbs/wb-0224-1aerm9p.jpg"
+   "thumb": "assets/uploads/designs/thumbs/wb-0224-1aerm9p.jpg",
+   "hidden": false
   }
  ],
  "edits": {},
@@ -2694,8 +2695,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-20T06:44:17.089Z",
- "by": "Manasa",
+ "updated": "2026-11-20T09:12:31.328Z",
+ "by": "Anil",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
