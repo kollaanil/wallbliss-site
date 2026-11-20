@@ -2443,6 +2443,186 @@ window.WB_PUBLISHED = {
    "pop": 5,
    "thumb": "assets/uploads/designs/thumbs/wb-0224-1aerm9p.jpg",
    "hidden": false
+  },
+  {
+   "code": "WB-0225",
+   "name": "Buddha in Meditation",
+   "img": "assets/uploads/designs/wb-0225-tj16yh.jpg",
+   "tags": [
+    "buddha",
+    "lotus flower",
+    "meditation",
+    "spiritual",
+    "peaceful",
+    "devotional",
+    "watercolor",
+    "serene",
+    "enlightenment",
+    "eastern philosophy",
+    "religious iconography",
+    "blue and gold",
+    "contemplative"
+   ],
+   "search": [
+    "buddha wall mural",
+    "meditation wall art",
+    "lotus flower design",
+    "spiritual wall painting",
+    "buddha sitting meditation",
+    "pink lotus",
+    "eastern art",
+    "buddhism wall decor",
+    "peaceful wall mural",
+    "buddha bhagwan",
+    "dhyan mudra",
+    "enlightenment art",
+    "zen wall painting",
+    "temple aesthetic",
+    "buddha bedroom wall",
+    "office meditation wall",
+    "calm peaceful art",
+    "buddha ki murti",
+    "budhha wall design",
+    "lotus buddha"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "cafe",
+    "hotel"
+   ],
+   "styles": [
+    "devotional",
+    "artistic",
+    "nature"
+   ],
+   "orient": "tall",
+   "added": "2026-11",
+   "addedAt": "2026-11-20T09:14:08.294Z",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0225-tj16yh.jpg"
+  },
+  {
+   "code": "WB-0227",
+   "name": "Golden Buddha",
+   "img": "assets/uploads/designs/wb-0227-1kyx8e5.jpg",
+   "tags": [
+    "buddha",
+    "lotus flower",
+    "meditation",
+    "spiritual",
+    "gold",
+    "peaceful",
+    "divine aura",
+    "serene",
+    "sacred geometry",
+    "watercolor",
+    "eastern philosophy",
+    "mindfulness"
+   ],
+   "search": [
+    "buddha wall mural",
+    "meditation wall art",
+    "lotus flower design",
+    "spiritual wall painting",
+    "golden buddha",
+    "buddhist art",
+    "zen wall mural",
+    "peaceful meditation art",
+    "divine aura wall",
+    "eastern aesthetics",
+    "dhyana mudra",
+    "bodhi tree",
+    "enlightenment art",
+    "mindfulness wall decor",
+    "yoga room wall",
+    "temple wall art",
+    "बुद्ध",
+    "कमल",
+    "meditation wall",
+    "peaceful wall",
+    "spiritual home decor",
+    "buddha painting",
+    "lotus mandala",
+    "zen meditation space",
+    "devotional wall art"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "cafe",
+    "hotel"
+   ],
+   "styles": [
+    "devotional",
+    "artistic",
+    "traditional"
+   ],
+   "orient": "square",
+   "added": "2026-11",
+   "addedAt": "2026-11-20T09:14:08.295Z",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0227-1kyx8e5.jpg"
+  },
+  {
+   "code": "WB-0228",
+   "name": "Buddha Under the Bodhi Tree",
+   "img": "assets/uploads/designs/wb-0228-2gz5jy.jpg",
+   "tags": [
+    "buddha",
+    "bodhi tree",
+    "lotus flowers",
+    "meditation",
+    "spiritual",
+    "peaceful",
+    "gold leaf",
+    "3d relief",
+    "devotional",
+    "zen",
+    "serene",
+    "water lilies",
+    "enlightenment"
+   ],
+   "search": [
+    "buddha wall mural",
+    "bodhi tree design",
+    "meditation room art",
+    "spiritual wall decor",
+    "lotus flower mural",
+    "buddha under tree",
+    "zen wall art",
+    "enlightenment artwork",
+    "peaceful wall design",
+    "gold buddha mural",
+    "devotional wall art",
+    "yoga room decoration",
+    "mindfulness wall",
+    "buddha relief art",
+    "bodhi tree wallpaper",
+    "बुद्ध",
+    "बोधि वृक्ष",
+    "कमल",
+    "meditation wall",
+    "spiritual decor",
+    "peaceful home art",
+    "temple wall design"
+   ],
+   "spaces": [
+    "living",
+    "office",
+    "cafe",
+    "hotel"
+   ],
+   "styles": [
+    "devotional",
+    "texture3d",
+    "nature"
+   ],
+   "orient": "square",
+   "added": "2026-11",
+   "addedAt": "2026-11-20T09:14:08.297Z",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0228-2gz5jy.jpg"
   }
  ],
  "edits": {},
@@ -2601,7 +2781,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 224
+  "lastCode": 228
  },
  "faqs": [
   {
@@ -2695,7 +2875,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-20T09:12:31.328Z",
+ "updated": "2026-11-20T09:14:10.524Z",
  "by": "Anil",
  "og": {
   "d:WB-0137": {
@@ -3131,6 +3311,24 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0224/card-9qxdkt.jpg",
    "nm": "Krishna's Divine Victory",
    "q": "9qxdkt"
+  },
+  "d:WB-0225": {
+   "sig": "ef1o9r",
+   "card": "d/WB-0225/card-ef1o9r.jpg",
+   "nm": "Buddha in Meditation",
+   "q": "ef1o9r"
+  },
+  "d:WB-0227": {
+   "sig": "25bmld",
+   "card": "d/WB-0227/card-25bmld.jpg",
+   "nm": "Golden Buddha",
+   "q": "25bmld"
+  },
+  "d:WB-0228": {
+   "sig": "3xycox",
+   "card": "d/WB-0228/card-3xycox.jpg",
+   "nm": "Buddha Under the Bodhi Tree",
+   "q": "3xycox"
   }
  }
 };
