@@ -2337,6 +2337,55 @@ window.WB_PUBLISHED = {
    "pop": 5,
    "thumb": "assets/uploads/designs/thumbs/wb-0222-hh43l5.jpg",
    "addedAt": "2026-11-14T08:32:41.000Z"
+  },
+  {
+   "code": "WB-0223",
+   "name": "Galloping Horses At Sunset",
+   "img": "assets/uploads/designs/wb-0223-1udul5c.jpg",
+   "tags": [
+    "horses",
+    "sunset",
+    "golden hour",
+    "wildlife",
+    "running",
+    "majestic",
+    "nature",
+    "prosperity",
+    "warm tones"
+   ],
+   "search": [
+    "seven horses",
+    "7 horses painting",
+    "white horses running",
+    "sunset horses mural",
+    "horse vastu",
+    "saptak ghode",
+    "golden sunset wall art",
+    "horses wall mural",
+    "strength horses",
+    "prosperity horses",
+    "dynamic horses",
+    "horse wallpaper",
+    "living room horses",
+    "office wall horses",
+    "hotel mural horses",
+    "7 white horses vastu",
+    "chalte ghode"
+   ],
+   "spaces": [
+    "living",
+    "office"
+   ],
+   "styles": [
+    "artistic",
+    "nature",
+    "traditional"
+   ],
+   "orient": "wide",
+   "added": "2026-11",
+   "addedAt": "2026-11-20T06:25:57.458Z",
+   "pop": 5,
+   "thumb": "assets/uploads/designs/thumbs/wb-0223-1udul5c.jpg"
   }
  ],
  "edits": {},
@@ -2495,7 +2544,7 @@ window.WB_PUBLISHED = {
    "by": "Anil",
    "at": "2026-10-30T10:48:47.817Z"
   },
-  "lastCode": 222
+  "lastCode": 223
  },
  "faqs": [
   {
@@ -2589,8 +2638,8 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-18T05:11:55.881Z",
- "by": "Manasa",
+ "updated": "2026-11-20T06:28:12.189Z",
+ "by": "Anil",
  "og": {
   "d:WB-0137": {
    "sig": "1uva2wb",
@@ -3013,6 +3062,12 @@ window.WB_PUBLISHED = {
    "card": "d/WB-0222/card-q5v0tw.jpg",
    "nm": "Rama Pattabhidhekham Wooden Border",
    "q": "q5v0tw"
+  },
+  "d:WB-0223": {
+   "sig": "1ulwzxv",
+   "card": "d/WB-0223/card-1ulwzxv.jpg",
+   "nm": "Galloping Horses At Sunset",
+   "q": "1ulwzxv"
   }
  }
 };
