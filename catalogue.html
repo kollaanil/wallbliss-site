@@ -171,8 +171,12 @@
   @media (max-width: 520px) { .grid.big { grid-template-columns: 1fr; gap: 22px; } }
   .grid.big .card h3 { font-size: 1.12rem; }
   /* small / large pictures toggle */
-  .clbl { position: absolute; left: 8px; bottom: 8px; z-index: 2; font: 700 .7rem var(--font-body); padding: 4px 9px; border-radius: 999px; box-shadow: 0 1px 4px rgba(0,0,0,.15); pointer-events: none; }
-  .clbl.new { background: #0F6B6E; color: #fff; } .clbl.love { background: #FFE7DD; color: #9a3b15; }
+  /* labels and the design code sit under the picture, so nothing covers the design */
+  .tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 2px 0 -2px; min-height: 18px; }
+  .clbl { font: 700 .66rem var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+  .clbl.new { background: #E2F1F0; color: #0F6B6E; } .clbl.love { background: #FFE7DD; color: #9a3b15; }
+  .code-t { font: 600 .7rem var(--font-body); color: var(--faint); letter-spacing: .05em; font-variant-numeric: tabular-nums; }
+  .tr-pic .clbl { position: absolute; left: 6px; bottom: 6px; }
   .toprow { margin: 0 0 18px; } .tr-h h2 { font-size: 1.1rem; margin: 0 0 10px; }
   .tr-list { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
   .tr-list::-webkit-scrollbar { display: none; }
@@ -204,8 +208,9 @@
 
   .code { position: absolute; left: 8px; top: 8px; background: rgba(255,255,255,.92); color: #1A1714; font: 700 .72rem var(--font-body); letter-spacing: .06em; padding: 4px 7px; border-radius: 4px; font-variant-numeric: tabular-nums; }
   .sample { position: absolute; left: 8px; bottom: 8px; background: rgba(0,0,0,.5); color: #fff; font: 600 .66rem var(--font-body); letter-spacing: .1em; text-transform: uppercase; padding: 3px 6px; border-radius: 3px; }
-  .heart { position: absolute; right: 6px; top: 6px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: #1A1714; display: grid; place-items: center; cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,.15); }
-  .heart svg { width: 20px; height: 20px; }
+  .heart { position: absolute; right: 4px; top: 4px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: none; color: #1A1714; display: grid; place-items: center; cursor: pointer; }
+  .heart::before { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: rgba(255,255,255,.88); box-shadow: 0 1px 4px rgba(0,0,0,.18); }   /* 28 px circle, full 44 px tap area */
+  .heart svg { width: 16px; height: 16px; position: relative; }
   .heart[aria-pressed="true"] { color: #C2410C; }
   .heart[aria-pressed="true"] path { fill: currentColor; }
   .card h3 { font-size: 1rem; }
@@ -465,8 +470,9 @@
   function card(d) {
     var el = document.createElement("article"); el.className = "card"; el.id = d.code;
     el.innerHTML = '<div style="position:relative"><button class="thumb" type="button" data-open="' + d.code + '" aria-label="View ' + esc(d.name) + '">' + visual(d) +
-      '<span class="code">' + d.code + '</span>' + (d.img ? "" : '<span class="sample">Sample</span>') + badge(d) + '</button>' +
+      (d.img ? "" : '<span class="sample">Sample</span>') + '</button>' +
       '<button class="heart" type="button" data-heart="' + d.code + '" aria-pressed="' + WB.shortlist.has(d.code) + '" aria-label="Shortlist ' + esc(d.name) + '">' + HEART + '</button></div>' +
+      '<div class="tags">' + badge(d) + '<span class="code-t">' + d.code + '</span></div>' +
       '<h3>' + esc(d.name) + '</h3><div class="meta">' + d.spaces.slice(0, 2).map(function (s) { return label("spaces", s); }).join(" · ") + '</div>';
     return el;
   }
