@@ -127,6 +127,12 @@ homepage and projects links. Publish makes a new card (design codes trimmed off)
 `assets/img/share/<page>-<sig>.jpg` and updates that page's og:image / og:title / og:description tags.
 Until a page is set, it keeps its built-in card.
 
+## Sorting and "Most loved" scores
+- Sort chips next to the design count (not in Filters): **Popular** (default), **Newest**, **Most loved**. The filter badge and "Clear all" count only room, shape and style.
+- Scores: `.github/workflows/scores.yml` runs `scripts/scores.py` nightly (02:07 IST, or Actions → "Most loved scores" → Run workflow). It reads the last 30 days from Google Analytics (property 558921156) with the service-account key in the `GA_SA_KEY` repository secret and writes `assets/scores.json`. Points per event: design_open 1, view_in_room 1, shortlist_add 3, mywall_try 3, whatsapp_tap 5 (now carries the design code from the design pop-up), mywall_send_text 5, mywall_send_picture 8. Needs the GA custom dimension `code` (event scope).
+- Popular = score + a fading boost for designs added in the last 14 days + a boost for "Feature near the top". Most loved = score only. "♥ Most loved" label = top 10% by score (score ≥ 5); before any scores exist it falls back to featured designs.
+- Score commits are named "Scores: …" so open admin tabs don't treat them as a code update.
+
 ## Nudges toward booking (catalogue, projects, admin)
 - Designs page: "New this week" label (uploaded in the last 7 days, `addedAt`), "♥ Most loved" label (designs marked "Feature near the top" in admin, `pop >= 9`); with exactly one room picked and no search, a "Top picks · <room>" row (featured first, then newest).
 - Small / large pictures toggle (catalogue + admin Designs, remembered per device): phones 2 per row / full width; desktop 4-ish / 2–3 across. Large uses the full picture.

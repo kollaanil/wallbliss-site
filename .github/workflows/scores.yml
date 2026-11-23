@@ -1,0 +1,34 @@
+# Nightly "Most loved" scores from Google Analytics → assets/scores.json (see scripts/scores.py)
+name: Most loved scores
+on:
+  schedule:
+    - cron: "37 20 * * *"        # 02:07 IST every night
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  pages: write
+concurrency: { group: scores, cancel-in-progress: false }
+jobs:
+  scores:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install --quiet google-auth requests
+      - name: Read Google Analytics and score designs
+        env:
+          GA_SA_KEY: ${{ secrets.GA_SA_KEY }}
+        run: python scripts/scores.py
+      - name: Save and put live
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git diff --quiet assets/scores.json && { echo "Scores unchanged"; exit 0; }
+          git config user.name "WallBliss scores bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/scores.json
+          git commit -m "Scores: nightly update"
+          git pull --rebase --quiet origin main
+          git push --quiet origin HEAD:main
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null || echo "Pages build request failed (site will update on the next change)"

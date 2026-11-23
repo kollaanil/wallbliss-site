@@ -175,6 +175,21 @@
   .tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 2px 0 -2px; min-height: 18px; }
   .clbl { font: 700 .66rem var(--font-body); letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
   .clbl.new { background: #E2F1F0; color: #0F6B6E; } .clbl.love { background: #FFE7DD; color: #9a3b15; }
+  .sortbar { display: inline-flex; gap: 6px; margin-left: 10px; vertical-align: middle; }
+  .schip { min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); font: 600 .82rem var(--font-body); cursor: pointer; white-space: nowrap; }
+  .schip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  /* phones: sort chips and the view switch share one line; the count sits under them */
+  @media (max-width: 560px) {
+    .status { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 8px; padding-block: 10px; }
+    .status-l { display: contents; }
+    .sortbar { grid-column: 1; grid-row: 1; margin: 0; display: flex; overflow-x: auto; scrollbar-width: none; }
+    .sortbar::-webkit-scrollbar { display: none; }
+    .schip { min-height: 34px; padding: 0 11px; font-size: .8rem; }
+    .status-r { grid-column: 2; grid-row: 1; }
+    #status { grid-column: 1 / -1; grid-row: 2; font-size: .82rem; }
+    #tags { grid-column: 1 / -1; grid-row: 3; }
+    #tags:empty { display: none; }
+  }
   .code-t { font: 600 .7rem var(--font-body); color: var(--faint); letter-spacing: .05em; font-variant-numeric: tabular-nums; }
   .tr-pic .clbl { position: absolute; left: 6px; bottom: 6px; }
   .toprow { margin: 0 0 18px; } .tr-h h2 { font-size: 1.1rem; margin: 0 0 10px; }
@@ -286,7 +301,7 @@
   </div>
 
   <div class="wrap">
-    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button><span class="vt-tog" role="group" aria-label="View"><button type="button" data-view="small" aria-label="Small pictures" aria-pressed="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></button><button type="button" data-view="large" aria-label="Large pictures" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="12" rx="1.5"/><rect x="3" y="17" width="18" height="4" rx="1.5"/></svg></button></span></span></div>
+    <div class="status"><div class="status-l"><span id="status" aria-live="polite"></span><span class="sortbar" id="sortbar" role="group" aria-label="Sort designs"></span><div class="active-tags" id="tags"></div></div><span class="status-r"><button class="share-btn" id="q-share" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>Share these designs</button><button class="linkbtn" id="clear" type="button" hidden>Clear all</button><span class="vt-tog" role="group" aria-label="View"><button type="button" data-view="small" aria-label="Small pictures" aria-pressed="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></button><button type="button" data-view="large" aria-label="Large pictures" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="12" rx="1.5"/><rect x="3" y="17" width="18" height="4" rx="1.5"/></svg></button></span></span></div>
     <p class="search-note" id="search-note" hidden></p>
     <div class="mw-wallbar" id="mw-wallbar" hidden></div>
     <section class="toprow" id="toprow" hidden><div class="tr-h"><h2 id="toprow-t"></h2></div><div class="tr-list" id="toprow-list"></div></section>
@@ -384,7 +399,22 @@
   var SHAPES = { wide: ["landscape"], tall: ["portrait"], square: ["landscape", "portrait"] };
   var SHAPE_WORDS = { landscape: "landscape horizontal wide", portrait: "portrait vertical tall" };
   function valsOf(d, k) { return k === "shape" ? (SHAPES[d.orient] || SHAPES.wide) : [].concat(d[k]); }
-  var SORTS = [["pop", "Most loved"], ["new", "Newest"], ["name", "Name A–Z"]];
+  var SORTS = [["pop", "Popular"], ["new", "Newest"], ["loved", "Most loved"]];
+  /* "Most loved" scores: worked out every night from Google Analytics (scripts/scores.py → assets/scores.json).
+     Popular = score + a fading boost for designs added in the last 14 days + a boost for "Feature near the top". */
+  var SCORE = {}, MAXS = 0, LOVED = {};
+  function raw(d) { return SCORE[d.code] || 0; }
+  function ageDays(d) { return d.addedAt ? (Date.now() - new Date(d.addedAt).getTime()) / 864e5 : 999; }
+  function popular(d) {
+    var base = Math.max(MAXS, 10), a = ageDays(d);
+    return raw(d) + ((d.pop || 0) >= 9 ? base * 0.25 + 3 : 0) + (a < 14 ? (14 - a) / 14 * (base * 0.35 + 4) : 0);
+  }
+  function setScores(s) {
+    SCORE = s || {}; var codes = Object.keys(SCORE).filter(function (c) { return SCORE[c] >= 5; }).sort(function (a, b) { return SCORE[b] - SCORE[a]; });
+    MAXS = codes.length ? SCORE[codes[0]] : 0; LOVED = {};
+    codes.slice(0, Math.max(1, Math.ceil(DATA.length * 0.1))).forEach(function (c) { LOVED[c] = 1; });
+    if (!codes.length) DATA.forEach(function (d) { if ((d.pop || 0) >= 9) LOVED[d.code] = 1; });   // no data yet: your featured designs
+  }
   var SPACE_WORDS = { living: "living room hall drawing room", bedroom: "bedroom master bedroom", kids: "kids room children nursery playroom", office: "office corporate workspace reception", cafe: "cafe restaurant bar bakery", hotel: "hotel lobby resort", clinic: "hospital clinic dental waiting room" };
   var state = { q: "", sort: "pop", f: { spaces: [], shape: [], styles: [] } };
 
@@ -421,11 +451,13 @@
     return '<details class="fgroup"' + (key === "styles" ? " open" : "") + ' data-group="' + key + '"><summary>' + FACETS[key].label + '<small></small></summary>' +
       (FACETS[key].note ? '<p class="fnote">' + FACETS[key].note + '</p>' : "") + '<div class="chips">' +
       FACETS[key].opts.map(function (o) { return chipHTML(key, o); }).join("") + '</div></details>';
-  }).join("") + '<details class="fgroup" open><summary>Sort by</summary><div class="chips">' +
-    SORTS.map(function (o) { return '<button type="button" class="fchip" data-sort="' + o[0] + '">' + o[1] + '</button>'; }).join("") + '</div></details>';
+  }).join("");
+  /* sort: always-visible chips next to the design count */
+  var sortBar = document.getElementById("sortbar");
+  sortBar.innerHTML = SORTS.map(function (o) { return '<button type="button" class="schip" data-sort="' + o[0] + '" aria-pressed="false">' + o[1] + '</button>'; }).join("");
+  sortBar.addEventListener("click", function (e) { var b = e.target.closest("[data-sort]"); if (!b || b.dataset.sort === state.sort) return; state.sort = b.dataset.sort; WB.track("sort", { val: state.sort, via: "chips" }); render(); });
   fBody.addEventListener("click", function (e) {
     var b = e.target.closest(".fchip"); if (!b) return;
-    if (b.dataset.sort) { state.sort = b.dataset.sort; WB.track("sort", { val: state.sort }); render(); return; }
     var arr = state.f[b.dataset.key], i = arr.indexOf(b.dataset.val);
     if (i > -1) arr.splice(i, 1); else { arr.push(b.dataset.val); WB.track("filter", { key: b.dataset.key, val: b.dataset.val, via: "sheet" }); }
     render();
@@ -436,7 +468,7 @@
   document.getElementById("f-close-x").onclick = function () { sheet.close(); };
   document.getElementById("f-reset").onclick = function () { clearAll(false); };
   sheet.addEventListener("click", function (e) { if (e.target === sheet) sheet.close(); });
-  function clearAll(withSearch) { Object.keys(state.f).forEach(function (k) { state.f[k] = []; }); state.sort = "pop"; if (withSearch) q.value = ""; render(); }
+  function clearAll(withSearch) { Object.keys(state.f).forEach(function (k) { state.f[k] = []; }); if (withSearch) q.value = ""; render(); }
   document.getElementById("clear").addEventListener("click", function () { clearAll(true); });
 
   /* active filter tags under the toolbar */
@@ -466,7 +498,7 @@
   /* "New this week" (uploaded in the last 7 days) or "Most loved" (designs you mark "Feature near the top" in admin) */
   var WEEK = 7 * 864e5;
   function isNew(d) { return d.addedAt && Date.now() - new Date(d.addedAt).getTime() < WEEK; }
-  function badge(d) { return isNew(d) ? '<span class="clbl new">New this week</span>' : (d.pop || 0) >= 9 ? '<span class="clbl love">♥ Most loved</span>' : ""; }
+  function badge(d) { return isNew(d) ? '<span class="clbl new">New this week</span>' : LOVED[d.code] ? '<span class="clbl love">♥ Most loved</span>' : ""; }
   function card(d) {
     var el = document.createElement("article"); el.className = "card"; el.id = d.code;
     el.innerHTML = '<div style="position:relative"><button class="thumb" type="button" data-open="' + d.code + '" aria-label="View ' + esc(d.name) + '">' + visual(d) +
@@ -501,7 +533,7 @@
   function topRow(list) {
     var box = document.getElementById("toprow"), room = state.f.spaces.length === 1 && !state.q ? state.f.spaces[0] : "";
     if (!room || list.length < 6) { box.hidden = true; return; }
-    var picks = list.map(function (x) { return x.d; }).filter(function (d) { return d.img; }).sort(function (a, b) { return ((b.pop || 0) >= 9) - ((a.pop || 0) >= 9) || WB.byNewest(a, b); }).slice(0, 8);
+    var picks = list.map(function (x) { return x.d; }).filter(function (d) { return d.img; }).sort(function (a, b) { return popular(b) - popular(a) || WB.byNewest(a, b); }).slice(0, 8);
     document.getElementById("toprow-t").textContent = "Top picks · " + label("spaces", room);
     document.getElementById("toprow-list").innerHTML = picks.map(function (d) {
       return '<button type="button" class="tr-card" data-open="' + d.code + '"><span class="tr-pic">' + visual(d) + badge(d) + '</span><b>' + esc(d.name) + '</b></button>';
@@ -526,8 +558,8 @@
     list.sort(function (a, b) {
       if (state.q && b.s !== a.s) return b.s - a.s;
       if (state.sort === "new") return WB.byNewest(a.d, b.d);
-      if (state.sort === "name") return a.d.name.localeCompare(b.d.name);
-      return b.d.pop - a.d.pop;
+      if (state.sort === "loved") return raw(b.d) - raw(a.d) || ((b.d.pop || 0) >= 9) - ((a.d.pop || 0) >= 9) || WB.byNewest(a.d, b.d);
+      return popular(b.d) - popular(a.d) || WB.byNewest(a.d, b.d);
     });
     lastCount = list.length; shown = list.map(function (x) { return x.d; });
     topRow(list);
@@ -555,9 +587,9 @@
     });
     // sheet chips + counts per group
     fBody.querySelectorAll("[data-key]").forEach(function (b) { b.setAttribute("aria-pressed", state.f[b.dataset.key].indexOf(b.dataset.val) > -1); });
-    fBody.querySelectorAll("[data-sort]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.sort === state.sort); });
+    sortBar.querySelectorAll("[data-sort]").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.sort === state.sort); });
     fBody.querySelectorAll("[data-group]").forEach(function (g) { var n = state.f[g.dataset.group].length; g.querySelector("summary small").textContent = n ? n + " selected" : ""; });
-    var n = state.f.spaces.length + state.f.shape.length + state.f.styles.length + (state.sort !== "pop" ? 1 : 0);
+    var n = state.f.spaces.length + state.f.shape.length + state.f.styles.length;
     var badge = document.getElementById("f-badge"); badge.textContent = n; badge.hidden = !n;
     document.getElementById("f-done").textContent = lastCount ? "Show " + lastCount + (lastCount === 1 ? " design" : " designs") : "No designs match";
     // tags
@@ -751,6 +783,7 @@
   dlg.addEventListener("close", function () { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} });
   function waMsg() {
     var w = parseFloat(document.getElementById("m-w").value) || 0, h = parseFloat(document.getElementById("m-h").value) || 0;
+    document.getElementById("d-wa").setAttribute("data-code", cur.code);
     document.getElementById("d-wa").href = WB.waLink("Hi WallBliss" + (WB.lead.name ? ", this is " + WB.lead.name : "") + ". I like design " + cur.code + " (" + cur.name + ")" +
       (w && h ? " for a wall about " + w + " ft × " + h + " ft" : "") + ". Can you share a price and preview?");
   }
@@ -881,6 +914,9 @@
     onClose: function () { syncHearts(); if (cur && dlg.open) { heartBtn(); setView(view); } }
   });
   setBig(big, false);
+  setScores({});
+  fetch("assets/scores.json?d=" + new Date().toISOString().slice(0, 10)).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { if (j && j.scores && Object.keys(j.scores).length) { setScores(j.scores); render(); } }).catch(function () {});
   render(); syncHearts();
   if (/^WB-\d+$/i.test(h) && BY[h.toUpperCase()]) openDesign(h.toUpperCase());
   /* #mywall (or #mywall/WB-0143): straight to "see it on your wall" — for links sent on Instagram / WhatsApp */
