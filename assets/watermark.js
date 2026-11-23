@@ -99,5 +99,38 @@
     });
   }
 
-  window.WBImage = { process: process, resize: resize, watermark: watermark, LONG: LONG };
+  /* A picture that came out empty: browsers draw very large photos (tens of megapixels) as plain black
+     when they run out of memory, without any error. */
+  function blank(src) {
+    var c = document.createElement("canvas"); c.width = c.height = 48;
+    var x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(src, 0, 0, 48, 48);
+    var d = x.getImageData(0, 0, 48, 48).data, n = 0, sum = 0, sq = 0;
+    for (var i = 0; i < d.length; i += 4) { var l = (d[i] + d[i + 1] + d[i + 2]) / 3; sum += l; sq += l * l; n++; }
+    var mean = sum / n, sd = Math.sqrt(Math.max(0, sq / n - mean * mean));
+    return sd < 2.5 && (mean < 14 || mean > 250);
+  }
+  /* Very large photos (over 16 megapixels, e.g. 30–40 MB print files): decode them already shrunk to 4096 px
+     (createImageBitmap) so the browser doesn't run out of memory, and refuse a picture that still comes out empty.
+     Resolves to an <img> like the original, so the rest of the uploader works unchanged. */
+  function safe(img, file) {
+    var W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+    if (W * H <= 16e6) return blank(img) ? Promise.reject(new Error("This picture looks blank here. Choose another copy (JPG or PNG).")) : Promise.resolve(img);
+    var s = Math.min(1, 4096 / Math.max(W, H)), tw = Math.round(W * s), th = Math.round(H * s);
+    var small = window.createImageBitmap && file ? createImageBitmap(file, { resizeWidth: tw, resizeHeight: th, resizeQuality: "high" }) : Promise.reject(new Error("no bitmap"));
+    return small.catch(function () { return img; }).then(function (src) {
+      var c = document.createElement("canvas"); c.width = tw; c.height = th;
+      var x = c.getContext("2d"); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high"; x.drawImage(src, 0, 0, tw, th);
+      if (src.close) src.close();
+      if (blank(c)) throw tooBig(W, H);
+      return new Promise(function (res, rej) {
+        c.toBlob(function (b) {
+          var im = new Image(); im.onload = function () { im.bigW = W; im.bigH = H; res(im); }; im.onerror = function () { rej(tooBig(W, H)); };
+          im.src = URL.createObjectURL(b);
+        }, "image/jpeg", 0.95);
+      });
+    });
+  }
+  function tooBig(W, H) { return new Error("This picture is too large for this browser to open (" + W + " × " + H + " px). Save a copy at about 4000 px for the website."); }
+
+  window.WBImage = { process: process, resize: resize, watermark: watermark, LONG: LONG, safe: safe, blank: blank };
 })();

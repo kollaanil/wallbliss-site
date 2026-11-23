@@ -170,7 +170,8 @@
     });
   }
   function load(file) {
-    return openImg(file, file.name).catch(function (e) { if (!isHeic(file)) throw e; return heicToJpeg(file).then(function (b) { return openImg(b, file.name); }); });
+    return openImg(file, file.name).catch(function (e) { if (!isHeic(file)) throw e; return heicToJpeg(file).then(function (b) { return openImg(b, file.name); }); })
+      .then(function (img) { var W = img.naturalWidth, H = img.naturalHeight; return WBImage.safe(img, file).then(function (im) { im.origW = W; im.origH = H; return im; }); });
   }
   /* remove plain bars at the edges (black screenshot bars, white scanner margins) */
   function trimBox(img) {
@@ -275,10 +276,11 @@
     load(src).then(function (img) {
       if (!img.naturalWidth) throw new Error("Can't open “" + f.name + "”. If it's a very large print file, save a copy at about 4000 px and try again.");
       var box = trimBox(img);
-      it.trimmed = !!box; it.srcW = img.naturalWidth; it.srcH = img.naturalHeight;
+      it.trimmed = !!box; it.srcW = img.origW || img.naturalWidth; it.srcH = img.origH || img.naturalHeight;
       /* originals smaller than the website picture (1600 px) add nothing: unticked by default, tick to keep anyway */
       if (src === it.file) { it.lowRes = Math.max(it.srcW, it.srcH) < 1600; if (!it.keepTouched) it.keepOrig = !it.lowRes; }
       it.base = WBImage.resize(img, WBImage.LONG, box);                 // trim + shrink in one step (safe for huge print files)
+      if (WBImage.blank(it.base)) throw new Error("This picture came out blank (too large for this browser).");
       it.orient = shape(it.base);
       it.tags = fileWords(f.name);
       it.status = aiKey() ? "Claude is filling in the details…" : "Add at least " + MIN_TAGS + " tags"; it.state = aiKey() ? "ai" : "";
