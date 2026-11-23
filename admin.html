@@ -969,7 +969,8 @@
       if (!heic) throw e;
       if (box) w = WB.waiting(box, "heic");
       return H.toJpeg(file).then(open);
-    }).then(function (im) { back(); cb(im, file); }).catch(function (e) { back(); toast(e.message, "error"); });
+    }).then(function (im) { var W = im.naturalWidth, H = im.naturalHeight; return WBImage.safe(im, file).then(function (s) { s.origW = W; s.origH = H; return s; }); })
+      .then(function (im) { back(); cb(im, file); }).catch(function (e) { back(); toast(e.message, "error"); });
   }
   function wireDrop(drop, input, cb) {
     input.addEventListener("change", function () { loadFile(input.files[0], cb, drop); input.value = ""; });
@@ -981,7 +982,7 @@
     srcImg = im; srcFile = file || null; if (cur && window.WBOrigUI) WBOrigUI.newImage(srcFile); $("#d-drop").hidden = true; $("#d-prev").hidden = false; renderImg();
     var a = analyse(im);
     segSet($("#d-orient"), a.orient); $("#d-orient-note").textContent = "Set from the image shape";
-    $("#d-imginfo").textContent = im.naturalWidth + " × " + im.naturalHeight + " px" + (Math.max(im.naturalWidth, im.naturalHeight) < 1200 ? " · small image: it may look soft when printed large. Ask the customer for a bigger file." : " · saved at website size; keep your original for printing.");
+    $("#d-imginfo").textContent = (im.origW || im.naturalWidth) + " × " + (im.origH || im.naturalHeight) + " px" + (Math.max(im.naturalWidth, im.naturalHeight) < 1200 ? " · small image: it may look soft when printed large. Ask the customer for a bigger file." : " · saved at website size; keep your original for printing.");
   });
   $("#d-change").onclick = function () { $("#d-file").click(); };
   $("#d-wm").onchange = renderImg; $("#d-wm-style").addEventListener("change", renderImg);
