@@ -109,7 +109,7 @@
   /* an admin tab opened before the latest website update runs old code: ask for a refresh before publishing */
   function freshCode(k) {
     return gh("/repos/" + OWNER + "/" + REPO + "/commits?sha=" + BRANCH + "&per_page=30", null, k).then(function (list) {
-      var c = (list || []).filter(function (x) { return !/^Publish from admin/.test(x.commit.message); })[0];
+      var c = (list || []).filter(function (x) { return !/^(Publish from admin|Scores: )/.test(x.commit.message); })[0];
       if (c && new Date(c.commit.committer.date).getTime() > LOADED - 90000) throw new Error("OLDADMIN");
     });
   }

@@ -128,7 +128,7 @@
     // every WhatsApp tap is logged, wherever it happens
     document.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest('a[href^="https://wa.me/"]');
-      if (a) WB.track("whatsapp_tap", { where: a.getAttribute("data-where") || a.id || a.textContent.trim().slice(0, 40) });
+      if (a) WB.track("whatsapp_tap", a.getAttribute("data-code") ? { where: a.getAttribute("data-where") || a.id, code: a.getAttribute("data-code") } : { where: a.getAttribute("data-where") || a.id || a.textContent.trim().slice(0, 40) });
     }, true);
   }
 
