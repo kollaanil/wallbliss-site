@@ -2696,6 +2696,27 @@ window.WB_PUBLISHED = {
  "edits": {},
  "projects": [
   {
+   "slug": "a-living-room-where-tradition-comes-alive-8abd",
+   "title": "A living room where tradition comes alive",
+   "locality": "Devagiri Opal",
+   "space": "Living room",
+   "segment": "residential",
+   "size": "8.5 ft by 9 ft",
+   "design": "WB-0188",
+   "time": "3 hours",
+   "month": "2026-11",
+   "summary": "The Rama Pattabhishekham design is rich with color and detail, full of characters and celebration. We printed it directly onto the 8.5 ft by 9 ft wall in Devagiri Opal in 3 hours, with no mess.",
+   "quote": "Loved the art work :)",
+   "consent": true,
+   "hidden": false,
+   "noHome": false,
+   "w": 1280,
+   "h": 963,
+   "ratio": 1.3292,
+   "before": "assets/uploads/projects/a-living-room-where-tradition-comes-aliv-before-7nvxbc.jpg",
+   "after": "assets/uploads/projects/a-living-room-where-tradition-comes-aliv-after-1ow1h2k.jpg"
+  },
+  {
    "slug": "the-wall-every-guest-wants-a-photo-with-n01l",
    "title": "The wall every guest wants a photo with",
    "locality": "Lal Bagh",
@@ -2943,7 +2964,7 @@ window.WB_PUBLISHED = {
    "id": "f-how-do-i-book"
   }
  ],
- "updated": "2026-11-24T04:44:42.309Z",
+ "updated": "2026-11-24T15:44:47.915Z",
  "by": "Manasa",
  "og": {
   "d:WB-0137": {
